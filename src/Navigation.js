@@ -1,10 +1,27 @@
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {Text} from 'react-native';
 import {Button} from 'react-native-paper';
+import CustomNavigationBar from './components/CustomNavigationBar';
 import CustomNavigationDrawer from './components/CustomNavigationDrawer';
 
-function Hello() {
+const HelloStack = createNativeStackNavigator();
+const Hello = () => (
+  <HelloStack.Navigator
+    screenOptions={{
+      header: props => <CustomNavigationBar {...props} />,
+    }}
+  >
+    <HelloStack.Screen
+      name="HelloDetail"
+      component={HelloDetail}
+      options={{title: 'Hello!!'}}
+    />
+  </HelloStack.Navigator>
+);
+
+function HelloDetail() {
   return (
     <>
       <Text>Hello, Navigation!</Text>
@@ -23,6 +40,9 @@ function NavigationContents() {
   // return <Hello />;
   return (
     <Drawer.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}
       drawerContent={props => <CustomNavigationDrawer {...props} />}
     >
       <Drawer.Screen name="Hello" component={Hello} />
