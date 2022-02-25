@@ -52,7 +52,6 @@ function AnotherDetail() {
 const Drawer = createDrawerNavigator();
 
 function NavigationContents() {
-  // return <Hello />;
   return (
     <Drawer.Navigator
       screenOptions={{
