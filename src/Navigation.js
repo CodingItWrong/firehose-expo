@@ -2,6 +2,7 @@ import {createDrawerNavigator} from '@react-navigation/drawer';
 import {NavigationContainer} from '@react-navigation/native';
 import {Text} from 'react-native';
 import {Button} from 'react-native-paper';
+import CustomNavigationDrawer from './components/CustomNavigationDrawer';
 
 function Hello() {
   return (
@@ -17,7 +18,9 @@ const Drawer = createDrawerNavigator();
 function NavigationContents() {
   // return <Hello />;
   return (
-    <Drawer.Navigator>
+    <Drawer.Navigator
+      drawerContent={props => <CustomNavigationDrawer {...props} />}
+    >
       <Drawer.Screen name="Hello" component={Hello} />
     </Drawer.Navigator>
   );
