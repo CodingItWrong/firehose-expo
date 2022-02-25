@@ -1,5 +1,6 @@
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import {NavigationContainer} from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {Text} from 'react-native';
 import {Button} from 'react-native-paper';
@@ -14,18 +15,37 @@ const Hello = () => (
     }}
   >
     <HelloStack.Screen
-      name="HelloDetail"
-      component={HelloDetail}
-      options={{title: 'Hello!!'}}
+      name="HelloScreen1"
+      component={HelloScreen1}
+      options={{title: 'Hello Screen 1'}}
+    />
+    <HelloStack.Screen
+      name="HelloScreen2"
+      component={HelloScreen2}
+      options={{title: 'Hello Screen 2'}}
     />
   </HelloStack.Navigator>
 );
 
-function HelloDetail() {
+function HelloScreen1() {
+  const navigation = useNavigation();
   return (
     <>
-      <Text>Hello, Navigation!</Text>
-      <Button mode="contained">Hello Paper</Button>
+      <Text>Hello, screen 1!</Text>
+      <Button
+        mode="contained"
+        onPress={() => navigation.navigate('HelloScreen2')}
+      >
+        Go to screen 2
+      </Button>
+    </>
+  );
+}
+
+function HelloScreen2() {
+  return (
+    <>
+      <Text>Hello, screen 2!</Text>
     </>
   );
 }
@@ -38,14 +58,14 @@ const Another = () => (
     }}
   >
     <AnotherStack.Screen
-      name="AnotherDetail"
-      component={AnotherDetail}
+      name="AnotherScreen1"
+      component={AnotherScreen1}
       options={{title: 'Another!!'}}
     />
   </AnotherStack.Navigator>
 );
 
-function AnotherDetail() {
+function AnotherScreen1() {
   return <Text>Another Screen</Text>;
 }
 
