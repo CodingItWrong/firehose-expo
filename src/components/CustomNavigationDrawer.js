@@ -1,13 +1,17 @@
 import {DrawerContentScrollView} from '@react-navigation/drawer';
-import {Drawer} from 'react-native-paper';
+import {Drawer, withTheme} from 'react-native-paper';
 
-export default function CustomNavigationDrawer({theme, ...navProps}) {
+function CustomNavigationDrawer({theme, ...navProps}) {
   const {state, navigation} = navProps;
 
   const isActive = index => index === state.index;
 
+  const scrollViewStyle = {
+    backgroundColor: theme.colors.background,
+  };
+
   return (
-    <DrawerContentScrollView {...navProps}>
+    <DrawerContentScrollView style={scrollViewStyle} {...navProps}>
       {state.routes.map((route, index) => (
         <Drawer.Item
           key={route.key}
@@ -20,3 +24,5 @@ export default function CustomNavigationDrawer({theme, ...navProps}) {
     </DrawerContentScrollView>
   );
 }
+
+export default withTheme(CustomNavigationDrawer);
