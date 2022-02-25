@@ -30,7 +30,22 @@ function HelloDetail() {
   );
 }
 
-function Another() {
+const AnotherStack = createNativeStackNavigator();
+const Another = () => (
+  <AnotherStack.Navigator
+    screenOptions={{
+      header: props => <CustomNavigationBar {...props} />,
+    }}
+  >
+    <AnotherStack.Screen
+      name="AnotherDetail"
+      component={AnotherDetail}
+      options={{title: 'Another!!'}}
+    />
+  </AnotherStack.Navigator>
+);
+
+function AnotherDetail() {
   return <Text>Another Screen</Text>;
 }
 
