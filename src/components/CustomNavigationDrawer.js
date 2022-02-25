@@ -4,6 +4,8 @@ import {Drawer} from 'react-native-paper';
 export default function CustomNavigationDrawer({theme, ...navProps}) {
   const {state, navigation} = navProps;
 
+  const isActive = index => index === state.index;
+
   return (
     <DrawerContentScrollView {...navProps}>
       {state.routes.map((route, index) => (
@@ -11,7 +13,7 @@ export default function CustomNavigationDrawer({theme, ...navProps}) {
           key={route.key}
           label={route.name}
           accessibilityLabel={route.name}
-          active
+          active={isActive(index)}
           onPress={() => navigation.navigate(route.name)}
         />
       ))}
