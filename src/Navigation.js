@@ -1,10 +1,10 @@
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import {NavigationContainer, useNavigation} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {Text} from 'react-native';
-import {Button} from 'react-native-paper';
+import {Button, Text} from 'react-native-paper';
 import CustomNavigationBar from './components/CustomNavigationBar';
 import CustomNavigationDrawer from './components/CustomNavigationDrawer';
+import ScreenBackground from './components/ScreenBackground';
 
 const HelloStack = createNativeStackNavigator();
 const Hello = () => (
@@ -29,23 +29,24 @@ const Hello = () => (
 function HelloScreen1() {
   const navigation = useNavigation();
   return (
-    <>
+    <ScreenBackground>
       <Text>Hello, screen 1!</Text>
+      <Button mode="outlined">Outline button</Button>
       <Button
         mode="contained"
         onPress={() => navigation.navigate('HelloScreen2')}
       >
         Go to screen 2
       </Button>
-    </>
+    </ScreenBackground>
   );
 }
 
 function HelloScreen2() {
   return (
-    <>
+    <ScreenBackground>
       <Text>Hello, screen 2!</Text>
-    </>
+    </ScreenBackground>
   );
 }
 
@@ -65,7 +66,11 @@ const Another = () => (
 );
 
 function AnotherScreen1() {
-  return <Text>Another Screen</Text>;
+  return (
+    <ScreenBackground>
+      <Text>Another Screen</Text>
+    </ScreenBackground>
+  );
 }
 
 const Drawer = createDrawerNavigator();
