@@ -11,12 +11,14 @@ const linking = {
   config: {
     screens: {
       Hello: {
+        initialRouteName: 'HelloScreen1',
         screens: {
           HelloScreen1: '/hello',
           HelloScreen2: '/hello/screen2',
         },
       },
       Another: {
+        initialRouteName: 'AnotherScreen1',
         screens: {
           AnotherScreen1: '/another',
         },
