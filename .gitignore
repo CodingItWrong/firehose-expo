@@ -15,3 +15,5 @@ web-build/
 
 # Local Netlify folder
 .netlify
+
+build-*.ipa

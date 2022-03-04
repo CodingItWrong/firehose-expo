@@ -9,7 +9,8 @@
     "web": "expo start --web",
     "eject": "expo eject",
     "test": "jest",
-    "lint": "eslint \"**/*.js\""
+    "lint": "eslint \"**/*.js\"",
+    "build:ios": "eas build --platform ios --local"
   },
   "dependencies": {
     "@react-navigation/drawer": "^6.3.1",
