@@ -1,6 +1,6 @@
-# (your app name)
+# firehose-expo
 
-A brief description of your app.
+Client for the [Firehose link-saving app](https://github.com/CodingItWrong/firehose-api). Implemented with Expo. Runs on Android, iOS, and web.
 
 ## Requirements
 
