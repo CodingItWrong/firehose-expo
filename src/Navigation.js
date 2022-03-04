@@ -2,6 +2,7 @@ import {createDrawerNavigator} from '@react-navigation/drawer';
 import {NavigationContainer, useNavigation} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {Button, Text} from 'react-native-paper';
+import {large, useBreakpoint} from './breakpoints';
 import CustomNavigationBar from './components/CustomNavigationBar';
 import CustomNavigationDrawer from './components/CustomNavigationDrawer';
 import ScreenBackground from './components/ScreenBackground';
@@ -75,11 +76,18 @@ function AnotherScreen1() {
 
 const Drawer = createDrawerNavigator();
 
+const getDrawerTypeForBreakpoint = breakpoint =>
+  breakpoint === large ? 'permanent' : 'back';
+
 function NavigationContents() {
+  const breakpoint = useBreakpoint();
+  const drawerTypeForBreakpoint = getDrawerTypeForBreakpoint(breakpoint);
+
   return (
     <Drawer.Navigator
       screenOptions={{
         headerShown: false,
+        drawerType: drawerTypeForBreakpoint,
       }}
       drawerContent={props => <CustomNavigationDrawer {...props} />}
     >
