@@ -7,6 +7,24 @@ import CustomNavigationBar from './components/CustomNavigationBar';
 import CustomNavigationDrawer from './components/CustomNavigationDrawer';
 import ScreenBackground from './components/ScreenBackground';
 
+const linking = {
+  config: {
+    screens: {
+      Hello: {
+        screens: {
+          HelloScreen1: '/hello',
+          HelloScreen2: '/hello/screen2',
+        },
+      },
+      Another: {
+        screens: {
+          AnotherScreen1: '/another',
+        },
+      },
+    },
+  },
+};
+
 const HelloStack = createNativeStackNavigator();
 const Hello = () => (
   <HelloStack.Navigator
@@ -105,7 +123,7 @@ export default function Navigation() {
   // else Safari and Firefox error on too many history API calls. Put
   // any hooks in NavigationContents so this parent doesn't rerender.
   return (
-    <NavigationContainer>
+    <NavigationContainer linking={linking}>
       <NavigationContents />
     </NavigationContainer>
   );
