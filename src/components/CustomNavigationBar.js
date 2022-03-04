@@ -1,6 +1,12 @@
 import {Appbar} from 'react-native-paper';
+import {large, useBreakpoint} from '../breakpoints';
+
+const showDrawerToggleForBreakpoint = breakpoint => breakpoint !== large;
 
 export default function CustomNavigationBar({navigation, options, back}) {
+  const breakpoint = useBreakpoint();
+  const showDrawerToggle = showDrawerToggleForBreakpoint(breakpoint);
+
   return (
     <Appbar.Header>
       {back && (
@@ -10,11 +16,13 @@ export default function CustomNavigationBar({navigation, options, back}) {
         />
       )}
       <Appbar.Content title={options.title} />
-      <Appbar.Action
-        accessibilityLabel="Menu"
-        icon="menu"
-        onPress={navigation.toggleDrawer}
-      />
+      {showDrawerToggle && (
+        <Appbar.Action
+          accessibilityLabel="Menu"
+          icon="menu"
+          onPress={navigation.toggleDrawer}
+        />
+      )}
     </Appbar.Header>
   );
 }
