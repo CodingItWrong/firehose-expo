@@ -6,6 +6,7 @@ import {large, useBreakpoint} from './breakpoints';
 import CustomNavigationBar from './components/CustomNavigationBar';
 import CustomNavigationDrawer from './components/CustomNavigationDrawer';
 import ScreenBackground from './components/ScreenBackground';
+import SignInScreen from './screens/SignInScreen';
 
 const linking = {
   config: {
@@ -99,6 +100,21 @@ const Drawer = createDrawerNavigator();
 const getDrawerTypeForBreakpoint = breakpoint =>
   breakpoint === large ? 'permanent' : 'back';
 
+const SignInStack = createNativeStackNavigator();
+const SignIn = () => (
+  <SignInStack.Navigator
+    screenOptions={{
+      header: props => <CustomNavigationBar {...props} />,
+    }}
+  >
+    <SignInStack.Screen
+      name="SignInScreen"
+      component={SignInScreen}
+      options={{title: 'Sign in'}}
+    />
+  </SignInStack.Navigator>
+);
+
 function NavigationContents() {
   const breakpoint = useBreakpoint();
   const drawerTypeForBreakpoint = getDrawerTypeForBreakpoint(breakpoint);
@@ -114,6 +130,7 @@ function NavigationContents() {
       }}
       drawerContent={props => <CustomNavigationDrawer {...props} />}
     >
+      <Drawer.Screen name="Sign in" component={SignIn} />
       <Drawer.Screen name="Hello" component={Hello} />
       <Drawer.Screen name="Another" component={Another} />
     </Drawer.Navigator>
