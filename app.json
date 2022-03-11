@@ -22,7 +22,10 @@
     "ios": {
       "buildNumber": "2",
       "supportsTablet": true,
-      "bundleIdentifier": "com.codingitwrong.firehose"
+      "bundleIdentifier": "com.codingitwrong.firehose",
+      "config": {
+        "usesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
