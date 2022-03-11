@@ -1,6 +1,8 @@
 {
   "expo": {
     "name": "Firehose",
+    "description": "A simple link-saving app focused on reading.",
+    "githubUrl": "https://github.com/CodingItWrong/firehose-expo",
     "slug": "firehose",
     "version": "1.0.0",
     "orientation": "portrait",
