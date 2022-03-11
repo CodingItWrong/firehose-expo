@@ -2,11 +2,10 @@ import axios from 'axios';
 import {Button, Text, TextInput} from 'react-native-paper';
 import oauthLogin from '../auth/oauthLogin';
 import useLoginForm from '../auth/useLoginForm';
+import baseUrl from '../baseUrl';
 import ScreenBackground from '../components/ScreenBackground';
 import {useToken} from '../data/token';
 
-// TODO: dynamic base URL per environment
-const baseUrl = 'http://localhost:3000';
 const path = '/api/oauth/token';
 const httpClient = axios.create({baseURL: baseUrl});
 
