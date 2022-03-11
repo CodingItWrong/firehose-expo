@@ -3,6 +3,7 @@ import {Button, Text, TextInput} from 'react-native-paper';
 import oauthLogin from '../auth/oauthLogin';
 import useLoginForm from '../auth/useLoginForm';
 import ScreenBackground from '../components/ScreenBackground';
+import {useToken} from '../data/token';
 
 // TODO: dynamic base URL per environment
 const baseUrl = 'http://localhost:3000';
@@ -10,15 +11,18 @@ const path = '/api/oauth/token';
 const httpClient = axios.create({baseURL: baseUrl});
 
 export default function SignInScreen() {
+  const {token, setToken} = useToken();
   const onLogIn = ({username, password}) =>
     oauthLogin({
       httpClient,
       path,
       username,
       password,
-    }).then(token => console.log({token}));
+    }).then(setToken);
   const {username, password, error, handleChange, handleLogIn} =
     useLoginForm(onLogIn);
+
+  console.log({token});
 
   return (
     <ScreenBackground>

@@ -2,6 +2,7 @@ import {StatusBar} from 'expo-status-bar';
 import {Provider as PaperProvider} from 'react-native-paper';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import Navigation from './src/Navigation';
+import {TokenProvider} from './src/data/token';
 import useTheme from './src/useTheme';
 
 export default function App() {
@@ -10,7 +11,9 @@ export default function App() {
     <PaperProvider theme={theme}>
       <SafeAreaProvider>
         <StatusBar style="light" />
-        <Navigation />
+        <TokenProvider>
+          <Navigation />
+        </TokenProvider>
       </SafeAreaProvider>
     </PaperProvider>
   );
