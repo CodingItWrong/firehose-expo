@@ -22,8 +22,6 @@ export default function SignInScreen() {
   const {username, password, error, handleChange, handleLogIn} =
     useLoginForm(onLogIn);
 
-  console.log({token});
-
   return (
     <ScreenBackground>
       <TextInput
@@ -42,6 +40,7 @@ export default function SignInScreen() {
         onChangeText={handleChange('password')}
         secureTextEntry
       />
+      <Text>{token}</Text>
       <Text>{error}</Text>
       <Button
         mode="contained"
