@@ -11,7 +11,7 @@ const path = '/api/oauth/token';
 const httpClient = axios.create({baseURL: baseUrl});
 
 export default function SignInScreen() {
-  const {token, setToken} = useToken();
+  const {setToken} = useToken();
   const onLogIn = ({username, password}) =>
     oauthLogin({
       httpClient,
@@ -40,7 +40,6 @@ export default function SignInScreen() {
         onChangeText={handleChange('password')}
         secureTextEntry
       />
-      <Text>{token}</Text>
       <Text>{error}</Text>
       <Button
         mode="contained"
