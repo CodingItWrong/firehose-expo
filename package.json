@@ -10,7 +10,8 @@
     "eject": "expo eject",
     "test": "jest",
     "lint": "eslint \"**/*.js\"",
-    "build:ios": "eas build --platform ios --local"
+    "build:ios": "eas build --platform ios --local",
+    "deploy:web": "expo build:web && cp _redirects web-build && netlify deploy --prod"
   },
   "dependencies": {
     "@react-navigation/drawer": "^6.3.1",
