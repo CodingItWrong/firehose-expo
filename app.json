@@ -30,6 +30,8 @@
       }
     },
     "web": {
+      "name": "Firehose",
+      "themeColor": "#B71C1C",
       "favicon": "./assets/favicon.png"
     }
   }
