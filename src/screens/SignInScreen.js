@@ -4,6 +4,7 @@ import oauthLogin from '../auth/oauthLogin';
 import useLoginForm from '../auth/useLoginForm';
 import baseUrl from '../baseUrl';
 import CenterColumn from '../components/CenterColumn';
+import ErrorMessage from '../components/ErrorMessage';
 import ScreenBackground from '../components/ScreenBackground';
 import {useToken} from '../data/token';
 import sharedStyles from '../sharedStyles';
@@ -42,7 +43,7 @@ export default function SignInScreen() {
           onChangeText={handleChange('password')}
           secureTextEntry
         />
-        <Text>{error}</Text>
+        <ErrorMessage>{error}</ErrorMessage>
         <Button
           mode="contained"
           onPress={handleLogIn}
