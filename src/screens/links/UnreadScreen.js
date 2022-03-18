@@ -1,3 +1,4 @@
+import * as Linking from 'expo-linking';
 import {List} from 'react-native-paper';
 import CenterColumn from '../../components/CenterColumn';
 import ScreenBackground from '../../components/ScreenBackground';
@@ -10,7 +11,7 @@ export default function UnreadScreen() {
         <List.Item
           title="My Bookmark"
           description="codingitwrong.com"
-          onPress={() => console.log('Bookmark list item pressed')}
+          onPress={() => Linking.openURL('https://codingitwrong.com')}
         />
       </CenterColumn>
     </ScreenBackground>
