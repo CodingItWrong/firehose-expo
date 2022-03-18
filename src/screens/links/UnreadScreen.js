@@ -1,8 +1,10 @@
 import * as Linking from 'expo-linking';
-import {Platform} from 'react-native';
+import {useEffect, useState} from 'react';
+import {FlatList, Platform} from 'react-native';
 import {List} from 'react-native-paper';
 import CenterColumn from '../../components/CenterColumn';
 import ScreenBackground from '../../components/ScreenBackground';
+import {useBookmarks} from '../../data/bookmarks';
 import sharedStyles from '../../sharedStyles';
 
 function openBookmark(url) {
@@ -14,13 +16,28 @@ function openBookmark(url) {
 }
 
 export default function UnreadScreen() {
+  const bookmarkClient = useBookmarks();
+  const [bookmarks, setBookmarks] = useState([]);
+
+  useEffect(() => {
+    bookmarkClient
+      .where({filter: {read: false}})
+      .then(bookmarkResponse => setBookmarks(bookmarkResponse.data));
+  }, [bookmarkClient]);
+
   return (
     <ScreenBackground style={sharedStyles.bodyPadding}>
       <CenterColumn>
-        <List.Item
-          title="My Bookmark"
-          description="codingitwrong.com"
-          onPress={() => openBookmark('https://codingitwrong.com')}
+        <FlatList
+          data={bookmarks}
+          keyExtractor={item => item.id}
+          renderItem={({item}) => (
+            <List.Item
+              title={item.attributes.title}
+              description={item.attributes.url}
+              onPress={() => openBookmark(item.attributes.url)}
+            />
+          )}
         />
       </CenterColumn>
     </ScreenBackground>
