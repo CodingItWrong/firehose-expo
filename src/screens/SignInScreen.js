@@ -48,6 +48,7 @@ export default function SignInScreen() {
           mode="contained"
           onPress={handleLogIn}
           accessibilityLabel="Sign in"
+          style={sharedStyles.button}
         >
           Sign in
         </Button>
