@@ -6,6 +6,7 @@ import baseUrl from '../baseUrl';
 import CenterColumn from '../components/CenterColumn';
 import ScreenBackground from '../components/ScreenBackground';
 import {useToken} from '../data/token';
+import sharedStyles from '../sharedStyles';
 
 const path = '/api/oauth/token';
 const httpClient = axios.create({baseURL: baseUrl});
@@ -23,7 +24,7 @@ export default function SignInScreen() {
     useLoginForm(onLogIn);
 
   return (
-    <ScreenBackground>
+    <ScreenBackground style={sharedStyles.bodyPadding}>
       <CenterColumn>
         <TextInput
           label="Email"
