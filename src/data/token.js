@@ -58,5 +58,5 @@ export function useToken() {
 
   const isLoggedIn = token !== null;
 
-  return {token, isLoggedIn, setToken, clearToken};
+  return {token, isLoggedIn, isTokenLoaded, setToken, clearToken};
 }
