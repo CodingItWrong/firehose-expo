@@ -8,10 +8,17 @@ import CustomNavigationDrawer from './components/CustomNavigationDrawer';
 import ScreenBackground from './components/ScreenBackground';
 import {useToken} from './data/token';
 import SignInScreen from './screens/SignInScreen';
+import UnreadScreen from './screens/links/UnreadScreen';
 
 const linking = {
   config: {
     screens: {
+      Unread: {
+        initialRouteName: 'UnreadScreen',
+        screens: {
+          UnreadScreen: '/links/unread',
+        },
+      },
       Hello: {
         initialRouteName: 'HelloScreen1',
         screens: {
@@ -28,6 +35,21 @@ const linking = {
     },
   },
 };
+
+const UnreadStack = createNativeStackNavigator();
+const Unread = () => (
+  <UnreadStack.Navigator
+    screenOptions={{
+      header: props => <CustomNavigationBar {...props} />,
+    }}
+  >
+    <UnreadStack.Screen
+      name="UnreadScreen"
+      component={UnreadScreen}
+      options={{title: 'Unread'}}
+    />
+  </UnreadStack.Navigator>
+);
 
 const HelloStack = createNativeStackNavigator();
 const Hello = () => (
@@ -134,6 +156,7 @@ function NavigationContents() {
     >
       {isLoggedIn ? (
         <>
+          <Drawer.Screen name="Unread" component={Unread} />
           <Drawer.Screen name="Hello" component={Hello} />
           <Drawer.Screen name="Another" component={Another} />
         </>
