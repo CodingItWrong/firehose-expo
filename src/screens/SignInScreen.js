@@ -9,7 +9,6 @@ import ScreenBackground from '../components/ScreenBackground';
 import {useToken} from '../data/token';
 import sharedStyles from '../sharedStyles';
 
-const path = '/api/oauth/token';
 const httpClient = axios.create({baseURL: baseUrl});
 
 export default function SignInScreen() {
@@ -17,7 +16,6 @@ export default function SignInScreen() {
   const onLogIn = ({username, password}) =>
     oauthLogin({
       httpClient,
-      path,
       username,
       password,
     }).then(setToken);
