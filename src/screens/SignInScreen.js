@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {Button, Text, TextInput} from 'react-native-paper';
+import {Button, TextInput} from 'react-native-paper';
 import oauthLogin from '../auth/oauthLogin';
 import useLoginForm from '../auth/useLoginForm';
 import baseUrl from '../baseUrl';
