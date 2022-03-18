@@ -3,6 +3,7 @@ import {Button, Text, TextInput} from 'react-native-paper';
 import oauthLogin from '../auth/oauthLogin';
 import useLoginForm from '../auth/useLoginForm';
 import baseUrl from '../baseUrl';
+import CenterColumn from '../components/CenterColumn';
 import ScreenBackground from '../components/ScreenBackground';
 import {useToken} from '../data/token';
 
@@ -23,30 +24,32 @@ export default function SignInScreen() {
 
   return (
     <ScreenBackground>
-      <TextInput
-        label="Email"
-        accessibilityLabel="Email"
-        value={username}
-        onChangeText={handleChange('username')}
-        keyboardType="email-address"
-        autoCapitalize="none"
-        autoCorrect={false}
-      />
-      <TextInput
-        label="Password"
-        accessibilityLabel="Password"
-        value={password}
-        onChangeText={handleChange('password')}
-        secureTextEntry
-      />
-      <Text>{error}</Text>
-      <Button
-        mode="contained"
-        onPress={handleLogIn}
-        accessibilityLabel="Sign in"
-      >
-        Sign in
-      </Button>
+      <CenterColumn>
+        <TextInput
+          label="Email"
+          accessibilityLabel="Email"
+          value={username}
+          onChangeText={handleChange('username')}
+          keyboardType="email-address"
+          autoCapitalize="none"
+          autoCorrect={false}
+        />
+        <TextInput
+          label="Password"
+          accessibilityLabel="Password"
+          value={password}
+          onChangeText={handleChange('password')}
+          secureTextEntry
+        />
+        <Text>{error}</Text>
+        <Button
+          mode="contained"
+          onPress={handleLogIn}
+          accessibilityLabel="Sign in"
+        >
+          Sign in
+        </Button>
+      </CenterColumn>
     </ScreenBackground>
   );
 }
