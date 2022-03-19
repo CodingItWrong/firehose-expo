@@ -7,6 +7,7 @@ Client for the [Firehose link-saving app](https://github.com/CodingItWrong/fireh
 - [Yarn](https://yarnpkg.com/en/docs/install)
 - [Expo CLI](https://docs.expo.dev/get-started/installation/)
 - [EAS CLI](https://docs.expo.dev/build/setup/#1-install-the-latest-eas-cli)
+- [sharp-cli](https://github.com/vseventer/sharp-cli)
 - [Cocoapods](https://guides.cocoapods.org/using/getting-started.html#installation)
 - [Fastlane](https://docs.fastlane.tools/getting-started/ios/setup/)
 
