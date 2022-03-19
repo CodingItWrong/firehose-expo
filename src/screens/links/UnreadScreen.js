@@ -5,7 +5,6 @@ import {List} from 'react-native-paper';
 import CenterColumn from '../../components/CenterColumn';
 import ScreenBackground from '../../components/ScreenBackground';
 import {useBookmarks} from '../../data/bookmarks';
-import sharedStyles from '../../sharedStyles';
 
 function openBookmark(url) {
   if (Platform.OS === 'web') {
@@ -26,7 +25,7 @@ export default function UnreadScreen() {
   }, [bookmarkClient]);
 
   return (
-    <ScreenBackground style={sharedStyles.bodyPadding}>
+    <ScreenBackground>
       <CenterColumn>
         <FlatList
           data={bookmarks}
