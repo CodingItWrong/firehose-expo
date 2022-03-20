@@ -58,3 +58,7 @@ Deploys to configured Netlify site.
 ## Acknowledgements
 
 [Firehose icon](https://thenounproject.com/icon/fire-hose-14726/) by Alv Jørgen Bovolden
+
+## License
+
+MIT
