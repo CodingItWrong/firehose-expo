@@ -61,9 +61,6 @@ function NavigationContents() {
   const breakpoint = useBreakpoint();
   const drawerTypeForBreakpoint = getDrawerTypeForBreakpoint(breakpoint);
 
-  // TODO: try to reproduce problem with too many updates from Surely
-  // Couldn't reproduce so far in Safari and Firefox; fixed?
-
   return (
     <Drawer.Navigator
       screenOptions={{
