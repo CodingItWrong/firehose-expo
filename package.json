@@ -40,7 +40,7 @@
     "@react-native-community/eslint-config": "^3.0.1",
     "@testing-library/jest-native": "^4.0.4",
     "@testing-library/react-native": "^9.0.0",
-    "eslint": "^7.0",
+    "eslint": "^8.11",
     "eslint-plugin-import": "^2.25.4",
     "jest": "^27.5.1",
     "jest-expo": "^44.0.1"
