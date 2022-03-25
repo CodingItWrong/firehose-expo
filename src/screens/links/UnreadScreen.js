@@ -55,7 +55,10 @@ export default function UnreadScreen() {
                   visible={isMenuShown(item)}
                   onDismiss={hideMenu}
                   anchor={
-                    <Pressable onPress={() => showMenu(item)}>
+                    <Pressable
+                      onPress={() => showMenu(item)}
+                      accessibilityLabel="Actions"
+                    >
                       <List.Icon {...props} icon="dots-vertical" />
                     </Pressable>
                   }
