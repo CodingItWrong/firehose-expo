@@ -1,6 +1,6 @@
 import {render, waitFor} from '@testing-library/react-native';
-import authenticatedHttpClient from '../../data/authenticatedHttpClient';
 import {TokenProvider} from '../../data/token';
+import {jsonApiResponse, mockHttp} from '../../testUtils';
 import UnreadScreen from './UnreadScreen';
 
 jest.mock('../../data/authenticatedHttpClient');
@@ -15,10 +15,8 @@ describe('UnreadScreen', () => {
   };
 
   it('renders links from the backend', async () => {
-    const http = {
-      get: jest.fn().mockResolvedValue({data: {data: [bookmark]}}),
-    };
-    authenticatedHttpClient.mockReturnValue(http);
+    const http = mockHttp();
+    http.get.mockResolvedValue(jsonApiResponse([bookmark]));
 
     const {getByText} = render(
       <TokenProvider skipLoading>
