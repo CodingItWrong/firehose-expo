@@ -9,7 +9,7 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "eject": "expo eject",
-    "test": "jest",
+    "test": "jest --watchAll",
     "lint": "eslint \"**/*.js\"",
     "build:ios": "eas build --platform ios --local",
     "deploy:web": "expo build:web && cp _redirects web-build && netlify deploy --prod"
