@@ -11,13 +11,13 @@ const ACCESS_TOKEN_KEY = 'FIREHOSE_ACCESS_TOKEN';
 
 const TokenContext = createContext(null);
 
-export function TokenProvider({children}) {
+export function TokenProvider({skipLoading = false, children}) {
   const [isTokenLoaded, setIsTokenLoaded] = useState(false);
   const [token, setToken] = useState(null);
 
   return (
     <TokenContext.Provider
-      value={{token, setToken, isTokenLoaded, setIsTokenLoaded}}
+      value={{token, setToken, isTokenLoaded, setIsTokenLoaded, skipLoading}}
     >
       {children}
     </TokenContext.Provider>
@@ -30,10 +30,11 @@ export function useToken() {
     setToken: setTokenInternal,
     isTokenLoaded,
     setIsTokenLoaded,
+    skipLoading,
   } = useContext(TokenContext);
 
   useEffect(() => {
-    if (!isTokenLoaded) {
+    if (!isTokenLoaded && !skipLoading) {
       getStringAsync(ACCESS_TOKEN_KEY).then(newToken => {
         if (newToken) {
           setTokenInternal(newToken);
@@ -41,7 +42,7 @@ export function useToken() {
         setIsTokenLoaded(true);
       });
     }
-  }, [isTokenLoaded, setTokenInternal, setIsTokenLoaded]);
+  }, [isTokenLoaded, skipLoading, setTokenInternal, setIsTokenLoaded]);
 
   const setToken = useCallback(
     async function (newToken) {
