@@ -30,6 +30,14 @@ export default function UnreadScreen() {
   const isMenuShown = item => menuShownId === item.id;
   const showMenu = item => setMenuShownId(item.id);
   const hideMenu = () => setMenuShownId(null);
+  const markRead = async item => {
+    await bookmarkClient.update({
+      id: item.id,
+      attributes: {read: true},
+    });
+    // TODO: reload the links or something
+    setMenuShownId(null);
+  };
 
   return (
     <ScreenBackground>
@@ -52,7 +60,7 @@ export default function UnreadScreen() {
                     </Pressable>
                   }
                 >
-                  <Menu.Item onPress={() => {}} title="Item 1" />
+                  <Menu.Item onPress={() => markRead(item)} title="Mark Read" />
                 </Menu>
               )}
             />
