@@ -3,7 +3,10 @@
 import authenticatedHttpClient from './data/authenticatedHttpClient';
 
 export function mockHttp() {
-  const http = {get: jest.fn()};
+  const http = {
+    get: jest.fn(),
+    patch: jest.fn(),
+  };
   authenticatedHttpClient.mockReturnValue(http);
   return http;
 }
