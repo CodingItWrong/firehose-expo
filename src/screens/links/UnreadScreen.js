@@ -6,18 +6,14 @@ import CenterColumn from '../../components/CenterColumn';
 import ScreenBackground from '../../components/ScreenBackground';
 import {useBookmarks} from '../../data/bookmarks';
 
-function openBookmark(url) {
-  if (Platform.OS === 'web') {
-    window.open(url, '_blank');
-  } else {
-    Linking.openURL(url);
-  }
-}
-
 export default function UnreadScreen() {
   const bookmarkClient = useBookmarks();
+
   const [bookmarks, setBookmarks] = useState([]);
-  const [menuShownId, setMenuShownId] = useState(null);
+  const removeBookmark = bookmarkToRemove =>
+    setBookmarks(
+      bookmarks.filter(bookmark => bookmark.id !== bookmarkToRemove.id),
+    );
 
   useEffect(() => {
     bookmarkClient
@@ -27,49 +23,110 @@ export default function UnreadScreen() {
 
   // TODO: test list icon a11y label
 
-  const isMenuShown = item => menuShownId === item.id;
-  const showMenu = item => setMenuShownId(item.id);
-  const hideMenu = () => setMenuShownId(null);
-  const markRead = async item => {
-    await bookmarkClient.update({
-      id: item.id,
-      attributes: {read: true},
-    });
-    // TODO: reload the links or something
-    setMenuShownId(null);
+  const markRead = async bookmark => {
+    try {
+      await bookmarkClient.update({
+        id: bookmark.id,
+        attributes: {read: true},
+      });
+      removeBookmark(bookmark);
+    } catch (e) {
+      console.error('mark read failed', e);
+    }
+  };
+
+  const deleteBookmark = async bookmark => {
+    try {
+      await bookmarkClient.delete({id: bookmark.id});
+      removeBookmark(bookmark);
+    } catch (e) {
+      console.error('delete failed', e);
+    }
   };
 
   return (
     <ScreenBackground>
       <CenterColumn>
-        <FlatList
-          data={bookmarks}
-          keyExtractor={item => item.id}
-          renderItem={({item}) => (
-            <List.Item
-              title={item.attributes.title}
-              description={item.attributes.url}
-              onPress={() => openBookmark(item.attributes.url)}
-              right={props => (
-                <Menu
-                  visible={isMenuShown(item)}
-                  onDismiss={hideMenu}
-                  anchor={
-                    <Pressable
-                      onPress={() => showMenu(item)}
-                      accessibilityLabel="Actions"
-                    >
-                      <List.Icon {...props} icon="dots-vertical" />
-                    </Pressable>
-                  }
-                >
-                  <Menu.Item onPress={() => markRead(item)} title="Mark Read" />
-                </Menu>
-              )}
-            />
-          )}
+        <UnreadBookmarkList
+          bookmarks={bookmarks}
+          onMarkRead={markRead}
+          onDelete={deleteBookmark}
         />
       </CenterColumn>
     </ScreenBackground>
+  );
+}
+
+function UnreadBookmarkList({bookmarks, onMarkRead, onDelete}) {
+  const [menuShownId, setMenuShownId] = useState(null);
+
+  const isMenuShown = bookmark => menuShownId === bookmark.id;
+  const showMenu = bookmark => setMenuShownId(bookmark.id);
+  const hideMenu = () => setMenuShownId(null);
+
+  async function handleMarkRead(item) {
+    await onMarkRead(item);
+    hideMenu();
+  }
+
+  async function handleDelete(item) {
+    await onDelete(item);
+    hideMenu();
+  }
+
+  return (
+    <FlatList
+      data={bookmarks}
+      keyExtractor={item => item.id}
+      renderItem={({item}) => (
+        <UnreadBookmarkRow
+          bookmark={item}
+          isMenuShown={isMenuShown(item)}
+          onShowMenu={() => showMenu(item)}
+          onHideMenu={hideMenu}
+          onMarkRead={() => handleMarkRead(item)}
+          onDelete={() => handleDelete(item)}
+        />
+      )}
+    />
+  );
+}
+
+function openBookmark(url) {
+  if (Platform.OS === 'web') {
+    window.open(url, '_blank');
+  } else {
+    Linking.openURL(url);
+  }
+}
+
+function UnreadBookmarkRow({
+  bookmark,
+  isMenuShown,
+  onShowMenu,
+  onHideMenu,
+  onMarkRead,
+  onDelete,
+}) {
+  return (
+    <List.Item
+      title={bookmark.attributes.title}
+      description={bookmark.attributes.url}
+      onPress={() => openBookmark(bookmark.attributes.url)}
+      right={props => (
+        <Menu
+          visible={isMenuShown}
+          onDismiss={onHideMenu}
+          anchor={
+            <Pressable onPress={onShowMenu} accessibilityLabel="Actions">
+              <List.Icon {...props} icon="dots-vertical" />
+            </Pressable>
+          }
+        >
+          <Menu.Item onPress={onMarkRead} title="Mark Read" />
+          <Menu.Item onPress={onDelete} title="Delete" />
+        </Menu>
+      )}
+    />
   );
 }
