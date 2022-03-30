@@ -8,8 +8,13 @@ import {useBookmarks} from '../../data/bookmarks';
 
 export default function UnreadScreen() {
   const bookmarkClient = useBookmarks();
-  const [bookmarks, setBookmarks] = useState([]);
   const [menuShownId, setMenuShownId] = useState(null);
+
+  const [bookmarks, setBookmarks] = useState([]);
+  const removeBookmark = bookmarkToRemove =>
+    setBookmarks(
+      bookmarks.filter(bookmark => bookmark.id !== bookmarkToRemove.id),
+    );
 
   useEffect(() => {
     bookmarkClient
@@ -29,7 +34,7 @@ export default function UnreadScreen() {
         attributes: {read: true},
       });
       setMenuShownId(null);
-      setBookmarks(bookmarks.filter(b => b.id !== bookmark.id));
+      removeBookmark(bookmark);
     } catch (e) {
       console.error('mark read failed', e);
     }
@@ -39,7 +44,7 @@ export default function UnreadScreen() {
     try {
       await bookmarkClient.delete({id: bookmark.id});
       setMenuShownId(null);
-      setBookmarks(bookmarks.filter(b => b.id !== bookmark.id));
+      removeBookmark(bookmark);
     } catch (e) {
       console.error('delete failed', e);
     }
