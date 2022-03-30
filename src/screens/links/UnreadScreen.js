@@ -19,17 +19,17 @@ export default function UnreadScreen() {
 
   // TODO: test list icon a11y label
 
-  const isMenuShown = item => menuShownId === item.id;
-  const showMenu = item => setMenuShownId(item.id);
+  const isMenuShown = bookmark => menuShownId === bookmark.id;
+  const showMenu = bookmark => setMenuShownId(bookmark.id);
   const hideMenu = () => setMenuShownId(null);
-  const markRead = async item => {
+  const markRead = async bookmark => {
     try {
       await bookmarkClient.update({
-        id: item.id,
+        id: bookmark.id,
         attributes: {read: true},
       });
       setMenuShownId(null);
-      setBookmarks(bookmarks.filter(bookmark => bookmark.id !== item.id));
+      setBookmarks(bookmarks.filter(b => b.id !== bookmark.id));
     } catch (e) {
       console.error('mark read failed', e);
     }
