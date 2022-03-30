@@ -1,4 +1,9 @@
-import {fireEvent, render, waitFor} from '@testing-library/react-native';
+import {
+  fireEvent,
+  render,
+  waitFor,
+  waitForElementToBeRemoved,
+} from '@testing-library/react-native';
 import * as Linking from 'expo-linking';
 import {Provider as PaperProvider} from 'react-native-paper';
 import {TokenProvider} from '../../data/token';
@@ -51,6 +56,7 @@ describe('UnreadScreen', () => {
   it('allows marking a link as read', async () => {
     const http = mockHttp();
     http.get.mockResolvedValue(jsonApiResponse([bookmark]));
+    http.patch.mockResolvedValue(jsonApiResponse());
 
     const {getByLabelText, getByText} = render(
       <PaperProvider>
@@ -78,6 +84,6 @@ describe('UnreadScreen', () => {
       {headers: {'Content-Type': 'application/vnd.api+json'}},
     );
 
-    // TODO: test that Mark Read is hidden
+    await waitForElementToBeRemoved(() => getByText('Mark Read'));
   });
 });
