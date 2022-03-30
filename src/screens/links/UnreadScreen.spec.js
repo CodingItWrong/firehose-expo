@@ -88,4 +88,30 @@ describe('UnreadScreen', () => {
     // TODO: fix warning with Mark Read disappearing
     expect(queryByText(bookmark.attributes.title)).toBeNull();
   });
+
+  it('allows deleting a link', async () => {
+    const http = mockHttp();
+    http.get.mockResolvedValue(jsonApiResponse([bookmark]));
+    http.delete.mockResolvedValue(jsonApiResponse());
+
+    const {getByLabelText, getByText, queryByText} = render(
+      <PaperProvider>
+        <TokenProvider skipLoading>
+          <UnreadScreen />
+        </TokenProvider>
+      </PaperProvider>,
+    );
+
+    await waitFor(() => getByLabelText('Actions'));
+    fireEvent.press(getByLabelText('Actions'));
+
+    await waitFor(() => getByText('Delete'));
+    fireEvent.press(getByText('Delete'));
+
+    expect(http.delete).toHaveBeenCalledWith('bookmarks/1');
+
+    await waitForElementToBeRemoved(() => getByText('Delete'));
+    // TODO: fix warning with Menu disappearing
+    expect(queryByText(bookmark.attributes.title)).toBeNull();
+  });
 });

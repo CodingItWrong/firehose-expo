@@ -35,6 +35,16 @@ export default function UnreadScreen() {
     }
   };
 
+  const deleteBookmark = async bookmark => {
+    try {
+      await bookmarkClient.delete({id: bookmark.id});
+      setMenuShownId(null);
+      setBookmarks(bookmarks.filter(b => b.id !== bookmark.id));
+    } catch (e) {
+      console.error('delete failed', e);
+    }
+  };
+
   return (
     <ScreenBackground>
       <CenterColumn>
@@ -48,6 +58,7 @@ export default function UnreadScreen() {
               onShowMenu={() => showMenu(item)}
               onHideMenu={hideMenu}
               onMarkRead={() => markRead(item)}
+              onDelete={() => deleteBookmark(item)}
             />
           )}
         />
@@ -70,6 +81,7 @@ function UnreadBookmarkRow({
   onShowMenu,
   onHideMenu,
   onMarkRead,
+  onDelete,
 }) {
   return (
     <List.Item
@@ -87,6 +99,7 @@ function UnreadBookmarkRow({
           }
         >
           <Menu.Item onPress={onMarkRead} title="Mark Read" />
+          <Menu.Item onPress={onDelete} title="Delete" />
         </Menu>
       )}
     />
