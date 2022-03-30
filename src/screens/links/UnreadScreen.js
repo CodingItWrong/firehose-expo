@@ -8,7 +8,6 @@ import {useBookmarks} from '../../data/bookmarks';
 
 export default function UnreadScreen() {
   const bookmarkClient = useBookmarks();
-  const [menuShownId, setMenuShownId] = useState(null);
 
   const [bookmarks, setBookmarks] = useState([]);
   const removeBookmark = bookmarkToRemove =>
@@ -24,16 +23,12 @@ export default function UnreadScreen() {
 
   // TODO: test list icon a11y label
 
-  const isMenuShown = bookmark => menuShownId === bookmark.id;
-  const showMenu = bookmark => setMenuShownId(bookmark.id);
-  const hideMenu = () => setMenuShownId(null);
   const markRead = async bookmark => {
     try {
       await bookmarkClient.update({
         id: bookmark.id,
         attributes: {read: true},
       });
-      hideMenu();
       removeBookmark(bookmark);
     } catch (e) {
       console.error('mark read failed', e);
@@ -43,7 +38,6 @@ export default function UnreadScreen() {
   const deleteBookmark = async bookmark => {
     try {
       await bookmarkClient.delete({id: bookmark.id});
-      hideMenu();
       removeBookmark(bookmark);
     } catch (e) {
       console.error('delete failed', e);
@@ -53,22 +47,48 @@ export default function UnreadScreen() {
   return (
     <ScreenBackground>
       <CenterColumn>
-        <FlatList
-          data={bookmarks}
-          keyExtractor={item => item.id}
-          renderItem={({item}) => (
-            <UnreadBookmarkRow
-              bookmark={item}
-              isMenuShown={isMenuShown(item)}
-              onShowMenu={() => showMenu(item)}
-              onHideMenu={hideMenu}
-              onMarkRead={() => markRead(item)}
-              onDelete={() => deleteBookmark(item)}
-            />
-          )}
+        <UnreadBookmarkList
+          bookmarks={bookmarks}
+          onMarkRead={markRead}
+          onDelete={deleteBookmark}
         />
       </CenterColumn>
     </ScreenBackground>
+  );
+}
+
+function UnreadBookmarkList({bookmarks, onMarkRead, onDelete}) {
+  const [menuShownId, setMenuShownId] = useState(null);
+
+  const isMenuShown = bookmark => menuShownId === bookmark.id;
+  const showMenu = bookmark => setMenuShownId(bookmark.id);
+  const hideMenu = () => setMenuShownId(null);
+
+  async function handleMarkRead(item) {
+    await onMarkRead(item);
+    hideMenu();
+  }
+
+  async function handleDelete(item) {
+    await onDelete(item);
+    hideMenu();
+  }
+
+  return (
+    <FlatList
+      data={bookmarks}
+      keyExtractor={item => item.id}
+      renderItem={({item}) => (
+        <UnreadBookmarkRow
+          bookmark={item}
+          isMenuShown={isMenuShown(item)}
+          onShowMenu={() => showMenu(item)}
+          onHideMenu={hideMenu}
+          onMarkRead={() => handleMarkRead(item)}
+          onDelete={() => handleDelete(item)}
+        />
+      )}
+    />
   );
 }
 
