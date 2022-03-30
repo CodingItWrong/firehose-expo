@@ -31,12 +31,16 @@ export default function UnreadScreen() {
   const showMenu = item => setMenuShownId(item.id);
   const hideMenu = () => setMenuShownId(null);
   const markRead = async item => {
-    await bookmarkClient.update({
-      id: item.id,
-      attributes: {read: true},
-    });
-    // TODO: reload the links or something
-    setMenuShownId(null);
+    try {
+      await bookmarkClient.update({
+        id: item.id,
+        attributes: {read: true},
+      });
+      // TODO: reload the links or something
+      setMenuShownId(null);
+    } catch (e) {
+      console.error('mark read failed', e);
+    }
   };
 
   return (
