@@ -46,7 +46,8 @@
     "jest-expo": "^44.0.1"
   },
   "jest": {
-    "preset": "jest-expo"
+    "preset": "jest-expo",
+    "setupFiles": ["./jest-setup.js"]
   },
   "private": true
 }
