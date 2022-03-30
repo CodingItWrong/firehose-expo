@@ -33,7 +33,7 @@ export default function UnreadScreen() {
         id: bookmark.id,
         attributes: {read: true},
       });
-      setMenuShownId(null);
+      hideMenu();
       removeBookmark(bookmark);
     } catch (e) {
       console.error('mark read failed', e);
@@ -43,7 +43,7 @@ export default function UnreadScreen() {
   const deleteBookmark = async bookmark => {
     try {
       await bookmarkClient.delete({id: bookmark.id});
-      setMenuShownId(null);
+      hideMenu();
       removeBookmark(bookmark);
     } catch (e) {
       console.error('delete failed', e);
