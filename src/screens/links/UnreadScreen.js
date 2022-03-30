@@ -36,8 +36,8 @@ export default function UnreadScreen() {
         id: item.id,
         attributes: {read: true},
       });
-      // TODO: reload the links or something
       setMenuShownId(null);
+      setBookmarks(bookmarks.filter(bookmark => bookmark.id !== item.id));
     } catch (e) {
       console.error('mark read failed', e);
     }

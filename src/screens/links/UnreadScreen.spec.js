@@ -58,7 +58,7 @@ describe('UnreadScreen', () => {
     http.get.mockResolvedValue(jsonApiResponse([bookmark]));
     http.patch.mockResolvedValue(jsonApiResponse());
 
-    const {getByLabelText, getByText} = render(
+    const {getByLabelText, getByText, queryByText} = render(
       <PaperProvider>
         <TokenProvider skipLoading>
           <UnreadScreen />
@@ -85,5 +85,7 @@ describe('UnreadScreen', () => {
     );
 
     await waitForElementToBeRemoved(() => getByText('Mark Read'));
+    // TODO: fix warning with Mark Read disappearing
+    expect(queryByText(bookmark.attributes.title)).toBeNull();
   });
 });
