@@ -6,14 +6,6 @@ import CenterColumn from '../../components/CenterColumn';
 import ScreenBackground from '../../components/ScreenBackground';
 import {useBookmarks} from '../../data/bookmarks';
 
-function openBookmark(url) {
-  if (Platform.OS === 'web') {
-    window.open(url, '_blank');
-  } else {
-    Linking.openURL(url);
-  }
-}
-
 export default function UnreadScreen() {
   const bookmarkClient = useBookmarks();
   const [bookmarks, setBookmarks] = useState([]);
@@ -50,30 +42,53 @@ export default function UnreadScreen() {
           data={bookmarks}
           keyExtractor={item => item.id}
           renderItem={({item}) => (
-            <List.Item
-              title={item.attributes.title}
-              description={item.attributes.url}
-              onPress={() => openBookmark(item.attributes.url)}
-              right={props => (
-                <Menu
-                  visible={isMenuShown(item)}
-                  onDismiss={hideMenu}
-                  anchor={
-                    <Pressable
-                      onPress={() => showMenu(item)}
-                      accessibilityLabel="Actions"
-                    >
-                      <List.Icon {...props} icon="dots-vertical" />
-                    </Pressable>
-                  }
-                >
-                  <Menu.Item onPress={() => markRead(item)} title="Mark Read" />
-                </Menu>
-              )}
+            <UnreadBookmarkRow
+              bookmark={item}
+              isMenuShown={isMenuShown(item)}
+              onShowMenu={() => showMenu(item)}
+              onHideMenu={hideMenu}
+              onMarkRead={() => markRead(item)}
             />
           )}
         />
       </CenterColumn>
     </ScreenBackground>
+  );
+}
+
+function openBookmark(url) {
+  if (Platform.OS === 'web') {
+    window.open(url, '_blank');
+  } else {
+    Linking.openURL(url);
+  }
+}
+
+function UnreadBookmarkRow({
+  bookmark,
+  isMenuShown,
+  onShowMenu,
+  onHideMenu,
+  onMarkRead,
+}) {
+  return (
+    <List.Item
+      title={bookmark.attributes.title}
+      description={bookmark.attributes.url}
+      onPress={() => openBookmark(bookmark.attributes.url)}
+      right={props => (
+        <Menu
+          visible={isMenuShown}
+          onDismiss={onHideMenu}
+          anchor={
+            <Pressable onPress={onShowMenu} accessibilityLabel="Actions">
+              <List.Icon {...props} icon="dots-vertical" />
+            </Pressable>
+          }
+        >
+          <Menu.Item onPress={onMarkRead} title="Mark Read" />
+        </Menu>
+      )}
+    />
   );
 }
