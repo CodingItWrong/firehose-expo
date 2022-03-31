@@ -109,7 +109,9 @@ function UnreadBookmarkRow({
   return (
     <List.Item
       title={bookmark.attributes.title}
+      titleNumberOfLines={3}
       description={bookmark.attributes.url}
+      descriptionNumberOfLines={1}
       onPress={() => openBookmark(bookmark.attributes.url)}
       right={props => (
         <Menu
