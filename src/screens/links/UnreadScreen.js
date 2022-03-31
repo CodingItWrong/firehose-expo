@@ -41,10 +41,11 @@ export default function UnreadScreen() {
 
   const deleteBookmark = async bookmark => {
     try {
+      clearErrorMessage();
       await bookmarkClient.delete({id: bookmark.id});
       removeBookmark(bookmark);
     } catch (e) {
-      console.error('delete failed', e);
+      setErrorMessage('An error occurred while deleting link.');
     }
   };
 

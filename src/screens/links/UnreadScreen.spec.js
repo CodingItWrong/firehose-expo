@@ -175,4 +175,35 @@ describe('UnreadScreen', () => {
     // TODO: fix warning with Menu disappearing
     expect(queryByText(bookmark.attributes.title)).toBeNull();
   });
+
+  it('shows an error message when deleting a link fails', async () => {
+    const http = mockHttp();
+    http.get.mockResolvedValue(jsonApiResponse([bookmark]));
+    http.delete.mockRejectedValue();
+
+    const {getByLabelText, getByText, queryByText} = render(
+      <PaperProvider>
+        <TokenProvider skipLoading>
+          <UnreadScreen />
+        </TokenProvider>
+      </PaperProvider>,
+    );
+
+    await waitFor(() => getByLabelText('Actions'));
+    fireEvent.press(getByLabelText('Actions'));
+    await waitFor(() => getByText('Delete'));
+    fireEvent.press(getByText('Delete'));
+
+    await waitFor(() => getByText('An error occurred while deleting link.'));
+
+    // clear error
+    http.delete.mockResolvedValue(jsonApiResponse());
+
+    fireEvent.press(getByLabelText('Actions'));
+    await waitFor(() => getByText('Delete'));
+    fireEvent.press(getByText('Delete'));
+
+    expect(queryByText('An error occurred while deleting link.')).toBeNull();
+    await waitForElementToBeRemoved(() => getByText(bookmark.attributes.title));
+  });
 });
