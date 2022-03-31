@@ -22,188 +22,200 @@ describe('UnreadScreen', () => {
     },
   };
 
-  it('renders links from the backend', async () => {
-    const http = mockHttp();
-    http.get.mockResolvedValue(jsonApiResponse([bookmark]));
+  describe('displaying links', () => {
+    it('renders links from the backend', async () => {
+      const http = mockHttp();
+      http.get.mockResolvedValue(jsonApiResponse([bookmark]));
 
-    const {getByText} = render(
-      <TokenProvider skipLoading>
-        <UnreadScreen />
-      </TokenProvider>,
-    );
-
-    expect(http.get).toHaveBeenCalledWith('bookmarks?filter[read]=false&');
-    await waitFor(() => getByText(bookmark.attributes.title));
-  });
-
-  it('shows an error message when loading links fails', async () => {
-    const http = mockHttp();
-    http.get.mockRejectedValue();
-
-    const {getByText} = render(
-      <TokenProvider skipLoading>
-        <UnreadScreen />
-      </TokenProvider>,
-    );
-
-    await waitFor(() => getByText('An error occurred while loading links.'));
-  });
-
-  it('shows a message when there are no links to display', async () => {
-    const http = mockHttp();
-    http.get.mockResolvedValue(jsonApiResponse([]));
-
-    const {getByText} = render(
-      <TokenProvider skipLoading>
-        <UnreadScreen />
-      </TokenProvider>,
-    );
-
-    await waitFor(() => getByText('No unread links.'));
-  });
-
-  it('opens a link in the browser when clicked', async () => {
-    const http = mockHttp();
-    http.get.mockResolvedValue(jsonApiResponse([bookmark]));
-
-    const {getByText} = render(
-      <TokenProvider skipLoading>
-        <UnreadScreen />
-      </TokenProvider>,
-    );
-
-    await waitFor(() => getByText(bookmark.attributes.title));
-
-    fireEvent.press(getByText(bookmark.attributes.title));
-
-    expect(Linking.openURL).toHaveBeenCalledWith(bookmark.attributes.url);
-  });
-
-  it('allows marking a link as read', async () => {
-    const http = mockHttp();
-    http.get.mockResolvedValue(jsonApiResponse([bookmark]));
-    http.patch.mockResolvedValue(jsonApiResponse());
-
-    const {getByLabelText, getByText, queryByText} = render(
-      <PaperProvider>
+      const {getByText} = render(
         <TokenProvider skipLoading>
           <UnreadScreen />
-        </TokenProvider>
-      </PaperProvider>,
-    );
+        </TokenProvider>,
+      );
 
-    await waitFor(() => getByLabelText('Actions'));
-    fireEvent.press(getByLabelText('Actions'));
+      expect(http.get).toHaveBeenCalledWith('bookmarks?filter[read]=false&');
+      await waitFor(() => getByText(bookmark.attributes.title));
+    });
 
-    await waitFor(() => getByText('Mark Read'));
-    fireEvent.press(getByText('Mark Read'));
+    it('shows an error message when loading links fails', async () => {
+      const http = mockHttp();
+      http.get.mockRejectedValue();
 
-    expect(http.patch).toHaveBeenCalledWith(
-      'bookmarks/1?',
-      {
-        data: {
-          type: 'bookmarks',
-          id: '1',
-          attributes: {read: true},
+      const {getByText} = render(
+        <TokenProvider skipLoading>
+          <UnreadScreen />
+        </TokenProvider>,
+      );
+
+      await waitFor(() => getByText('An error occurred while loading links.'));
+    });
+
+    it('shows a message when there are no links to display', async () => {
+      const http = mockHttp();
+      http.get.mockResolvedValue(jsonApiResponse([]));
+
+      const {getByText} = render(
+        <TokenProvider skipLoading>
+          <UnreadScreen />
+        </TokenProvider>,
+      );
+
+      await waitFor(() => getByText('No unread links.'));
+    });
+  });
+
+  describe('link clicking', () => {
+    it('opens a link in the browser when clicked', async () => {
+      const http = mockHttp();
+      http.get.mockResolvedValue(jsonApiResponse([bookmark]));
+
+      const {getByText} = render(
+        <TokenProvider skipLoading>
+          <UnreadScreen />
+        </TokenProvider>,
+      );
+
+      await waitFor(() => getByText(bookmark.attributes.title));
+
+      fireEvent.press(getByText(bookmark.attributes.title));
+
+      expect(Linking.openURL).toHaveBeenCalledWith(bookmark.attributes.url);
+    });
+  });
+
+  describe('mark read', () => {
+    it('allows marking a link as read', async () => {
+      const http = mockHttp();
+      http.get.mockResolvedValue(jsonApiResponse([bookmark]));
+      http.patch.mockResolvedValue(jsonApiResponse());
+
+      const {getByLabelText, getByText, queryByText} = render(
+        <PaperProvider>
+          <TokenProvider skipLoading>
+            <UnreadScreen />
+          </TokenProvider>
+        </PaperProvider>,
+      );
+
+      await waitFor(() => getByLabelText('Actions'));
+      fireEvent.press(getByLabelText('Actions'));
+
+      await waitFor(() => getByText('Mark Read'));
+      fireEvent.press(getByText('Mark Read'));
+
+      expect(http.patch).toHaveBeenCalledWith(
+        'bookmarks/1?',
+        {
+          data: {
+            type: 'bookmarks',
+            id: '1',
+            attributes: {read: true},
+          },
         },
-      },
-      {headers: {'Content-Type': 'application/vnd.api+json'}},
-    );
+        {headers: {'Content-Type': 'application/vnd.api+json'}},
+      );
 
-    await waitForElementToBeRemoved(() => getByText('Mark Read'));
-    // TODO: fix warning with Mark Read disappearing
-    expect(queryByText(bookmark.attributes.title)).toBeNull();
+      await waitForElementToBeRemoved(() => getByText('Mark Read'));
+      // TODO: fix warning with Mark Read disappearing
+      expect(queryByText(bookmark.attributes.title)).toBeNull();
+    });
+
+    it('shows an error message when marking a link read fails', async () => {
+      const http = mockHttp();
+      http.get.mockResolvedValue(jsonApiResponse([bookmark]));
+      http.patch.mockRejectedValue();
+
+      const {getByLabelText, getByText, queryByText} = render(
+        <PaperProvider>
+          <TokenProvider skipLoading>
+            <UnreadScreen />
+          </TokenProvider>
+        </PaperProvider>,
+      );
+
+      await waitFor(() => getByLabelText('Actions'));
+      fireEvent.press(getByLabelText('Actions'));
+      await waitFor(() => getByText('Mark Read'));
+      fireEvent.press(getByText('Mark Read'));
+
+      await waitFor(() =>
+        getByText('An error occurred while marking link read.'),
+      );
+
+      // clear error
+      http.patch.mockResolvedValue(jsonApiResponse());
+
+      fireEvent.press(getByLabelText('Actions'));
+      await waitFor(() => getByText('Mark Read'));
+      fireEvent.press(getByText('Mark Read'));
+
+      expect(
+        queryByText('An error occurred while marking link read.'),
+      ).toBeNull();
+      await waitForElementToBeRemoved(() =>
+        getByText(bookmark.attributes.title),
+      );
+    });
   });
 
-  it('shows an error message when marking a link read fails', async () => {
-    const http = mockHttp();
-    http.get.mockResolvedValue(jsonApiResponse([bookmark]));
-    http.patch.mockRejectedValue();
+  describe('delete', () => {
+    it('allows deleting a link', async () => {
+      const http = mockHttp();
+      http.get.mockResolvedValue(jsonApiResponse([bookmark]));
+      http.delete.mockResolvedValue(jsonApiResponse());
 
-    const {getByLabelText, getByText, queryByText} = render(
-      <PaperProvider>
-        <TokenProvider skipLoading>
-          <UnreadScreen />
-        </TokenProvider>
-      </PaperProvider>,
-    );
+      const {getByLabelText, getByText, queryByText} = render(
+        <PaperProvider>
+          <TokenProvider skipLoading>
+            <UnreadScreen />
+          </TokenProvider>
+        </PaperProvider>,
+      );
 
-    await waitFor(() => getByLabelText('Actions'));
-    fireEvent.press(getByLabelText('Actions'));
-    await waitFor(() => getByText('Mark Read'));
-    fireEvent.press(getByText('Mark Read'));
+      await waitFor(() => getByLabelText('Actions'));
+      fireEvent.press(getByLabelText('Actions'));
 
-    await waitFor(() =>
-      getByText('An error occurred while marking link read.'),
-    );
+      await waitFor(() => getByText('Delete'));
+      fireEvent.press(getByText('Delete'));
 
-    // clear error
-    http.patch.mockResolvedValue(jsonApiResponse());
+      expect(http.delete).toHaveBeenCalledWith('bookmarks/1');
 
-    fireEvent.press(getByLabelText('Actions'));
-    await waitFor(() => getByText('Mark Read'));
-    fireEvent.press(getByText('Mark Read'));
+      await waitForElementToBeRemoved(() => getByText('Delete'));
+      // TODO: fix warning with Menu disappearing
+      expect(queryByText(bookmark.attributes.title)).toBeNull();
+    });
 
-    expect(
-      queryByText('An error occurred while marking link read.'),
-    ).toBeNull();
-    await waitForElementToBeRemoved(() => getByText(bookmark.attributes.title));
-  });
+    it('shows an error message when deleting a link fails', async () => {
+      const http = mockHttp();
+      http.get.mockResolvedValue(jsonApiResponse([bookmark]));
+      http.delete.mockRejectedValue();
 
-  it('allows deleting a link', async () => {
-    const http = mockHttp();
-    http.get.mockResolvedValue(jsonApiResponse([bookmark]));
-    http.delete.mockResolvedValue(jsonApiResponse());
+      const {getByLabelText, getByText, queryByText} = render(
+        <PaperProvider>
+          <TokenProvider skipLoading>
+            <UnreadScreen />
+          </TokenProvider>
+        </PaperProvider>,
+      );
 
-    const {getByLabelText, getByText, queryByText} = render(
-      <PaperProvider>
-        <TokenProvider skipLoading>
-          <UnreadScreen />
-        </TokenProvider>
-      </PaperProvider>,
-    );
+      await waitFor(() => getByLabelText('Actions'));
+      fireEvent.press(getByLabelText('Actions'));
+      await waitFor(() => getByText('Delete'));
+      fireEvent.press(getByText('Delete'));
 
-    await waitFor(() => getByLabelText('Actions'));
-    fireEvent.press(getByLabelText('Actions'));
+      await waitFor(() => getByText('An error occurred while deleting link.'));
 
-    await waitFor(() => getByText('Delete'));
-    fireEvent.press(getByText('Delete'));
+      // clear error
+      http.delete.mockResolvedValue(jsonApiResponse());
 
-    expect(http.delete).toHaveBeenCalledWith('bookmarks/1');
+      fireEvent.press(getByLabelText('Actions'));
+      await waitFor(() => getByText('Delete'));
+      fireEvent.press(getByText('Delete'));
 
-    await waitForElementToBeRemoved(() => getByText('Delete'));
-    // TODO: fix warning with Menu disappearing
-    expect(queryByText(bookmark.attributes.title)).toBeNull();
-  });
-
-  it('shows an error message when deleting a link fails', async () => {
-    const http = mockHttp();
-    http.get.mockResolvedValue(jsonApiResponse([bookmark]));
-    http.delete.mockRejectedValue();
-
-    const {getByLabelText, getByText, queryByText} = render(
-      <PaperProvider>
-        <TokenProvider skipLoading>
-          <UnreadScreen />
-        </TokenProvider>
-      </PaperProvider>,
-    );
-
-    await waitFor(() => getByLabelText('Actions'));
-    fireEvent.press(getByLabelText('Actions'));
-    await waitFor(() => getByText('Delete'));
-    fireEvent.press(getByText('Delete'));
-
-    await waitFor(() => getByText('An error occurred while deleting link.'));
-
-    // clear error
-    http.delete.mockResolvedValue(jsonApiResponse());
-
-    fireEvent.press(getByLabelText('Actions'));
-    await waitFor(() => getByText('Delete'));
-    fireEvent.press(getByText('Delete'));
-
-    expect(queryByText('An error occurred while deleting link.')).toBeNull();
-    await waitForElementToBeRemoved(() => getByText(bookmark.attributes.title));
+      expect(queryByText('An error occurred while deleting link.')).toBeNull();
+      await waitForElementToBeRemoved(() =>
+        getByText(bookmark.attributes.title),
+      );
+    });
   });
 });
