@@ -4,6 +4,7 @@ import {FlatList, Platform, Pressable} from 'react-native';
 import {List, Menu} from 'react-native-paper';
 import CenterColumn from '../../components/CenterColumn';
 import ErrorMessage from '../../components/ErrorMessage';
+import NoRecordsMessage from '../../components/NoRecordsMessage';
 import ScreenBackground from '../../components/ScreenBackground';
 import {useBookmarks} from '../../data/bookmarks';
 
@@ -79,6 +80,8 @@ function UnreadBookmarkList({bookmarks, errorMessage, onMarkRead, onDelete}) {
   function listHeader() {
     if (errorMessage) {
       return <ErrorMessage>{errorMessage}</ErrorMessage>;
+    } else if (bookmarks.length === 0) {
+      return <NoRecordsMessage>No unread links.</NoRecordsMessage>;
     } else {
       return null;
     }
