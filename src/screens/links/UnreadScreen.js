@@ -1,7 +1,7 @@
 import * as Linking from 'expo-linking';
 import {useEffect, useState} from 'react';
 import {FlatList, Platform, Pressable} from 'react-native';
-import {List, Menu} from 'react-native-paper';
+import {List, Menu, TextInput} from 'react-native-paper';
 import CenterColumn from '../../components/CenterColumn';
 import ErrorMessage from '../../components/ErrorMessage';
 import NoRecordsMessage from '../../components/NoRecordsMessage';
@@ -18,6 +18,7 @@ export default function UnreadScreen() {
     setBookmarks(
       bookmarks.filter(bookmark => bookmark.id !== bookmarkToRemove.id),
     );
+  const [isCreating, setIsCreating] = useState(false);
 
   useEffect(() => {
     bookmarkClient
@@ -25,6 +26,20 @@ export default function UnreadScreen() {
       .then(bookmarkResponse => setBookmarks(bookmarkResponse.data))
       .catch(e => setErrorMessage('An error occurred while loading links.'));
   }, [bookmarkClient]);
+
+  const addBookmark = async url => {
+    try {
+      clearErrorMessage();
+      setIsCreating(true);
+      const response = await bookmarkClient.create({attributes: {url}});
+      const newBookmark = response.data;
+      setBookmarks([newBookmark, ...bookmarks]);
+      setIsCreating(false);
+    } catch (e) {
+      setErrorMessage('An error occurred while adding URL.');
+      throw e;
+    }
+  };
 
   const markRead = async bookmark => {
     try {
@@ -52,6 +67,7 @@ export default function UnreadScreen() {
   return (
     <ScreenBackground>
       <CenterColumn>
+        <NewBookmarkForm isCreating={isCreating} onCreate={addBookmark} />
         <UnreadBookmarkList
           bookmarks={bookmarks}
           errorMessage={errorMessage}
@@ -60,6 +76,42 @@ export default function UnreadScreen() {
         />
       </CenterColumn>
     </ScreenBackground>
+  );
+}
+
+function NewBookmarkForm({isCreating, onCreate}) {
+  const [url, setUrl] = useState('');
+
+  async function handleCreate() {
+    if (url !== '') {
+      try {
+        await onCreate(url);
+        setUrl('');
+      } catch {
+        // no-op
+      }
+    }
+  }
+
+  return (
+    <TextInput
+      label="URL to Add"
+      accessibilityLabel="URL to Add"
+      value={url}
+      onChangeText={setUrl}
+      onSubmitEditing={handleCreate}
+      autoCapitalize="none"
+      autoCorrect={false}
+      keyboardType={Platform.OS === 'android' ? 'default' : 'url'}
+      right={
+        isCreating && (
+          <TextInput.Icon
+            icon="clock-outline"
+            accessibilityLabel="Adding URL"
+          />
+        )
+      }
+    />
   );
 }
 
