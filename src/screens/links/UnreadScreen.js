@@ -3,12 +3,16 @@ import {useEffect, useState} from 'react';
 import {FlatList, Platform, Pressable} from 'react-native';
 import {List, Menu} from 'react-native-paper';
 import CenterColumn from '../../components/CenterColumn';
+import ErrorMessage from '../../components/ErrorMessage';
+import NoRecordsMessage from '../../components/NoRecordsMessage';
 import ScreenBackground from '../../components/ScreenBackground';
 import {useBookmarks} from '../../data/bookmarks';
 
 export default function UnreadScreen() {
   const bookmarkClient = useBookmarks();
 
+  const [errorMessage, setErrorMessage] = useState(null);
+  const clearErrorMessage = () => setErrorMessage(null);
   const [bookmarks, setBookmarks] = useState([]);
   const removeBookmark = bookmarkToRemove =>
     setBookmarks(
@@ -18,27 +22,30 @@ export default function UnreadScreen() {
   useEffect(() => {
     bookmarkClient
       .where({filter: {read: false}})
-      .then(bookmarkResponse => setBookmarks(bookmarkResponse.data));
+      .then(bookmarkResponse => setBookmarks(bookmarkResponse.data))
+      .catch(e => setErrorMessage('An error occurred while loading links.'));
   }, [bookmarkClient]);
 
   const markRead = async bookmark => {
     try {
+      clearErrorMessage();
       await bookmarkClient.update({
         id: bookmark.id,
         attributes: {read: true},
       });
       removeBookmark(bookmark);
-    } catch (e) {
-      console.error('mark read failed', e);
+    } catch {
+      setErrorMessage('An error occurred while marking link read.');
     }
   };
 
   const deleteBookmark = async bookmark => {
     try {
+      clearErrorMessage();
       await bookmarkClient.delete({id: bookmark.id});
       removeBookmark(bookmark);
     } catch (e) {
-      console.error('delete failed', e);
+      setErrorMessage('An error occurred while deleting link.');
     }
   };
 
@@ -47,6 +54,7 @@ export default function UnreadScreen() {
       <CenterColumn>
         <UnreadBookmarkList
           bookmarks={bookmarks}
+          errorMessage={errorMessage}
           onMarkRead={markRead}
           onDelete={deleteBookmark}
         />
@@ -55,7 +63,7 @@ export default function UnreadScreen() {
   );
 }
 
-function UnreadBookmarkList({bookmarks, onMarkRead, onDelete}) {
+function UnreadBookmarkList({bookmarks, errorMessage, onMarkRead, onDelete}) {
   const [menuShownId, setMenuShownId] = useState(null);
 
   const isMenuShown = bookmark => menuShownId === bookmark.id;
@@ -72,8 +80,19 @@ function UnreadBookmarkList({bookmarks, onMarkRead, onDelete}) {
     hideMenu();
   }
 
+  function listHeader() {
+    if (errorMessage) {
+      return <ErrorMessage>{errorMessage}</ErrorMessage>;
+    } else if (bookmarks.length === 0) {
+      return <NoRecordsMessage>No unread links.</NoRecordsMessage>;
+    } else {
+      return null;
+    }
+  }
+
   return (
     <FlatList
+      ListHeaderComponent={listHeader()}
       data={bookmarks}
       keyExtractor={item => item.id}
       renderItem={({item}) => (
