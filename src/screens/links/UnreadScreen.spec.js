@@ -121,7 +121,7 @@ describe('UnreadScreen', () => {
       );
 
       await waitFor(() => getByText(newBookmark.attributes.title));
-      // TODO: test new field cleared
+      expect(newField).toHaveProp('value', '');
     });
   });
 

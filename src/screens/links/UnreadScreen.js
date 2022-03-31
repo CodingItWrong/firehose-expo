@@ -79,6 +79,7 @@ function NewBookmarkForm({onCreate}) {
 
   async function handleCreate() {
     await onCreate(url);
+    setUrl('');
   }
 
   return (
