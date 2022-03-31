@@ -92,7 +92,7 @@ describe('UnreadScreen', () => {
       },
     };
 
-    it.only('allows adding a link to the list', async () => {
+    it('allows adding a link to the list', async () => {
       const http = mockHttp();
       http.get.mockResolvedValue(jsonApiResponse([bookmark]));
       http.post.mockResolvedValue(jsonApiResponse(newBookmark));
@@ -122,6 +122,26 @@ describe('UnreadScreen', () => {
 
       await waitFor(() => getByText(newBookmark.attributes.title));
       expect(newField).toHaveProp('value', '');
+    });
+
+    it('does not send a request to the server if the url is blank', async () => {
+      const http = mockHttp();
+      http.get.mockResolvedValue(jsonApiResponse([bookmark]));
+
+      const {getByLabelText, getByText} = render(
+        <PaperProvider>
+          <TokenProvider skipLoading>
+            <UnreadScreen />
+          </TokenProvider>
+        </PaperProvider>,
+      );
+
+      await waitFor(() => getByText(bookmark.attributes.title));
+
+      const newField = getByLabelText('URL to Add');
+      fireEvent(newField, 'submitEditing');
+
+      expect(http.post).not.toHaveBeenCalled();
     });
   });
 
