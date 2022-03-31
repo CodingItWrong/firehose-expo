@@ -21,8 +21,6 @@ export default function UnreadScreen() {
       .then(bookmarkResponse => setBookmarks(bookmarkResponse.data));
   }, [bookmarkClient]);
 
-  // TODO: test list icon a11y label
-
   const markRead = async bookmark => {
     try {
       await bookmarkClient.update({
@@ -111,7 +109,9 @@ function UnreadBookmarkRow({
   return (
     <List.Item
       title={bookmark.attributes.title}
+      titleNumberOfLines={3}
       description={bookmark.attributes.url}
+      descriptionNumberOfLines={1}
       onPress={() => openBookmark(bookmark.attributes.url)}
       right={props => (
         <Menu
