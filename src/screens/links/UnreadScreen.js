@@ -1,7 +1,7 @@
 import * as Linking from 'expo-linking';
 import {useEffect, useState} from 'react';
 import {FlatList, Platform, Pressable} from 'react-native';
-import {List, Menu} from 'react-native-paper';
+import {List, Menu, TextInput} from 'react-native-paper';
 import CenterColumn from '../../components/CenterColumn';
 import ErrorMessage from '../../components/ErrorMessage';
 import NoRecordsMessage from '../../components/NoRecordsMessage';
@@ -25,6 +25,16 @@ export default function UnreadScreen() {
       .then(bookmarkResponse => setBookmarks(bookmarkResponse.data))
       .catch(e => setErrorMessage('An error occurred while loading links.'));
   }, [bookmarkClient]);
+
+  const addBookmark = async url => {
+    try {
+      const response = await bookmarkClient.create({attributes: {url}});
+      const newBookmark = response.data;
+      setBookmarks([newBookmark, ...bookmarks]);
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   const markRead = async bookmark => {
     try {
@@ -52,6 +62,7 @@ export default function UnreadScreen() {
   return (
     <ScreenBackground>
       <CenterColumn>
+        <NewBookmarkForm onCreate={addBookmark} />
         <UnreadBookmarkList
           bookmarks={bookmarks}
           errorMessage={errorMessage}
@@ -60,6 +71,27 @@ export default function UnreadScreen() {
         />
       </CenterColumn>
     </ScreenBackground>
+  );
+}
+
+function NewBookmarkForm({onCreate}) {
+  const [url, setUrl] = useState('');
+
+  async function handleCreate() {
+    await onCreate(url);
+  }
+
+  return (
+    <TextInput
+      label="URL to Add"
+      accessibilityLabel="URL to Add"
+      value={url}
+      onChangeText={setUrl}
+      onSubmitEditing={handleCreate}
+      autoCapitalize="none"
+      autoCorrect={false}
+      keyboardType={Platform.OS === 'android' ? 'default' : 'url'}
+    />
   );
 }
 

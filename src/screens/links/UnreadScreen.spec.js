@@ -83,6 +83,48 @@ describe('UnreadScreen', () => {
     });
   });
 
+  describe('adding a link', () => {
+    const newBookmark = {
+      id: '2',
+      attributes: {
+        title: 'New Bookmark',
+        url: 'https://reactnative.dev',
+      },
+    };
+
+    it.only('allows adding a link to the list', async () => {
+      const http = mockHttp();
+      http.get.mockResolvedValue(jsonApiResponse([bookmark]));
+      http.post.mockResolvedValue(jsonApiResponse(newBookmark));
+
+      const {getByLabelText, getByText} = render(
+        <PaperProvider>
+          <TokenProvider skipLoading>
+            <UnreadScreen />
+          </TokenProvider>
+        </PaperProvider>,
+      );
+
+      const newField = getByLabelText('URL to Add');
+      fireEvent.changeText(newField, newBookmark.attributes.url);
+      fireEvent(newField, 'submitEditing');
+
+      expect(http.post).toHaveBeenCalledWith(
+        'bookmarks?',
+        {
+          data: {
+            type: 'bookmarks',
+            attributes: {url: newBookmark.attributes.url},
+          },
+        },
+        {headers: {'Content-Type': 'application/vnd.api+json'}},
+      );
+
+      await waitFor(() => getByText(newBookmark.attributes.title));
+      // TODO: test new field cleared
+    });
+  });
+
   describe('mark read', () => {
     it('allows marking a link as read', async () => {
       const http = mockHttp();
