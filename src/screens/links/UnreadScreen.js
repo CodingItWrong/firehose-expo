@@ -1,9 +1,10 @@
 import * as Linking from 'expo-linking';
-import {useCallback, useEffect, useState} from 'react';
-import {FlatList, Platform, Pressable} from 'react-native';
-import {List, Menu, TextInput} from 'react-native-paper';
+import {useCallback, useEffect, useRef, useState} from 'react';
+import {FlatList, Platform, Pressable, StyleSheet} from 'react-native';
+import {Button, List, Menu, TextInput} from 'react-native-paper';
 import CenterColumn from '../../components/CenterColumn';
 import ErrorMessage from '../../components/ErrorMessage';
+import LoadingIndicator from '../../components/LoadingIndicator';
 import NoRecordsMessage from '../../components/NoRecordsMessage';
 import ScreenBackground from '../../components/ScreenBackground';
 import {useBookmarks} from '../../data/bookmarks';
@@ -19,18 +20,25 @@ export default function UnreadScreen() {
       bookmarks.filter(bookmark => bookmark.id !== bookmarkToRemove.id),
     );
   const [isCreating, setIsCreating] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [showLoadingIndicator, setShowLoadingIndicator] = useState(true);
+  const listRef = useRef(null);
 
   const loadFromServer = useCallback(async () => {
     try {
       const response = await bookmarkClient.where({filter: {read: false}});
-      setBookmarks(response.data);
+      const loadedBookmarks = response.data;
+      setBookmarks(loadedBookmarks);
+      return loadedBookmarks;
     } catch (e) {
       setErrorMessage('An error occurred while loading links.');
     }
   }, [bookmarkClient]);
 
   useEffect(() => {
-    loadFromServer();
+    loadFromServer().then(() => {
+      setShowLoadingIndicator(false);
+    });
   }, [loadFromServer]);
 
   const addBookmark = async url => {
@@ -70,13 +78,42 @@ export default function UnreadScreen() {
     }
   };
 
+  async function reloadFromPull() {
+    setIsRefreshing(true);
+    await loadFromServer();
+    setIsRefreshing(false);
+    // setTimeout(() => setIsRefreshing(false), 5000);
+  }
+
+  async function reloadFromButton() {
+    setShowLoadingIndicator(true);
+    const reloadedBookmarks = await loadFromServer();
+    setShowLoadingIndicator(false);
+    if (reloadedBookmarks.length > 0) {
+      listRef.current.scrollToIndex({index: 0});
+    }
+  }
+
   return (
     <ScreenBackground>
       <CenterColumn>
         <NewBookmarkForm isCreating={isCreating} onCreate={addBookmark} />
+        {Platform.OS === 'web' && (
+          <Button
+            mode="outlined"
+            style={styles.reloadButton}
+            onPress={reloadFromButton}
+          >
+            Reload
+          </Button>
+        )}
+        {showLoadingIndicator && <LoadingIndicator />}
         <UnreadBookmarkList
+          listRef={listRef}
           bookmarks={bookmarks}
           errorMessage={errorMessage}
+          refreshing={isRefreshing}
+          onRefresh={reloadFromPull}
           onMarkRead={markRead}
           onDelete={deleteBookmark}
         />
@@ -121,7 +158,15 @@ function NewBookmarkForm({isCreating, onCreate}) {
   );
 }
 
-function UnreadBookmarkList({bookmarks, errorMessage, onMarkRead, onDelete}) {
+function UnreadBookmarkList({
+  listRef,
+  bookmarks,
+  errorMessage,
+  refreshing,
+  onRefresh,
+  onMarkRead,
+  onDelete,
+}) {
   const [menuShownId, setMenuShownId] = useState(null);
 
   const isMenuShown = bookmark => menuShownId === bookmark.id;
@@ -150,9 +195,12 @@ function UnreadBookmarkList({bookmarks, errorMessage, onMarkRead, onDelete}) {
 
   return (
     <FlatList
+      ref={listRef}
       ListHeaderComponent={listHeader()}
       data={bookmarks}
       keyExtractor={item => item.id}
+      onRefresh={onRefresh}
+      refreshing={refreshing}
       renderItem={({item}) => (
         <UnreadBookmarkRow
           bookmark={item}
@@ -207,3 +255,9 @@ function UnreadBookmarkRow({
     />
   );
 }
+
+const styles = StyleSheet.create({
+  reloadButton: {
+    margin: 15,
+  },
+});
