@@ -20,14 +20,14 @@ export default function UnreadScreen() {
     );
   const [isCreating, setIsCreating] = useState(false);
 
-  const loadFromServer = useCallback(
-    () =>
-      bookmarkClient
-        .where({filter: {read: false}})
-        .then(bookmarkResponse => setBookmarks(bookmarkResponse.data))
-        .catch(e => setErrorMessage('An error occurred while loading links.')),
-    [bookmarkClient],
-  );
+  const loadFromServer = useCallback(async () => {
+    try {
+      const response = await bookmarkClient.where({filter: {read: false}});
+      setBookmarks(response.data);
+    } catch (e) {
+      setErrorMessage('An error occurred while loading links.');
+    }
+  }, [bookmarkClient]);
 
   useEffect(() => {
     loadFromServer();
