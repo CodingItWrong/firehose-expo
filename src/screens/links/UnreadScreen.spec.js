@@ -145,6 +145,36 @@ describe('UnreadScreen', () => {
 
       expect(http.post).not.toHaveBeenCalled();
     });
+
+    it('shows an error message when adding link fails', async () => {
+      const http = mockHttp();
+      http.get.mockResolvedValue(jsonApiResponse([bookmark]));
+      http.post.mockRejectedValue();
+
+      const {getByLabelText, getByText, queryByText} = render(
+        <PaperProvider>
+          <TokenProvider skipLoading>
+            <UnreadScreen />
+          </TokenProvider>
+        </PaperProvider>,
+      );
+
+      const newField = getByLabelText('URL to Add');
+      fireEvent.changeText(newField, newBookmark.attributes.url);
+      fireEvent(newField, 'submitEditing');
+
+      await waitFor(() => getByText('An error occurred while adding URL.'));
+      expect(newField).toHaveProp('value', newBookmark.attributes.url);
+
+      // clear error
+      http.post.mockResolvedValue(jsonApiResponse(newBookmark));
+
+      fireEvent(newField, 'submitEditing');
+
+      expect(queryByText('An error occurred while adding URL.')).toBeNull();
+
+      await waitFor(() => getByText(newBookmark.attributes.title));
+    });
   });
 
   describe('mark read', () => {

@@ -29,13 +29,15 @@ export default function UnreadScreen() {
 
   const addBookmark = async url => {
     try {
+      clearErrorMessage();
       setIsCreating(true);
       const response = await bookmarkClient.create({attributes: {url}});
       const newBookmark = response.data;
       setBookmarks([newBookmark, ...bookmarks]);
       setIsCreating(false);
     } catch (e) {
-      console.error(e);
+      setErrorMessage('An error occurred while adding URL.');
+      throw e;
     }
   };
 
@@ -82,8 +84,12 @@ function NewBookmarkForm({isCreating, onCreate}) {
 
   async function handleCreate() {
     if (url !== '') {
-      await onCreate(url);
-      setUrl('');
+      try {
+        await onCreate(url);
+        setUrl('');
+      } catch {
+        // no-op
+      }
     }
   }
 
