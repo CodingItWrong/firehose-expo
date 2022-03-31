@@ -3,12 +3,14 @@ import {useEffect, useState} from 'react';
 import {FlatList, Platform, Pressable} from 'react-native';
 import {List, Menu} from 'react-native-paper';
 import CenterColumn from '../../components/CenterColumn';
+import ErrorMessage from '../../components/ErrorMessage';
 import ScreenBackground from '../../components/ScreenBackground';
 import {useBookmarks} from '../../data/bookmarks';
 
 export default function UnreadScreen() {
   const bookmarkClient = useBookmarks();
 
+  const [errorMessage, setErrorMessage] = useState(null);
   const [bookmarks, setBookmarks] = useState([]);
   const removeBookmark = bookmarkToRemove =>
     setBookmarks(
@@ -18,7 +20,8 @@ export default function UnreadScreen() {
   useEffect(() => {
     bookmarkClient
       .where({filter: {read: false}})
-      .then(bookmarkResponse => setBookmarks(bookmarkResponse.data));
+      .then(bookmarkResponse => setBookmarks(bookmarkResponse.data))
+      .catch(e => setErrorMessage('An error occurred while loading links.'));
   }, [bookmarkClient]);
 
   const markRead = async bookmark => {
@@ -47,6 +50,7 @@ export default function UnreadScreen() {
       <CenterColumn>
         <UnreadBookmarkList
           bookmarks={bookmarks}
+          errorMessage={errorMessage}
           onMarkRead={markRead}
           onDelete={deleteBookmark}
         />
@@ -55,7 +59,7 @@ export default function UnreadScreen() {
   );
 }
 
-function UnreadBookmarkList({bookmarks, onMarkRead, onDelete}) {
+function UnreadBookmarkList({bookmarks, errorMessage, onMarkRead, onDelete}) {
   const [menuShownId, setMenuShownId] = useState(null);
 
   const isMenuShown = bookmark => menuShownId === bookmark.id;
@@ -72,8 +76,17 @@ function UnreadBookmarkList({bookmarks, onMarkRead, onDelete}) {
     hideMenu();
   }
 
+  function listHeader() {
+    if (errorMessage) {
+      return <ErrorMessage>{errorMessage}</ErrorMessage>;
+    } else {
+      return null;
+    }
+  }
+
   return (
     <FlatList
+      ListHeaderComponent={listHeader()}
       data={bookmarks}
       keyExtractor={item => item.id}
       renderItem={({item}) => (

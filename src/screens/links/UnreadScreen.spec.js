@@ -36,6 +36,19 @@ describe('UnreadScreen', () => {
     await waitFor(() => getByText(bookmark.attributes.title));
   });
 
+  it('shows an error message when loading links fails', async () => {
+    const http = mockHttp();
+    http.get.mockRejectedValue();
+
+    const {getByText} = render(
+      <TokenProvider skipLoading>
+        <UnreadScreen />
+      </TokenProvider>,
+    );
+
+    await waitFor(() => getByText('An error occurred while loading links.'));
+  });
+
   it('opens a link in the browser when clicked', async () => {
     const http = mockHttp();
     http.get.mockResolvedValue(jsonApiResponse([bookmark]));
