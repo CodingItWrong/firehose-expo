@@ -1,5 +1,5 @@
 import * as Linking from 'expo-linking';
-import {useEffect, useState} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import {FlatList, Platform, Pressable} from 'react-native';
 import {List, Menu, TextInput} from 'react-native-paper';
 import CenterColumn from '../../components/CenterColumn';
@@ -20,12 +20,18 @@ export default function UnreadScreen() {
     );
   const [isCreating, setIsCreating] = useState(false);
 
+  const loadFromServer = useCallback(
+    () =>
+      bookmarkClient
+        .where({filter: {read: false}})
+        .then(bookmarkResponse => setBookmarks(bookmarkResponse.data))
+        .catch(e => setErrorMessage('An error occurred while loading links.')),
+    [bookmarkClient],
+  );
+
   useEffect(() => {
-    bookmarkClient
-      .where({filter: {read: false}})
-      .then(bookmarkResponse => setBookmarks(bookmarkResponse.data))
-      .catch(e => setErrorMessage('An error occurred while loading links.'));
-  }, [bookmarkClient]);
+    loadFromServer();
+  }, [loadFromServer]);
 
   const addBookmark = async url => {
     try {
