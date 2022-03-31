@@ -1,11 +1,11 @@
 import * as Linking from 'expo-linking';
 import {useCallback, useEffect, useRef, useState} from 'react';
-import {FlatList, Platform, Pressable, StyleSheet} from 'react-native';
-import {Button, List, Menu, TextInput} from 'react-native-paper';
+import {Platform, Pressable} from 'react-native';
+import {List, Menu, TextInput} from 'react-native-paper';
 import CenterColumn from '../../components/CenterColumn';
 import ErrorMessage from '../../components/ErrorMessage';
-import LoadingIndicator from '../../components/LoadingIndicator';
 import NoRecordsMessage from '../../components/NoRecordsMessage';
+import RefreshableFlatList from '../../components/RefreshableFlatList';
 import ScreenBackground from '../../components/ScreenBackground';
 import {useBookmarks} from '../../data/bookmarks';
 
@@ -20,8 +20,7 @@ export default function UnreadScreen() {
       bookmarks.filter(bookmark => bookmark.id !== bookmarkToRemove.id),
     );
   const [isCreating, setIsCreating] = useState(false);
-  const [isRefreshing, setIsRefreshing] = useState(false);
-  const [showLoadingIndicator, setShowLoadingIndicator] = useState(true);
+  const [isInitiallyLoaded, setIsInitiallyLoaded] = useState(true);
   const listRef = useRef(null);
 
   const loadFromServer = useCallback(async () => {
@@ -37,7 +36,7 @@ export default function UnreadScreen() {
 
   useEffect(() => {
     loadFromServer().then(() => {
-      setShowLoadingIndicator(false);
+      setIsInitiallyLoaded(false);
     });
   }, [loadFromServer]);
 
@@ -78,17 +77,8 @@ export default function UnreadScreen() {
     }
   };
 
-  async function reloadFromPull() {
-    setIsRefreshing(true);
-    await loadFromServer();
-    setIsRefreshing(false);
-    // setTimeout(() => setIsRefreshing(false), 5000);
-  }
-
-  async function reloadFromButton() {
-    setShowLoadingIndicator(true);
+  async function refresh() {
     const reloadedBookmarks = await loadFromServer();
-    setShowLoadingIndicator(false);
     if (reloadedBookmarks.length > 0) {
       listRef.current.scrollToIndex({index: 0});
     }
@@ -98,22 +88,12 @@ export default function UnreadScreen() {
     <ScreenBackground>
       <CenterColumn>
         <NewBookmarkForm isCreating={isCreating} onCreate={addBookmark} />
-        {Platform.OS === 'web' && (
-          <Button
-            mode="outlined"
-            style={styles.reloadButton}
-            onPress={reloadFromButton}
-          >
-            Reload
-          </Button>
-        )}
-        {showLoadingIndicator && <LoadingIndicator />}
         <UnreadBookmarkList
           listRef={listRef}
+          showLoadingIndicator={isInitiallyLoaded}
           bookmarks={bookmarks}
           errorMessage={errorMessage}
-          refreshing={isRefreshing}
-          onRefresh={reloadFromPull}
+          onRefresh={refresh}
           onMarkRead={markRead}
           onDelete={deleteBookmark}
         />
@@ -160,6 +140,7 @@ function NewBookmarkForm({isCreating, onCreate}) {
 
 function UnreadBookmarkList({
   listRef,
+  showLoadingIndicator,
   bookmarks,
   errorMessage,
   refreshing,
@@ -194,13 +175,13 @@ function UnreadBookmarkList({
   }
 
   return (
-    <FlatList
-      ref={listRef}
+    <RefreshableFlatList
+      listRef={listRef}
       ListHeaderComponent={listHeader()}
       data={bookmarks}
       keyExtractor={item => item.id}
+      showLoadingIndicator={showLoadingIndicator}
       onRefresh={onRefresh}
-      refreshing={refreshing}
       renderItem={({item}) => (
         <UnreadBookmarkRow
           bookmark={item}
@@ -255,9 +236,3 @@ function UnreadBookmarkRow({
     />
   );
 }
-
-const styles = StyleSheet.create({
-  reloadButton: {
-    margin: 15,
-  },
-});
