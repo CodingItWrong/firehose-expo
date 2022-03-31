@@ -115,6 +115,41 @@ describe('UnreadScreen', () => {
     expect(queryByText(bookmark.attributes.title)).toBeNull();
   });
 
+  it('shows an error message when marking a link read fails', async () => {
+    const http = mockHttp();
+    http.get.mockResolvedValue(jsonApiResponse([bookmark]));
+    http.patch.mockRejectedValue();
+
+    const {getByLabelText, getByText, queryByText} = render(
+      <PaperProvider>
+        <TokenProvider skipLoading>
+          <UnreadScreen />
+        </TokenProvider>
+      </PaperProvider>,
+    );
+
+    await waitFor(() => getByLabelText('Actions'));
+    fireEvent.press(getByLabelText('Actions'));
+    await waitFor(() => getByText('Mark Read'));
+    fireEvent.press(getByText('Mark Read'));
+
+    await waitFor(() =>
+      getByText('An error occurred while marking link read.'),
+    );
+
+    // clear error
+    http.patch.mockResolvedValue(jsonApiResponse());
+
+    fireEvent.press(getByLabelText('Actions'));
+    await waitFor(() => getByText('Mark Read'));
+    fireEvent.press(getByText('Mark Read'));
+
+    expect(
+      queryByText('An error occurred while marking link read.'),
+    ).toBeNull();
+    await waitForElementToBeRemoved(() => getByText(bookmark.attributes.title));
+  });
+
   it('allows deleting a link', async () => {
     const http = mockHttp();
     http.get.mockResolvedValue(jsonApiResponse([bookmark]));

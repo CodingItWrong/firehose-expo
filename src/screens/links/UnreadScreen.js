@@ -12,6 +12,7 @@ export default function UnreadScreen() {
   const bookmarkClient = useBookmarks();
 
   const [errorMessage, setErrorMessage] = useState(null);
+  const clearErrorMessage = () => setErrorMessage(null);
   const [bookmarks, setBookmarks] = useState([]);
   const removeBookmark = bookmarkToRemove =>
     setBookmarks(
@@ -27,13 +28,14 @@ export default function UnreadScreen() {
 
   const markRead = async bookmark => {
     try {
+      clearErrorMessage();
       await bookmarkClient.update({
         id: bookmark.id,
         attributes: {read: true},
       });
       removeBookmark(bookmark);
-    } catch (e) {
-      console.error('mark read failed', e);
+    } catch {
+      setErrorMessage('An error occurred while marking link read.');
     }
   };
 
