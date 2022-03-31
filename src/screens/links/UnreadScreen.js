@@ -21,8 +21,6 @@ export default function UnreadScreen() {
       .then(bookmarkResponse => setBookmarks(bookmarkResponse.data));
   }, [bookmarkClient]);
 
-  // TODO: test list icon a11y label
-
   const markRead = async bookmark => {
     try {
       await bookmarkClient.update({
