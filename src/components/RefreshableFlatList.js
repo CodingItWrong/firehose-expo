@@ -33,9 +33,12 @@ export default function RefreshableFlatList({
     setInternalLoadingIndicator(null);
   }
 
+  const showReloadButton =
+    Platform.OS === 'web' || process.env.NODE_ENV === 'test';
+
   return (
     <>
-      {Platform.OS === 'web' && (
+      {showReloadButton && (
         <Button
           mode="outlined"
           style={styles.refreshButton}
