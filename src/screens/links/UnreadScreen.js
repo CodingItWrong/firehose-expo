@@ -18,6 +18,7 @@ export default function UnreadScreen() {
     setBookmarks(
       bookmarks.filter(bookmark => bookmark.id !== bookmarkToRemove.id),
     );
+  const [isCreating, setIsCreating] = useState(false);
 
   useEffect(() => {
     bookmarkClient
@@ -28,9 +29,11 @@ export default function UnreadScreen() {
 
   const addBookmark = async url => {
     try {
+      setIsCreating(true);
       const response = await bookmarkClient.create({attributes: {url}});
       const newBookmark = response.data;
       setBookmarks([newBookmark, ...bookmarks]);
+      setIsCreating(false);
     } catch (e) {
       console.error(e);
     }
@@ -62,7 +65,7 @@ export default function UnreadScreen() {
   return (
     <ScreenBackground>
       <CenterColumn>
-        <NewBookmarkForm onCreate={addBookmark} />
+        <NewBookmarkForm isCreating={isCreating} onCreate={addBookmark} />
         <UnreadBookmarkList
           bookmarks={bookmarks}
           errorMessage={errorMessage}
@@ -74,7 +77,7 @@ export default function UnreadScreen() {
   );
 }
 
-function NewBookmarkForm({onCreate}) {
+function NewBookmarkForm({isCreating, onCreate}) {
   const [url, setUrl] = useState('');
 
   async function handleCreate() {
@@ -94,6 +97,14 @@ function NewBookmarkForm({onCreate}) {
       autoCapitalize="none"
       autoCorrect={false}
       keyboardType={Platform.OS === 'android' ? 'default' : 'url'}
+      right={
+        isCreating && (
+          <TextInput.Icon
+            icon="clock-outline"
+            accessibilityLabel="Adding URL"
+          />
+        )
+      }
     />
   );
 }

@@ -97,7 +97,7 @@ describe('UnreadScreen', () => {
       http.get.mockResolvedValue(jsonApiResponse([bookmark]));
       http.post.mockResolvedValue(jsonApiResponse(newBookmark));
 
-      const {getByLabelText, getByText} = render(
+      const {getByLabelText, getByText, queryByLabelText} = render(
         <PaperProvider>
           <TokenProvider skipLoading>
             <UnreadScreen />
@@ -108,6 +108,7 @@ describe('UnreadScreen', () => {
       const newField = getByLabelText('URL to Add');
       fireEvent.changeText(newField, newBookmark.attributes.url);
       fireEvent(newField, 'submitEditing');
+      expect(queryByLabelText('Adding URL')).not.toBeNull();
 
       expect(http.post).toHaveBeenCalledWith(
         'bookmarks?',
@@ -122,6 +123,7 @@ describe('UnreadScreen', () => {
 
       await waitFor(() => getByText(newBookmark.attributes.title));
       expect(newField).toHaveProp('value', '');
+      expect(queryByLabelText('Adding URL')).toBeNull();
     });
 
     it('does not send a request to the server if the url is blank', async () => {
