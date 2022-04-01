@@ -1,3 +1,4 @@
+import {useNavigation} from '@react-navigation/native';
 import {useState} from 'react';
 import ErrorMessage from '../../../components/ErrorMessage';
 import NoRecordsMessage from '../../../components/NoRecordsMessage';
@@ -12,11 +13,17 @@ export default function UnreadBookmarkList({
   onMarkRead,
   onDelete,
 }) {
+  const navigation = useNavigation();
   const [menuShownId, setMenuShownId] = useState(null);
 
   const isMenuShown = bookmark => menuShownId === bookmark.id;
   const showMenu = bookmark => setMenuShownId(bookmark.id);
   const hideMenu = () => setMenuShownId(null);
+
+  function handleEdit(bookmark) {
+    hideMenu();
+    navigation.navigate('BookmarkDetailScreen', {id: bookmark.id});
+  }
 
   async function handleMarkRead(item) {
     await onMarkRead(item);
@@ -53,6 +60,7 @@ export default function UnreadBookmarkList({
           isMenuShown={isMenuShown(item)}
           onShowMenu={() => showMenu(item)}
           onHideMenu={hideMenu}
+          onEdit={() => handleEdit(item)}
           onMarkRead={() => handleMarkRead(item)}
           onDelete={() => handleDelete(item)}
         />

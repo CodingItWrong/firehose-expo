@@ -7,6 +7,7 @@ export default function UnreadBookmarkRow({
   isMenuShown,
   onShowMenu,
   onHideMenu,
+  onEdit,
   onMarkRead,
   onDelete,
 }) {
@@ -28,6 +29,7 @@ export default function UnreadBookmarkRow({
           }
         >
           <Menu.Item onPress={onMarkRead} title="Mark Read" />
+          <Menu.Item onPress={onEdit} title="Edit" />
           <Menu.Item onPress={onDelete} title="Delete" />
         </Menu>
       )}
