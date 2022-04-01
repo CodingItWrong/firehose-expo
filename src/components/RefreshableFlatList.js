@@ -1,20 +1,28 @@
 import {useState} from 'react';
 import {FlatList, Platform, StyleSheet} from 'react-native';
 import {Button} from 'react-native-paper';
+import LoadingIndicator from './LoadingIndicator';
+
+const LOADING_INDICATOR = {
+  FLATLIST: 'FLATLIST', // intuitive on mobile
+  STANDALONE: 'STANDALONE', // for initial loading and loading via button on web
+};
 
 export default function RefreshableFlatList({onRefresh, ...props}) {
-  const [refreshing, setRefreshing] = useState(false);
+  const [internalLoadingIndicator, setInternalLoadingIndicator] =
+    useState(null);
+  const loadingIndicatorToShow = internalLoadingIndicator;
 
   async function refreshFromList() {
-    setRefreshing(true);
+    setInternalLoadingIndicator(LOADING_INDICATOR.FLATLIST);
     await onRefresh();
-    setRefreshing(false);
+    setInternalLoadingIndicator(null);
   }
 
   async function refreshFromButton() {
-    setRefreshing(true);
+    setInternalLoadingIndicator(LOADING_INDICATOR.STANDALONE);
     await onRefresh();
-    setRefreshing(false);
+    setInternalLoadingIndicator(null);
   }
 
   const showReloadButton = Platform.OS === 'web';
@@ -30,9 +38,12 @@ export default function RefreshableFlatList({onRefresh, ...props}) {
           Reload
         </Button>
       )}
+      {loadingIndicatorToShow === LOADING_INDICATOR.STANDALONE && (
+        <LoadingIndicator />
+      )}
       <FlatList
         {...props}
-        refreshing={refreshing}
+        refreshing={loadingIndicatorToShow === LOADING_INDICATOR.FLATLIST}
         onRefresh={refreshFromList}
       />
     </>
