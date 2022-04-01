@@ -30,7 +30,7 @@ export default function UnreadBookmarkList({
   function listHeader() {
     if (errorMessage) {
       return <ErrorMessage>{errorMessage}</ErrorMessage>;
-    } else if (bookmarks.length === 0) {
+    } else if (bookmarks?.length === 0) {
       return <NoRecordsMessage>No unread links.</NoRecordsMessage>;
     } else {
       return null;

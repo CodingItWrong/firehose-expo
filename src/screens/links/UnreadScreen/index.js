@@ -10,7 +10,7 @@ export default function UnreadScreen() {
 
   const [errorMessage, setErrorMessage] = useState(null);
   const clearErrorMessage = () => setErrorMessage(null);
-  const [bookmarks, setBookmarks] = useState([]);
+  const [bookmarks, setBookmarks] = useState(null);
   const removeBookmark = bookmarkToRemove =>
     setBookmarks(
       bookmarks.filter(bookmark => bookmark.id !== bookmarkToRemove.id),
