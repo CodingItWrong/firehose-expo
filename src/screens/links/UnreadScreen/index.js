@@ -1,13 +1,12 @@
-import * as Linking from 'expo-linking';
 import {useEffect, useState} from 'react';
-import {FlatList, Platform, Pressable} from 'react-native';
-import {List, Menu} from 'react-native-paper';
+import {FlatList} from 'react-native';
 import CenterColumn from '../../../components/CenterColumn';
 import ErrorMessage from '../../../components/ErrorMessage';
 import NoRecordsMessage from '../../../components/NoRecordsMessage';
 import ScreenBackground from '../../../components/ScreenBackground';
 import {useBookmarks} from '../../../data/bookmarks';
 import NewBookmarkForm from './NewBookmarkForm';
+import UnreadBookmarkRow from './UnreadBookmarkRow';
 
 export default function UnreadScreen() {
   const bookmarkClient = useBookmarks();
@@ -122,47 +121,6 @@ function UnreadBookmarkList({bookmarks, errorMessage, onMarkRead, onDelete}) {
           onMarkRead={() => handleMarkRead(item)}
           onDelete={() => handleDelete(item)}
         />
-      )}
-    />
-  );
-}
-
-function openBookmark(url) {
-  if (Platform.OS === 'web') {
-    window.open(url, '_blank');
-  } else {
-    Linking.openURL(url);
-  }
-}
-
-function UnreadBookmarkRow({
-  bookmark,
-  isMenuShown,
-  onShowMenu,
-  onHideMenu,
-  onMarkRead,
-  onDelete,
-}) {
-  return (
-    <List.Item
-      title={bookmark.attributes.title}
-      titleNumberOfLines={3}
-      description={bookmark.attributes.url}
-      descriptionNumberOfLines={1}
-      onPress={() => openBookmark(bookmark.attributes.url)}
-      right={props => (
-        <Menu
-          visible={isMenuShown}
-          onDismiss={onHideMenu}
-          anchor={
-            <Pressable onPress={onShowMenu} accessibilityLabel="Actions">
-              <List.Icon {...props} icon="dots-vertical" />
-            </Pressable>
-          }
-        >
-          <Menu.Item onPress={onMarkRead} title="Mark Read" />
-          <Menu.Item onPress={onDelete} title="Delete" />
-        </Menu>
       )}
     />
   );
