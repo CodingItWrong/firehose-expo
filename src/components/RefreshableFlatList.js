@@ -1,5 +1,5 @@
 import {useState} from 'react';
-import {FlatList, StyleSheet} from 'react-native';
+import {FlatList, Platform, StyleSheet} from 'react-native';
 import {Button} from 'react-native-paper';
 
 export default function RefreshableFlatList({onRefresh, ...props}) {
@@ -17,15 +17,19 @@ export default function RefreshableFlatList({onRefresh, ...props}) {
     setRefreshing(false);
   }
 
+  const showReloadButton = Platform.OS === 'web';
+
   return (
     <>
-      <Button
-        mode="outlined"
-        style={styles.refreshButton}
-        onPress={refreshFromButton}
-      >
-        Reload
-      </Button>
+      {showReloadButton && (
+        <Button
+          mode="outlined"
+          style={styles.refreshButton}
+          onPress={refreshFromButton}
+        >
+          Reload
+        </Button>
+      )}
       <FlatList
         {...props}
         refreshing={refreshing}
