@@ -63,6 +63,26 @@ describe('UnreadScreen', () => {
     });
   });
 
+  describe('refreshing', () => {
+    it('refreshes the list when pulling down on mobile', async () => {
+      const http = mockHttp();
+      http.get.mockResolvedValue(jsonApiResponse([]));
+
+      const {findByText, getByTestId} = render(
+        <TokenProvider skipLoading>
+          <UnreadScreen />
+        </TokenProvider>,
+      );
+
+      await findByText('No unread links.');
+
+      http.get.mockResolvedValue(jsonApiResponse([bookmark]));
+      fireEvent(getByTestId('unread-bookmarks-list'), 'refresh');
+
+      await findByText(bookmark.attributes.title);
+    });
+  });
+
   describe('link clicking', () => {
     it('opens a link in the browser when clicked', async () => {
       const http = mockHttp();

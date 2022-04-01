@@ -41,6 +41,7 @@ export default function UnreadBookmarkList({
   return (
     <RefreshableFlatList
       listRef={listRef}
+      testID="unread-bookmarks-list"
       ListHeaderComponent={listHeader()}
       data={bookmarks}
       onRefresh={onRefresh}
