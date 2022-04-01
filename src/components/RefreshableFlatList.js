@@ -1,5 +1,6 @@
 import {useState} from 'react';
-import {FlatList} from 'react-native';
+import {FlatList, StyleSheet} from 'react-native';
+import {Button} from 'react-native-paper';
 
 export default function RefreshableFlatList({onRefresh, ...props}) {
   const [refreshing, setRefreshing] = useState(false);
@@ -10,7 +11,32 @@ export default function RefreshableFlatList({onRefresh, ...props}) {
     setRefreshing(false);
   }
 
+  async function refreshFromButton() {
+    setRefreshing(true);
+    await onRefresh();
+    setRefreshing(false);
+  }
+
   return (
-    <FlatList {...props} refreshing={refreshing} onRefresh={refreshFromList} />
+    <>
+      <Button
+        mode="outlined"
+        style={styles.refreshButton}
+        onPress={refreshFromButton}
+      >
+        Reload
+      </Button>
+      <FlatList
+        {...props}
+        refreshing={refreshing}
+        onRefresh={refreshFromList}
+      />
+    </>
   );
 }
+
+const styles = StyleSheet.create({
+  refreshButton: {
+    margin: 15,
+  },
+});
