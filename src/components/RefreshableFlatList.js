@@ -8,10 +8,16 @@ const LOADING_INDICATOR = {
   STANDALONE: 'STANDALONE', // for initial loading and loading via button on web
 };
 
-export default function RefreshableFlatList({onRefresh, ...props}) {
+export default function RefreshableFlatList({
+  showLoadingIndicator,
+  onRefresh,
+  ...props
+}) {
   const [internalLoadingIndicator, setInternalLoadingIndicator] =
     useState(null);
-  const loadingIndicatorToShow = internalLoadingIndicator;
+  const loadingIndicatorToShow = showLoadingIndicator
+    ? LOADING_INDICATOR.STANDALONE
+    : internalLoadingIndicator;
 
   async function refreshFromList() {
     setInternalLoadingIndicator(LOADING_INDICATOR.FLATLIST);

@@ -42,6 +42,7 @@ export default function UnreadBookmarkList({
       ListHeaderComponent={listHeader()}
       data={bookmarks}
       onRefresh={onRefresh}
+      showLoadingIndicator={bookmarks === null}
       keyExtractor={item => item.id}
       renderItem={({item}) => (
         <UnreadBookmarkRow
