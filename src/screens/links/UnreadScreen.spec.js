@@ -96,7 +96,7 @@ describe('UnreadScreen', () => {
       http.get.mockResolvedValue(jsonApiResponse([bookmark]));
       http.post.mockResolvedValue(jsonApiResponse(newBookmark));
 
-      const {findByText, getByLabelText, getByText, queryByLabelText} = render(
+      const {findByText, getByLabelText, queryByLabelText} = render(
         <PaperProvider>
           <TokenProvider skipLoading>
             <UnreadScreen />
