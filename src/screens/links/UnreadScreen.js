@@ -34,10 +34,11 @@ export default function UnreadScreen() {
       const response = await bookmarkClient.create({attributes: {url}});
       const newBookmark = response.data;
       setBookmarks([newBookmark, ...bookmarks]);
-      setIsCreating(false);
     } catch (e) {
       setErrorMessage('An error occurred while adding URL.');
       throw e;
+    } finally {
+      setIsCreating(false);
     }
   };
 
