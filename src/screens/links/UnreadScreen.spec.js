@@ -1,7 +1,6 @@
 import {
   fireEvent,
   render,
-  waitFor,
   waitForElementToBeRemoved,
 } from '@testing-library/react-native';
 import * as Linking from 'expo-linking';
@@ -27,40 +26,40 @@ describe('UnreadScreen', () => {
       const http = mockHttp();
       http.get.mockResolvedValue(jsonApiResponse([bookmark]));
 
-      const {getByText} = render(
+      const {findByText} = render(
         <TokenProvider skipLoading>
           <UnreadScreen />
         </TokenProvider>,
       );
 
       expect(http.get).toHaveBeenCalledWith('bookmarks?filter[read]=false&');
-      await waitFor(() => getByText(bookmark.attributes.title));
+      await findByText(bookmark.attributes.title);
     });
 
     it('shows an error message when loading links fails', async () => {
       const http = mockHttp();
       http.get.mockRejectedValue();
 
-      const {getByText} = render(
+      const {findByText} = render(
         <TokenProvider skipLoading>
           <UnreadScreen />
         </TokenProvider>,
       );
 
-      await waitFor(() => getByText('An error occurred while loading links.'));
+      await findByText('An error occurred while loading links.');
     });
 
     it('shows a message when there are no links to display', async () => {
       const http = mockHttp();
       http.get.mockResolvedValue(jsonApiResponse([]));
 
-      const {getByText} = render(
+      const {findByText} = render(
         <TokenProvider skipLoading>
           <UnreadScreen />
         </TokenProvider>,
       );
 
-      await waitFor(() => getByText('No unread links.'));
+      await findByText('No unread links.');
     });
   });
 
@@ -69,13 +68,13 @@ describe('UnreadScreen', () => {
       const http = mockHttp();
       http.get.mockResolvedValue(jsonApiResponse([bookmark]));
 
-      const {getByText} = render(
+      const {findByText, getByText} = render(
         <TokenProvider skipLoading>
           <UnreadScreen />
         </TokenProvider>,
       );
 
-      await waitFor(() => getByText(bookmark.attributes.title));
+      await findByText(bookmark.attributes.title);
 
       fireEvent.press(getByText(bookmark.attributes.title));
 
@@ -97,7 +96,7 @@ describe('UnreadScreen', () => {
       http.get.mockResolvedValue(jsonApiResponse([bookmark]));
       http.post.mockResolvedValue(jsonApiResponse(newBookmark));
 
-      const {getByLabelText, getByText, queryByLabelText} = render(
+      const {findByText, getByLabelText, getByText, queryByLabelText} = render(
         <PaperProvider>
           <TokenProvider skipLoading>
             <UnreadScreen />
@@ -121,7 +120,7 @@ describe('UnreadScreen', () => {
         {headers: {'Content-Type': 'application/vnd.api+json'}},
       );
 
-      await waitFor(() => getByText(newBookmark.attributes.title));
+      await findByText(newBookmark.attributes.title);
       expect(newField).toHaveProp('value', '');
       expect(queryByLabelText('Adding URL')).toBeNull();
     });
@@ -130,7 +129,7 @@ describe('UnreadScreen', () => {
       const http = mockHttp();
       http.get.mockResolvedValue(jsonApiResponse([bookmark]));
 
-      const {getByLabelText, getByText} = render(
+      const {getByLabelText, findByText} = render(
         <PaperProvider>
           <TokenProvider skipLoading>
             <UnreadScreen />
@@ -138,7 +137,7 @@ describe('UnreadScreen', () => {
         </PaperProvider>,
       );
 
-      await waitFor(() => getByText(bookmark.attributes.title));
+      await findByText(bookmark.attributes.title);
 
       const newField = getByLabelText('URL to Add');
       fireEvent(newField, 'submitEditing');
@@ -151,7 +150,7 @@ describe('UnreadScreen', () => {
       http.get.mockResolvedValue(jsonApiResponse([bookmark]));
       http.post.mockRejectedValue();
 
-      const {getByLabelText, getByText, queryByText} = render(
+      const {findByText, getByLabelText, queryByText} = render(
         <PaperProvider>
           <TokenProvider skipLoading>
             <UnreadScreen />
@@ -163,7 +162,7 @@ describe('UnreadScreen', () => {
       fireEvent.changeText(newField, newBookmark.attributes.url);
       fireEvent(newField, 'submitEditing');
 
-      await waitFor(() => getByText('An error occurred while adding URL.'));
+      await findByText('An error occurred while adding URL.');
       expect(newField).toHaveProp('value', newBookmark.attributes.url);
 
       // clear error
@@ -173,7 +172,7 @@ describe('UnreadScreen', () => {
 
       expect(queryByText('An error occurred while adding URL.')).toBeNull();
 
-      await waitFor(() => getByText(newBookmark.attributes.title));
+      await findByText(newBookmark.attributes.title);
     });
   });
 
@@ -183,7 +182,13 @@ describe('UnreadScreen', () => {
       http.get.mockResolvedValue(jsonApiResponse([bookmark]));
       http.patch.mockResolvedValue(jsonApiResponse());
 
-      const {getByLabelText, getByText, queryByText} = render(
+      const {
+        findByLabelText,
+        findByText,
+        getByLabelText,
+        getByText,
+        queryByText,
+      } = render(
         <PaperProvider>
           <TokenProvider skipLoading>
             <UnreadScreen />
@@ -191,10 +196,10 @@ describe('UnreadScreen', () => {
         </PaperProvider>,
       );
 
-      await waitFor(() => getByLabelText('Actions'));
+      await findByLabelText('Actions');
       fireEvent.press(getByLabelText('Actions'));
 
-      await waitFor(() => getByText('Mark Read'));
+      await findByText('Mark Read');
       fireEvent.press(getByText('Mark Read'));
 
       expect(http.patch).toHaveBeenCalledWith(
@@ -219,7 +224,13 @@ describe('UnreadScreen', () => {
       http.get.mockResolvedValue(jsonApiResponse([bookmark]));
       http.patch.mockRejectedValue();
 
-      const {getByLabelText, getByText, queryByText} = render(
+      const {
+        findByLabelText,
+        findByText,
+        getByLabelText,
+        getByText,
+        queryByText,
+      } = render(
         <PaperProvider>
           <TokenProvider skipLoading>
             <UnreadScreen />
@@ -227,20 +238,18 @@ describe('UnreadScreen', () => {
         </PaperProvider>,
       );
 
-      await waitFor(() => getByLabelText('Actions'));
+      await findByLabelText('Actions');
       fireEvent.press(getByLabelText('Actions'));
-      await waitFor(() => getByText('Mark Read'));
+      await findByText('Mark Read');
       fireEvent.press(getByText('Mark Read'));
 
-      await waitFor(() =>
-        getByText('An error occurred while marking link read.'),
-      );
+      await findByText('An error occurred while marking link read.');
 
       // clear error
       http.patch.mockResolvedValue(jsonApiResponse());
 
       fireEvent.press(getByLabelText('Actions'));
-      await waitFor(() => getByText('Mark Read'));
+      await findByText('Mark Read');
       fireEvent.press(getByText('Mark Read'));
 
       expect(
@@ -258,7 +267,13 @@ describe('UnreadScreen', () => {
       http.get.mockResolvedValue(jsonApiResponse([bookmark]));
       http.delete.mockResolvedValue(jsonApiResponse());
 
-      const {getByLabelText, getByText, queryByText} = render(
+      const {
+        findByLabelText,
+        findByText,
+        getByLabelText,
+        getByText,
+        queryByText,
+      } = render(
         <PaperProvider>
           <TokenProvider skipLoading>
             <UnreadScreen />
@@ -266,10 +281,10 @@ describe('UnreadScreen', () => {
         </PaperProvider>,
       );
 
-      await waitFor(() => getByLabelText('Actions'));
+      await findByLabelText('Actions');
       fireEvent.press(getByLabelText('Actions'));
 
-      await waitFor(() => getByText('Delete'));
+      await findByText('Delete');
       fireEvent.press(getByText('Delete'));
 
       expect(http.delete).toHaveBeenCalledWith('bookmarks/1');
@@ -284,7 +299,13 @@ describe('UnreadScreen', () => {
       http.get.mockResolvedValue(jsonApiResponse([bookmark]));
       http.delete.mockRejectedValue();
 
-      const {getByLabelText, getByText, queryByText} = render(
+      const {
+        findByLabelText,
+        findByText,
+        getByLabelText,
+        getByText,
+        queryByText,
+      } = render(
         <PaperProvider>
           <TokenProvider skipLoading>
             <UnreadScreen />
@@ -292,18 +313,18 @@ describe('UnreadScreen', () => {
         </PaperProvider>,
       );
 
-      await waitFor(() => getByLabelText('Actions'));
+      await findByLabelText('Actions');
       fireEvent.press(getByLabelText('Actions'));
-      await waitFor(() => getByText('Delete'));
+      await findByText('Delete');
       fireEvent.press(getByText('Delete'));
 
-      await waitFor(() => getByText('An error occurred while deleting link.'));
+      await findByText('An error occurred while deleting link.');
 
       // clear error
       http.delete.mockResolvedValue(jsonApiResponse());
 
       fireEvent.press(getByLabelText('Actions'));
-      await waitFor(() => getByText('Delete'));
+      await findByText('Delete');
       fireEvent.press(getByText('Delete'));
 
       expect(queryByText('An error occurred while deleting link.')).toBeNull();
