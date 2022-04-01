@@ -26,14 +26,16 @@ describe('UnreadScreen', () => {
       const http = mockHttp();
       http.get.mockResolvedValue(jsonApiResponse([bookmark]));
 
-      const {findByText} = render(
+      const {findByText, queryByLabelText} = render(
         <TokenProvider skipLoading>
           <UnreadScreen />
         </TokenProvider>,
       );
 
+      expect(queryByLabelText('Loading')).not.toBeNull();
       expect(http.get).toHaveBeenCalledWith('bookmarks?filter[read]=false&');
       await findByText(bookmark.attributes.title);
+      expect(queryByLabelText('Loading')).toBeNull();
     });
 
     it('shows an error message when loading links fails', async () => {
@@ -60,6 +62,44 @@ describe('UnreadScreen', () => {
       );
 
       await findByText('No unread links.');
+    });
+  });
+
+  describe('refreshing', () => {
+    it('refreshes the list when pulling down on mobile', async () => {
+      const http = mockHttp();
+      http.get.mockResolvedValue(jsonApiResponse([]));
+
+      const {findByText, getByTestId} = render(
+        <TokenProvider skipLoading>
+          <UnreadScreen />
+        </TokenProvider>,
+      );
+
+      await findByText('No unread links.');
+
+      http.get.mockResolvedValue(jsonApiResponse([bookmark]));
+      fireEvent(getByTestId('unread-bookmarks-list'), 'refresh');
+
+      await findByText(bookmark.attributes.title);
+    });
+
+    it('refreshes by clicking a button on web', async () => {
+      const http = mockHttp();
+      http.get.mockResolvedValue(jsonApiResponse([]));
+
+      const {findByText, getByText} = render(
+        <TokenProvider skipLoading>
+          <UnreadScreen />
+        </TokenProvider>,
+      );
+
+      await findByText('No unread links.');
+
+      http.get.mockResolvedValue(jsonApiResponse([bookmark]));
+      fireEvent.press(getByText('Reload'));
+
+      await findByText(bookmark.attributes.title);
     });
   });
 
