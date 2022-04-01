@@ -81,6 +81,24 @@ describe('UnreadScreen', () => {
 
       await findByText(bookmark.attributes.title);
     });
+
+    it('refreshes by clicking a button on web', async () => {
+      const http = mockHttp();
+      http.get.mockResolvedValue(jsonApiResponse([]));
+
+      const {findByText, getByText} = render(
+        <TokenProvider skipLoading>
+          <UnreadScreen />
+        </TokenProvider>,
+      );
+
+      await findByText('No unread links.');
+
+      http.get.mockResolvedValue(jsonApiResponse([bookmark]));
+      fireEvent.press(getByText('Reload'));
+
+      await findByText(bookmark.attributes.title);
+    });
   });
 
   describe('link clicking', () => {
