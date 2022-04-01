@@ -1,12 +1,13 @@
 import * as Linking from 'expo-linking';
 import {useEffect, useState} from 'react';
 import {FlatList, Platform, Pressable} from 'react-native';
-import {List, Menu, TextInput} from 'react-native-paper';
+import {List, Menu} from 'react-native-paper';
 import CenterColumn from '../../../components/CenterColumn';
 import ErrorMessage from '../../../components/ErrorMessage';
 import NoRecordsMessage from '../../../components/NoRecordsMessage';
 import ScreenBackground from '../../../components/ScreenBackground';
 import {useBookmarks} from '../../../data/bookmarks';
+import NewBookmarkForm from './NewBookmarkForm';
 
 export default function UnreadScreen() {
   const bookmarkClient = useBookmarks();
@@ -77,42 +78,6 @@ export default function UnreadScreen() {
         />
       </CenterColumn>
     </ScreenBackground>
-  );
-}
-
-function NewBookmarkForm({isCreating, onCreate}) {
-  const [url, setUrl] = useState('');
-
-  async function handleCreate() {
-    if (url !== '') {
-      try {
-        await onCreate(url);
-        setUrl('');
-      } catch {
-        // no-op
-      }
-    }
-  }
-
-  return (
-    <TextInput
-      label="URL to Add"
-      accessibilityLabel="URL to Add"
-      value={url}
-      onChangeText={setUrl}
-      onSubmitEditing={handleCreate}
-      autoCapitalize="none"
-      autoCorrect={false}
-      keyboardType={Platform.OS === 'android' ? 'default' : 'url'}
-      right={
-        isCreating && (
-          <TextInput.Icon
-            icon="clock-outline"
-            accessibilityLabel="Adding URL"
-          />
-        )
-      }
-    />
   );
 }
 
