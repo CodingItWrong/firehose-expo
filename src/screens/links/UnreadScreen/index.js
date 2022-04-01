@@ -2,11 +2,11 @@ import * as Linking from 'expo-linking';
 import {useEffect, useState} from 'react';
 import {FlatList, Platform, Pressable} from 'react-native';
 import {List, Menu, TextInput} from 'react-native-paper';
-import CenterColumn from '../../components/CenterColumn';
-import ErrorMessage from '../../components/ErrorMessage';
-import NoRecordsMessage from '../../components/NoRecordsMessage';
-import ScreenBackground from '../../components/ScreenBackground';
-import {useBookmarks} from '../../data/bookmarks';
+import CenterColumn from '../../../components/CenterColumn';
+import ErrorMessage from '../../../components/ErrorMessage';
+import NoRecordsMessage from '../../../components/NoRecordsMessage';
+import ScreenBackground from '../../../components/ScreenBackground';
+import {useBookmarks} from '../../../data/bookmarks';
 
 export default function UnreadScreen() {
   const bookmarkClient = useBookmarks();
