@@ -1,4 +1,4 @@
-import {useCallback, useEffect, useState} from 'react';
+import {useCallback, useEffect, useRef, useState} from 'react';
 import CenterColumn from '../../../components/CenterColumn';
 import ScreenBackground from '../../../components/ScreenBackground';
 import {useBookmarks} from '../../../data/bookmarks';
@@ -16,11 +16,14 @@ export default function UnreadScreen() {
       bookmarks.filter(bookmark => bookmark.id !== bookmarkToRemove.id),
     );
   const [isCreating, setIsCreating] = useState(false);
+  const listRef = useRef(null);
 
   const loadFromServer = useCallback(async () => {
     try {
       const response = await bookmarkClient.where({filter: {read: false}});
-      setBookmarks(response.data);
+      const loadedBookmarks = response.data;
+      setBookmarks(loadedBookmarks);
+      return loadedBookmarks;
     } catch (e) {
       setErrorMessage('An error occurred while loading links.');
     }
@@ -29,6 +32,13 @@ export default function UnreadScreen() {
   useEffect(() => {
     loadFromServer();
   }, [loadFromServer]);
+
+  const refresh = async () => {
+    const reloadedBookmarks = await loadFromServer();
+    if (reloadedBookmarks.length > 0) {
+      listRef.current.scrollToIndex({index: 0});
+    }
+  };
 
   const addBookmark = async url => {
     try {
@@ -73,9 +83,10 @@ export default function UnreadScreen() {
       <CenterColumn>
         <NewBookmarkForm isCreating={isCreating} onCreate={addBookmark} />
         <UnreadBookmarkList
+          listRef={listRef}
           bookmarks={bookmarks}
           errorMessage={errorMessage}
-          onRefresh={loadFromServer}
+          onRefresh={refresh}
           onMarkRead={markRead}
           onDelete={deleteBookmark}
         />

@@ -5,6 +5,7 @@ import RefreshableFlatList from '../../../components/RefreshableFlatList';
 import UnreadBookmarkRow from './UnreadBookmarkRow';
 
 export default function UnreadBookmarkList({
+  listRef,
   bookmarks,
   errorMessage,
   onRefresh,
@@ -39,6 +40,7 @@ export default function UnreadBookmarkList({
 
   return (
     <RefreshableFlatList
+      listRef={listRef}
       ListHeaderComponent={listHeader()}
       data={bookmarks}
       onRefresh={onRefresh}

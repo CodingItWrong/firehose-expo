@@ -9,6 +9,7 @@ const LOADING_INDICATOR = {
 };
 
 export default function RefreshableFlatList({
+  listRef,
   showLoadingIndicator,
   onRefresh,
   ...props
@@ -49,6 +50,7 @@ export default function RefreshableFlatList({
       )}
       <FlatList
         {...props}
+        ref={listRef}
         refreshing={loadingIndicatorToShow === LOADING_INDICATOR.FLATLIST}
         onRefresh={refreshFromList}
       />
