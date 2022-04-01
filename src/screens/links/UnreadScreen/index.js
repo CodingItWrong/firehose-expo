@@ -1,12 +1,9 @@
 import {useEffect, useState} from 'react';
-import {FlatList} from 'react-native';
 import CenterColumn from '../../../components/CenterColumn';
-import ErrorMessage from '../../../components/ErrorMessage';
-import NoRecordsMessage from '../../../components/NoRecordsMessage';
 import ScreenBackground from '../../../components/ScreenBackground';
 import {useBookmarks} from '../../../data/bookmarks';
 import NewBookmarkForm from './NewBookmarkForm';
-import UnreadBookmarkRow from './UnreadBookmarkRow';
+import UnreadBookmarkList from './UnreadBookmarkList';
 
 export default function UnreadScreen() {
   const bookmarkClient = useBookmarks();
@@ -77,51 +74,5 @@ export default function UnreadScreen() {
         />
       </CenterColumn>
     </ScreenBackground>
-  );
-}
-
-function UnreadBookmarkList({bookmarks, errorMessage, onMarkRead, onDelete}) {
-  const [menuShownId, setMenuShownId] = useState(null);
-
-  const isMenuShown = bookmark => menuShownId === bookmark.id;
-  const showMenu = bookmark => setMenuShownId(bookmark.id);
-  const hideMenu = () => setMenuShownId(null);
-
-  async function handleMarkRead(item) {
-    await onMarkRead(item);
-    hideMenu();
-  }
-
-  async function handleDelete(item) {
-    await onDelete(item);
-    hideMenu();
-  }
-
-  function listHeader() {
-    if (errorMessage) {
-      return <ErrorMessage>{errorMessage}</ErrorMessage>;
-    } else if (bookmarks.length === 0) {
-      return <NoRecordsMessage>No unread links.</NoRecordsMessage>;
-    } else {
-      return null;
-    }
-  }
-
-  return (
-    <FlatList
-      ListHeaderComponent={listHeader()}
-      data={bookmarks}
-      keyExtractor={item => item.id}
-      renderItem={({item}) => (
-        <UnreadBookmarkRow
-          bookmark={item}
-          isMenuShown={isMenuShown(item)}
-          onShowMenu={() => showMenu(item)}
-          onHideMenu={hideMenu}
-          onMarkRead={() => handleMarkRead(item)}
-          onDelete={() => handleDelete(item)}
-        />
-      )}
-    />
   );
 }
