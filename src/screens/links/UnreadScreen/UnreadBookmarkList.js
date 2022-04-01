@@ -1,7 +1,7 @@
 import {useState} from 'react';
-import {FlatList} from 'react-native';
 import ErrorMessage from '../../../components/ErrorMessage';
 import NoRecordsMessage from '../../../components/NoRecordsMessage';
+import RefreshableFlatList from '../../../components/RefreshableFlatList';
 import UnreadBookmarkRow from './UnreadBookmarkRow';
 
 export default function UnreadBookmarkList({
@@ -37,7 +37,7 @@ export default function UnreadBookmarkList({
   }
 
   return (
-    <FlatList
+    <RefreshableFlatList
       ListHeaderComponent={listHeader()}
       data={bookmarks}
       keyExtractor={item => item.id}
