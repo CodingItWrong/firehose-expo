@@ -150,20 +150,23 @@ describe('UnreadScreen', () => {
       http.get.mockResolvedValue(jsonApiResponse([bookmark]));
       http.post.mockRejectedValue();
 
-      const {findByText, getByLabelText, queryByText} = render(
-        <PaperProvider>
-          <TokenProvider skipLoading>
-            <UnreadScreen />
-          </TokenProvider>
-        </PaperProvider>,
-      );
+      const {findByText, getByLabelText, queryByLabelText, queryByText} =
+        render(
+          <PaperProvider>
+            <TokenProvider skipLoading>
+              <UnreadScreen />
+            </TokenProvider>
+          </PaperProvider>,
+        );
 
       const newField = getByLabelText('URL to Add');
       fireEvent.changeText(newField, newBookmark.attributes.url);
       fireEvent(newField, 'submitEditing');
+      expect(queryByLabelText('Adding URL')).not.toBeNull();
 
       await findByText('An error occurred while adding URL.');
       expect(newField).toHaveProp('value', newBookmark.attributes.url);
+      expect(queryByLabelText('Adding URL')).toBeNull();
 
       // clear error
       http.post.mockResolvedValue(jsonApiResponse(newBookmark));
