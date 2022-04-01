@@ -26,14 +26,16 @@ describe('UnreadScreen', () => {
       const http = mockHttp();
       http.get.mockResolvedValue(jsonApiResponse([bookmark]));
 
-      const {findByText} = render(
+      const {findByText, queryByLabelText} = render(
         <TokenProvider skipLoading>
           <UnreadScreen />
         </TokenProvider>,
       );
 
+      expect(queryByLabelText('Loading')).not.toBeNull();
       expect(http.get).toHaveBeenCalledWith('bookmarks?filter[read]=false&');
       await findByText(bookmark.attributes.title);
+      expect(queryByLabelText('Loading')).toBeNull();
     });
 
     it('shows an error message when loading links fails', async () => {
