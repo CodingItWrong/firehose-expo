@@ -6,6 +6,7 @@ import CustomNavigationBar from './components/CustomNavigationBar';
 import CustomNavigationDrawer from './components/CustomNavigationDrawer';
 import {useToken} from './data/token';
 import SignInScreen from './screens/SignInScreen';
+import BookmarkDetailScreen from './screens/links/BookmarkDetailScreen';
 import UnreadScreen from './screens/links/UnreadScreen';
 
 const linking = {
@@ -15,6 +16,7 @@ const linking = {
         initialRouteName: 'UnreadScreen',
         screens: {
           UnreadScreen: '/links/unread',
+          BookmarkDetailScreen: '/links/unread/:id',
         },
       },
     },
@@ -32,6 +34,11 @@ const Unread = () => (
       name="UnreadScreen"
       component={UnreadScreen}
       options={{title: 'Unread'}}
+    />
+    <UnreadStack.Screen
+      name="BookmarkDetailScreen"
+      component={BookmarkDetailScreen}
+      options={{title: 'Edit Link'}}
     />
   </UnreadStack.Navigator>
 );
