@@ -1,3 +1,4 @@
+import {useNavigation} from '@react-navigation/native';
 import {
   fireEvent,
   render,
@@ -11,6 +12,9 @@ import UnreadScreen from './UnreadScreen';
 
 jest.mock('../../data/authenticatedHttpClient');
 jest.mock('expo-linking', () => ({openURL: jest.fn()}));
+jest.mock('@react-navigation/native', () => ({
+  useNavigation: jest.fn(),
+}));
 
 describe('UnreadScreen', () => {
   const bookmark = {
@@ -301,6 +305,35 @@ describe('UnreadScreen', () => {
       await waitForElementToBeRemoved(() =>
         getByText(bookmark.attributes.title),
       );
+    });
+  });
+
+  describe('edit', () => {
+    it('navigates to the bookmark detail screen', async () => {
+      const http = mockHttp();
+      http.get.mockResolvedValue(jsonApiResponse([bookmark]));
+
+      const navigation = {navigate: jest.fn()};
+      useNavigation.mockReturnValue(navigation);
+
+      const {findByLabelText, findByText, getByLabelText, getByText} = render(
+        <PaperProvider>
+          <TokenProvider skipLoading>
+            <UnreadScreen />
+          </TokenProvider>
+        </PaperProvider>,
+      );
+
+      await findByLabelText('Actions');
+      fireEvent.press(getByLabelText('Actions'));
+
+      await findByText('Edit');
+      fireEvent.press(getByText('Edit'));
+
+      await waitForElementToBeRemoved(() => getByText('Edit'));
+      expect(navigation.navigate).toHaveBeenCalledWith('BookmarkDetailScreen', {
+        id: bookmark.id,
+      });
     });
   });
 
