@@ -7,6 +7,7 @@ import UnreadBookmarkRow from './UnreadBookmarkRow';
 export default function UnreadBookmarkList({
   bookmarks,
   errorMessage,
+  onRefresh,
   onMarkRead,
   onDelete,
 }) {
@@ -40,6 +41,7 @@ export default function UnreadBookmarkList({
     <RefreshableFlatList
       ListHeaderComponent={listHeader()}
       data={bookmarks}
+      onRefresh={onRefresh}
       keyExtractor={item => item.id}
       renderItem={({item}) => (
         <UnreadBookmarkRow

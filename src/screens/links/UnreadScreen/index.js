@@ -75,6 +75,7 @@ export default function UnreadScreen() {
         <UnreadBookmarkList
           bookmarks={bookmarks}
           errorMessage={errorMessage}
+          onRefresh={loadFromServer}
           onMarkRead={markRead}
           onDelete={deleteBookmark}
         />
