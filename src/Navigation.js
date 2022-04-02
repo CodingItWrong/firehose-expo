@@ -12,6 +12,12 @@ import UnreadScreen from './screens/links/UnreadScreen';
 const linking = {
   config: {
     screens: {
+      'Sign in': {
+        initialRouteName: 'SignInScreen',
+        screens: {
+          SignInScreen: '/sign-in',
+        },
+      },
       Unread: {
         initialRouteName: 'UnreadScreen',
         screens: {
@@ -33,7 +39,7 @@ const Unread = () => (
     <UnreadStack.Screen
       name="UnreadScreen"
       component={UnreadScreen}
-      options={{title: 'Unread'}}
+      options={{title: 'Unread Links'}}
     />
     <UnreadStack.Screen
       name="BookmarkDetailScreen"
