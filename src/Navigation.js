@@ -12,6 +12,12 @@ import UnreadScreen from './screens/links/UnreadScreen';
 const linking = {
   config: {
     screens: {
+      'Sign in': {
+        initialRouteName: 'SignInScreen',
+        screens: {
+          SignInScreen: '/sign-in',
+        },
+      },
       Unread: {
         initialRouteName: 'UnreadScreen',
         screens: {
