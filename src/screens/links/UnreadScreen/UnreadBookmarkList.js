@@ -25,13 +25,13 @@ export default function UnreadBookmarkList({
     navigation.navigate('BookmarkDetailScreen', {id: bookmark.id});
   }
 
-  async function handleMarkRead(item) {
-    await onMarkRead(item);
+  async function handleMarkRead(bookmark) {
+    await onMarkRead(bookmark);
     hideMenu();
   }
 
-  async function handleDelete(item) {
-    await onDelete(item);
+  async function handleDelete(bookmark) {
+    await onDelete(bookmark);
     hideMenu();
   }
 
