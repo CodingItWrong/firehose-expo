@@ -33,14 +33,14 @@ export default function UnreadScreen() {
     loadFromServer();
   }, [loadFromServer]);
 
-  const refresh = async () => {
+  async function refresh() {
     const reloadedBookmarks = await loadFromServer();
     if (reloadedBookmarks.length > 0) {
       listRef.current.scrollToIndex({index: 0});
     }
-  };
+  }
 
-  const addBookmark = async url => {
+  async function addBookmark(url) {
     try {
       clearErrorMessage();
       setIsCreating(true);
@@ -53,9 +53,9 @@ export default function UnreadScreen() {
     } finally {
       setIsCreating(false);
     }
-  };
+  }
 
-  const markRead = async bookmark => {
+  async function markRead(bookmark) {
     try {
       clearErrorMessage();
       await bookmarkClient.update({
@@ -66,9 +66,9 @@ export default function UnreadScreen() {
     } catch {
       setErrorMessage('An error occurred while marking link read.');
     }
-  };
+  }
 
-  const deleteBookmark = async bookmark => {
+  async function deleteBookmark(bookmark) {
     try {
       clearErrorMessage();
       await bookmarkClient.delete({id: bookmark.id});
@@ -76,7 +76,7 @@ export default function UnreadScreen() {
     } catch (e) {
       setErrorMessage('An error occurred while deleting link.');
     }
-  };
+  }
 
   return (
     <ScreenBackground>
