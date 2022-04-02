@@ -39,7 +39,7 @@ const Unread = () => (
     <UnreadStack.Screen
       name="UnreadScreen"
       component={UnreadScreen}
-      options={{title: 'Unread'}}
+      options={{title: 'Unread Links'}}
     />
     <UnreadStack.Screen
       name="BookmarkDetailScreen"
