@@ -9,7 +9,7 @@ export default function UnreadBookmarkRow({
   onMarkRead,
   onDelete,
 }) {
-  const {title, url} = bookmark.attributes;
+  const {title, url, source} = bookmark.attributes;
   return (
     <Card
       style={styles.card}
@@ -18,6 +18,7 @@ export default function UnreadBookmarkRow({
       <Card.Content>
         <Title>{title}</Title>
         <Text>{domainForUrl(url)}</Text>
+        {source && <Text>{source}</Text>}
       </Card.Content>
       <Card.Actions>
         <Button style={styles.button} mode="outlined" onPress={onMarkRead}>
