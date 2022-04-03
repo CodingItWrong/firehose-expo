@@ -35,17 +35,6 @@ export default function UnreadBookmarkRow({
   );
 }
 
-export function formatSource(source) {
-  try {
-    const domain = domainForUrl(source);
-    console.log({source, domain});
-    return domain;
-  } catch (e) {
-    console.log({source, e});
-    return source;
-  }
-}
-
 function openBookmark(url) {
   if (Platform.OS === 'web') {
     window.open(url, '_blank');
