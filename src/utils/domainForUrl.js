@@ -15,5 +15,5 @@ export default function domainForUrl(urlString) {
   if (host.startsWith('www.')) {
     host = host.substr(4);
   }
-  return host;
+  return host || null;
 }
