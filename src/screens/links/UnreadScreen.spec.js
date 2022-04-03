@@ -90,6 +90,23 @@ describe('UnreadScreen', () => {
       expect(Linking.openURL).toHaveBeenCalledWith(bookmark.attributes.url);
     });
 
+    it('opens a link in the browser when clicking the bookmark url', async () => {
+      const http = mockHttp();
+      http.get.mockResolvedValue(jsonApiResponse([bookmark]));
+
+      const {findByText, getByText} = render(
+        <TokenProvider skipLoading>
+          <UnreadScreen />
+        </TokenProvider>,
+      );
+
+      await findByText(bookmark.attributes.title);
+
+      fireEvent.press(getByText('codingitwrong.com'));
+
+      expect(Linking.openURL).toHaveBeenCalledWith(bookmark.attributes.url);
+    });
+
     it('opens a link in the browser when clicking a source url', async () => {
       const source = 'https://mastodon.technology/@codingitwrong/123';
       const bookmarkWithUrlSource = {

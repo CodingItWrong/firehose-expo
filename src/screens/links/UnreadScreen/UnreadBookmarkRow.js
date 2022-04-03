@@ -17,7 +17,9 @@ export default function UnreadBookmarkRow({
           <Title>{title}</Title>
         </Pressable>
         <View style={styles.urlLine}>
-          <Text>{domainForUrl(url)}</Text>
+          <Pressable onPress={() => openBookmark(bookmark.attributes.url)}>
+            <Text>{domainForUrl(url)}</Text>
+          </Pressable>
           <Source source={source} />
         </View>
       </Card.Content>
