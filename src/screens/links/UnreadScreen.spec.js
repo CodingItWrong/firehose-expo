@@ -21,7 +21,7 @@ describe('UnreadScreen', () => {
     id: '1',
     attributes: {
       title: 'Test Bookmark',
-      url: 'https://codingitwrong.com',
+      url: 'https://www.codingitwrong.com/books',
     },
   };
 
@@ -30,7 +30,7 @@ describe('UnreadScreen', () => {
       const http = mockHttp();
       http.get.mockResolvedValue(jsonApiResponse([bookmark]));
 
-      const {findByText, queryByLabelText} = render(
+      const {findByText, queryByLabelText, queryByText} = render(
         <TokenProvider skipLoading>
           <UnreadScreen />
         </TokenProvider>,
@@ -39,6 +39,7 @@ describe('UnreadScreen', () => {
       expect(queryByLabelText('Loading')).not.toBeNull();
       expect(http.get).toHaveBeenCalledWith('bookmarks?filter[read]=false&');
       await findByText(bookmark.attributes.title);
+      expect(queryByText('codingitwrong.com')).not.toBeNull();
       expect(queryByLabelText('Loading')).toBeNull();
     });
 
