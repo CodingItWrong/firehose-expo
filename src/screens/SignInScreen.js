@@ -1,21 +1,18 @@
-import axios from 'axios';
 import {Button, TextInput} from 'react-native-paper';
 import oauthLogin from '../auth/oauthLogin';
 import useLoginForm from '../auth/useLoginForm';
-import baseUrl from '../baseUrl';
 import CenterColumn from '../components/CenterColumn';
 import ErrorMessage from '../components/ErrorMessage';
 import ScreenBackground from '../components/ScreenBackground';
+import authenticatedHttpClient from '../data/authenticatedHttpClient';
 import {useToken} from '../data/token';
 import sharedStyles from '../sharedStyles';
-
-const httpClient = axios.create({baseURL: baseUrl});
 
 export default function SignInScreen() {
   const {setToken} = useToken();
   const onLogIn = ({username, password}) =>
     oauthLogin({
-      httpClient,
+      httpClient: authenticatedHttpClient(),
       username,
       password,
     }).then(setToken);
