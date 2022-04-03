@@ -1,15 +1,16 @@
 import {ResourceClient} from '@codingitwrong/jsonapi-client';
 import {useMemo} from 'react';
-import authenticatedHttpClient from './authenticatedHttpClient';
+import httpClient from './httpClient';
 import {useToken} from './token';
 
 export function useBookmarks() {
   const {token} = useToken();
 
-  const bookmarkClient = useMemo(() => {
-    const httpClient = authenticatedHttpClient({token});
-    return new ResourceClient({name: 'bookmarks', httpClient});
-  }, [token]);
+  const bookmarkClient = useMemo(
+    () =>
+      new ResourceClient({name: 'bookmarks', httpClient: httpClient({token})}),
+    [token],
+  );
 
   return bookmarkClient;
 }

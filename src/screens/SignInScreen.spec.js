@@ -4,7 +4,7 @@ import {mockHttp} from '../testUtils';
 import SignInScreen from './SignInScreen';
 
 jest.mock('../data/token', () => ({useToken: jest.fn()}));
-jest.mock('../data/authenticatedHttpClient');
+jest.mock('../data/httpClient');
 
 describe('SignInScreen', () => {
   const email = 'example@example.com';

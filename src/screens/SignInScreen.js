@@ -4,7 +4,7 @@ import useLoginForm from '../auth/useLoginForm';
 import CenterColumn from '../components/CenterColumn';
 import ErrorMessage from '../components/ErrorMessage';
 import ScreenBackground from '../components/ScreenBackground';
-import authenticatedHttpClient from '../data/authenticatedHttpClient';
+import httpClient from '../data/httpClient';
 import {useToken} from '../data/token';
 import sharedStyles from '../sharedStyles';
 
@@ -12,7 +12,7 @@ export default function SignInScreen() {
   const {setToken} = useToken();
   const onLogIn = ({username, password}) =>
     oauthLogin({
-      httpClient: authenticatedHttpClient(),
+      httpClient: httpClient(),
       username,
       password,
     }).then(setToken);

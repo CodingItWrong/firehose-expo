@@ -10,7 +10,7 @@ import {TokenProvider} from '../../data/token';
 import {jsonApiResponse, mockHttp} from '../../testUtils';
 import UnreadScreen from './UnreadScreen';
 
-jest.mock('../../data/authenticatedHttpClient');
+jest.mock('../../data/httpClient');
 jest.mock('expo-linking', () => ({openURL: jest.fn()}));
 jest.mock('@react-navigation/native', () => ({
   useNavigation: jest.fn(),

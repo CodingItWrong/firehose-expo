@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 
-import authenticatedHttpClient from './data/authenticatedHttpClient';
+import httpClient from './data/httpClient';
 
 export function mockHttp() {
   const http = {
@@ -9,7 +9,7 @@ export function mockHttp() {
     patch: jest.fn(),
     delete: jest.fn(),
   };
-  authenticatedHttpClient.mockReturnValue(http);
+  httpClient.mockReturnValue(http);
   return http;
 }
 
