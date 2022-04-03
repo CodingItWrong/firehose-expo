@@ -1,6 +1,6 @@
 import * as Linking from 'expo-linking';
-import {Platform, Pressable} from 'react-native';
-import {Button, Card, List, Menu} from 'react-native-paper';
+import {Platform} from 'react-native';
+import {Button, Card} from 'react-native-paper';
 
 export default function UnreadBookmarkRow({
   bookmark,
@@ -19,22 +19,10 @@ export default function UnreadBookmarkRow({
         subtitle={bookmark.attributes.url}
         subtitleNumberOfLines={1}
       />
-      <Card.Content>
-        <Menu
-          visible={isMenuShown}
-          onDismiss={onHideMenu}
-          anchor={
-            <Pressable onPress={onShowMenu} accessibilityLabel="Actions">
-              <List.Icon icon="dots-vertical" />
-            </Pressable>
-          }
-        >
-          <Menu.Item onPress={onDelete} title="Delete" />
-        </Menu>
-      </Card.Content>
       <Card.Actions>
         <Button onPress={onMarkRead}>Mark Read</Button>
         <Button onPress={onEdit}>Edit</Button>
+        <Button onPress={onDelete}>Delete</Button>
       </Card.Actions>
     </Card>
   );

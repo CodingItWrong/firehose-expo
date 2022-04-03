@@ -320,13 +320,7 @@ describe('UnreadScreen', () => {
       http.get.mockResolvedValue(jsonApiResponse([bookmark]));
       http.delete.mockResolvedValue(jsonApiResponse());
 
-      const {
-        findByLabelText,
-        findByText,
-        getByLabelText,
-        getByText,
-        queryByText,
-      } = render(
+      const {findByText, getByText} = render(
         <PaperProvider>
           <TokenProvider skipLoading>
             <UnreadScreen />
@@ -334,17 +328,14 @@ describe('UnreadScreen', () => {
         </PaperProvider>,
       );
 
-      await findByLabelText('Actions');
-      fireEvent.press(getByLabelText('Actions'));
-
       await findByText('Delete');
       fireEvent.press(getByText('Delete'));
 
       expect(http.delete).toHaveBeenCalledWith('bookmarks/1');
 
-      await waitForElementToBeRemoved(() => getByText('Delete'));
-      // TODO: fix warning with Menu disappearing
-      expect(queryByText(bookmark.attributes.title)).toBeNull();
+      await waitForElementToBeRemoved(() =>
+        getByText(bookmark.attributes.title),
+      );
     });
 
     it('shows an error message when deleting a link fails', async () => {
@@ -352,13 +343,7 @@ describe('UnreadScreen', () => {
       http.get.mockResolvedValue(jsonApiResponse([bookmark]));
       http.delete.mockRejectedValue();
 
-      const {
-        findByLabelText,
-        findByText,
-        getByLabelText,
-        getByText,
-        queryByText,
-      } = render(
+      const {findByText, getByText, queryByText} = render(
         <PaperProvider>
           <TokenProvider skipLoading>
             <UnreadScreen />
@@ -366,8 +351,6 @@ describe('UnreadScreen', () => {
         </PaperProvider>,
       );
 
-      await findByLabelText('Actions');
-      fireEvent.press(getByLabelText('Actions'));
       await findByText('Delete');
       fireEvent.press(getByText('Delete'));
 
@@ -376,7 +359,6 @@ describe('UnreadScreen', () => {
       // clear error
       http.delete.mockResolvedValue(jsonApiResponse());
 
-      fireEvent.press(getByLabelText('Actions'));
       await findByText('Delete');
       fireEvent.press(getByText('Delete'));
 
