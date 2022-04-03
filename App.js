@@ -8,16 +8,17 @@ import useTheme from './src/useTheme';
 
 export default function App() {
   const theme = useTheme();
+  // Token components must be outermost to prevent flash of white screen
   return (
-    <PaperProvider theme={theme}>
-      <SafeAreaProvider>
-        <StatusBar style="light" />
-        <TokenProvider>
-          <TokenLoadBuffer>
+    <TokenProvider>
+      <TokenLoadBuffer>
+        <PaperProvider theme={theme}>
+          <SafeAreaProvider>
+            <StatusBar style="light" />
             <Navigation />
-          </TokenLoadBuffer>
-        </TokenProvider>
-      </SafeAreaProvider>
-    </PaperProvider>
+          </SafeAreaProvider>
+        </PaperProvider>
+      </TokenLoadBuffer>
+    </TokenProvider>
   );
 }
