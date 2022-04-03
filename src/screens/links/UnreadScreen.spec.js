@@ -70,6 +70,25 @@ describe('UnreadScreen', () => {
     });
   });
 
+  describe('link clicking', () => {
+    it('opens a link in the browser when clicked', async () => {
+      const http = mockHttp();
+      http.get.mockResolvedValue(jsonApiResponse([bookmark]));
+
+      const {findByText, getByText} = render(
+        <TokenProvider skipLoading>
+          <UnreadScreen />
+        </TokenProvider>,
+      );
+
+      await findByText(bookmark.attributes.title);
+
+      fireEvent.press(getByText(bookmark.attributes.title));
+
+      expect(Linking.openURL).toHaveBeenCalledWith(bookmark.attributes.url);
+    });
+  });
+
   describe('refreshing', () => {
     it('refreshes the list when pulling down on mobile', async () => {
       const http = mockHttp();
@@ -105,25 +124,6 @@ describe('UnreadScreen', () => {
       fireEvent.press(getByText('Reload'));
 
       await findByText(bookmark.attributes.title);
-    });
-  });
-
-  describe('link clicking', () => {
-    it('opens a link in the browser when clicked', async () => {
-      const http = mockHttp();
-      http.get.mockResolvedValue(jsonApiResponse([bookmark]));
-
-      const {findByText, getByText} = render(
-        <TokenProvider skipLoading>
-          <UnreadScreen />
-        </TokenProvider>,
-      );
-
-      await findByText(bookmark.attributes.title);
-
-      fireEvent.press(getByText(bookmark.attributes.title));
-
-      expect(Linking.openURL).toHaveBeenCalledWith(bookmark.attributes.url);
     });
   });
 
