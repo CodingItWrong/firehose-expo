@@ -1,6 +1,7 @@
 import * as Linking from 'expo-linking';
 import {Platform, StyleSheet} from 'react-native';
 import {Button, Card, Text, Title} from 'react-native-paper';
+import domainForUrl from '../../../utils/domainForUrl';
 
 export default function UnreadBookmarkRow({
   bookmark,
@@ -15,7 +16,7 @@ export default function UnreadBookmarkRow({
     >
       <Card.Content>
         <Title>{bookmark.attributes.title}</Title>
-        <Text>{bookmark.attributes.url}</Text>
+        <Text>{domainForUrl(bookmark.attributes.url)}</Text>
       </Card.Content>
       <Card.Actions>
         <Button style={styles.button} mode="outlined" onPress={onMarkRead}>
