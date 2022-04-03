@@ -1,5 +1,5 @@
 import * as Linking from 'expo-linking';
-import {Platform, StyleSheet} from 'react-native';
+import {Platform, Pressable, StyleSheet, View} from 'react-native';
 import {Button, Card, Text, Title} from 'react-native-paper';
 import domainForUrl from '../../../utils/domainForUrl';
 
@@ -17,8 +17,10 @@ export default function UnreadBookmarkRow({
     >
       <Card.Content>
         <Title>{title}</Title>
-        <Text>{domainForUrl(url)}</Text>
-        <Source source={source} />
+        <View style={styles.urlLine}>
+          <Text>{domainForUrl(url)}</Text>
+          <Source source={source} />
+        </View>
       </Card.Content>
       <Card.Actions>
         <Button style={styles.button} mode="outlined" onPress={onMarkRead}>
@@ -40,7 +42,27 @@ function Source({source}) {
     return null;
   }
 
-  return <Text>From {source}</Text>;
+  function renderSource() {
+    const domain = domainForUrl(source);
+
+    if (domain) {
+      return (
+        <Pressable onPress={() => openBookmark(source)}>
+          <Text>From {domain}</Text>
+        </Pressable>
+      );
+    } else {
+      // not a URL
+      return <Text>From {source}</Text>;
+    }
+  }
+
+  return (
+    <>
+      <Text> | </Text>
+      {renderSource()}
+    </>
+  );
 }
 
 function openBookmark(url) {
@@ -58,5 +80,8 @@ const styles = StyleSheet.create({
   },
   button: {
     marginRight: 8,
+  },
+  urlLine: {
+    flexDirection: 'row',
   },
 });

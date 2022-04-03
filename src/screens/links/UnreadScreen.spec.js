@@ -89,6 +89,33 @@ describe('UnreadScreen', () => {
 
       expect(Linking.openURL).toHaveBeenCalledWith(bookmark.attributes.url);
     });
+
+    it('opens a link in the browser when clicking a source url', async () => {
+      const source = 'https://mastodon.technology/@codingitwrong/123';
+      const bookmarkWithUrlSource = {
+        ...bookmark,
+        attributes: {
+          ...bookmark.attributes,
+          source,
+        },
+      };
+
+      const http = mockHttp();
+      http.get.mockResolvedValue(jsonApiResponse([bookmarkWithUrlSource]));
+
+      const {findByText, getByText} = render(
+        <TokenProvider skipLoading>
+          <UnreadScreen />
+        </TokenProvider>,
+      );
+
+      const sourceText = 'From mastodon.technology';
+      await findByText(sourceText);
+
+      fireEvent.press(getByText(sourceText));
+
+      expect(Linking.openURL).toHaveBeenCalledWith(source);
+    });
   });
 
   describe('refreshing', () => {
