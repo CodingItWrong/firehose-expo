@@ -1,5 +1,5 @@
 import * as Linking from 'expo-linking';
-import {Platform} from 'react-native';
+import {Platform, StyleSheet} from 'react-native';
 import {Button, Card} from 'react-native-paper';
 
 export default function UnreadBookmarkRow({
@@ -9,7 +9,10 @@ export default function UnreadBookmarkRow({
   onDelete,
 }) {
   return (
-    <Card onPress={() => openBookmark(bookmark.attributes.url)}>
+    <Card
+      style={styles.card}
+      onPress={() => openBookmark(bookmark.attributes.url)}
+    >
       <Card.Title
         title={bookmark.attributes.title}
         titleNumberOfLines={3}
@@ -17,9 +20,15 @@ export default function UnreadBookmarkRow({
         subtitleNumberOfLines={1}
       />
       <Card.Actions>
-        <Button onPress={onMarkRead}>Mark Read</Button>
-        <Button onPress={onEdit}>Edit</Button>
-        <Button onPress={onDelete}>Delete</Button>
+        <Button style={styles.button} mode="outlined" onPress={onMarkRead}>
+          Mark Read
+        </Button>
+        <Button style={styles.button} mode="outlined" onPress={onEdit}>
+          Edit
+        </Button>
+        <Button style={styles.button} mode="contained" onPress={onDelete}>
+          Delete
+        </Button>
       </Card.Actions>
     </Card>
   );
@@ -32,3 +41,13 @@ function openBookmark(url) {
     Linking.openURL(url);
   }
 }
+
+const styles = StyleSheet.create({
+  card: {
+    margin: 15,
+    marginBottom: 0,
+  },
+  button: {
+    marginRight: 8,
+  },
+});
