@@ -297,7 +297,7 @@ describe('UnreadScreen', () => {
       const navigation = {navigate: jest.fn()};
       useNavigation.mockReturnValue(navigation);
 
-      const {findByLabelText, findByText, getByLabelText, getByText} = render(
+      const {findByText, getByText} = render(
         <PaperProvider>
           <TokenProvider skipLoading>
             <UnreadScreen />
@@ -305,13 +305,9 @@ describe('UnreadScreen', () => {
         </PaperProvider>,
       );
 
-      await findByLabelText('Actions');
-      fireEvent.press(getByLabelText('Actions'));
-
       await findByText('Edit');
       fireEvent.press(getByText('Edit'));
 
-      await waitForElementToBeRemoved(() => getByText('Edit'));
       expect(navigation.navigate).toHaveBeenCalledWith('BookmarkDetailScreen', {
         id: bookmark.id,
       });

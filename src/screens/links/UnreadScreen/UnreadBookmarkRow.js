@@ -29,12 +29,12 @@ export default function UnreadBookmarkRow({
             </Pressable>
           }
         >
-          <Menu.Item onPress={onEdit} title="Edit" />
           <Menu.Item onPress={onDelete} title="Delete" />
         </Menu>
       </Card.Content>
       <Card.Actions>
         <Button onPress={onMarkRead}>Mark Read</Button>
+        <Button onPress={onEdit}>Edit</Button>
       </Card.Actions>
     </Card>
   );
