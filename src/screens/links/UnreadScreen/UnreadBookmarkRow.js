@@ -1,6 +1,6 @@
 import * as Linking from 'expo-linking';
 import {Platform, Pressable} from 'react-native';
-import {List, Menu} from 'react-native-paper';
+import {Card, List, Menu} from 'react-native-paper';
 
 export default function UnreadBookmarkRow({
   bookmark,
@@ -12,19 +12,20 @@ export default function UnreadBookmarkRow({
   onDelete,
 }) {
   return (
-    <List.Item
-      title={bookmark.attributes.title}
-      titleNumberOfLines={3}
-      description={bookmark.attributes.url}
-      descriptionNumberOfLines={1}
-      onPress={() => openBookmark(bookmark.attributes.url)}
-      right={props => (
+    <Card onPress={() => openBookmark(bookmark.attributes.url)}>
+      <Card.Title
+        title={bookmark.attributes.title}
+        titleNumberOfLines={3}
+        subtitle={bookmark.attributes.url}
+        subtitleNumberOfLines={1}
+      />
+      <Card.Content>
         <Menu
           visible={isMenuShown}
           onDismiss={onHideMenu}
           anchor={
             <Pressable onPress={onShowMenu} accessibilityLabel="Actions">
-              <List.Icon {...props} icon="dots-vertical" />
+              <List.Icon icon="dots-vertical" />
             </Pressable>
           }
         >
@@ -32,8 +33,8 @@ export default function UnreadBookmarkRow({
           <Menu.Item onPress={onEdit} title="Edit" />
           <Menu.Item onPress={onDelete} title="Delete" />
         </Menu>
-      )}
-    />
+      </Card.Content>
+    </Card>
   );
 }
 
