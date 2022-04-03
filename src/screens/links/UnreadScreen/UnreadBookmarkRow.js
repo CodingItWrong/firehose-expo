@@ -18,7 +18,7 @@ export default function UnreadBookmarkRow({
       <Card.Content>
         <Title>{title}</Title>
         <Text>{domainForUrl(url)}</Text>
-        {source && <Text>{source}</Text>}
+        {source && <Text>From {source}</Text>}
       </Card.Content>
       <Card.Actions>
         <Button style={styles.button} mode="outlined" onPress={onMarkRead}>
