@@ -73,7 +73,7 @@ describe('UnreadScreen', () => {
   });
 
   describe('link clicking', () => {
-    it('opens a link in the browser when clicking the card', async () => {
+    it('opens a link in the browser when clicking the title', async () => {
       const http = mockHttp();
       http.get.mockResolvedValue(jsonApiResponse([bookmark]));
 

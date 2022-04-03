@@ -11,12 +11,11 @@ export default function UnreadBookmarkRow({
 }) {
   const {title, url, source} = bookmark.attributes;
   return (
-    <Card
-      style={styles.card}
-      onPress={() => openBookmark(bookmark.attributes.url)}
-    >
+    <Card style={styles.card}>
       <Card.Content>
-        <Title>{title}</Title>
+        <Pressable onPress={() => openBookmark(bookmark.attributes.url)}>
+          <Title>{title}</Title>
+        </Pressable>
         <View style={styles.urlLine}>
           <Text>{domainForUrl(url)}</Text>
           <Source source={source} />
