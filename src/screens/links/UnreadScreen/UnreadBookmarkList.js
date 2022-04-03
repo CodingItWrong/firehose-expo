@@ -1,5 +1,4 @@
 import {useNavigation} from '@react-navigation/native';
-import {useState} from 'react';
 import ErrorMessage from '../../../components/ErrorMessage';
 import NoRecordsMessage from '../../../components/NoRecordsMessage';
 import RefreshableFlatList from '../../../components/RefreshableFlatList';
@@ -14,25 +13,9 @@ export default function UnreadBookmarkList({
   onDelete,
 }) {
   const navigation = useNavigation();
-  const [menuShownId, setMenuShownId] = useState(null);
-
-  const isMenuShown = bookmark => menuShownId === bookmark.id;
-  const showMenu = bookmark => setMenuShownId(bookmark.id);
-  const hideMenu = () => setMenuShownId(null);
 
   function handleEdit(bookmark) {
-    hideMenu();
     navigation.navigate('BookmarkDetailScreen', {id: bookmark.id});
-  }
-
-  async function handleMarkRead(bookmark) {
-    await onMarkRead(bookmark);
-    hideMenu();
-  }
-
-  async function handleDelete(bookmark) {
-    await onDelete(bookmark);
-    hideMenu();
   }
 
   function listHeader() {
@@ -57,12 +40,9 @@ export default function UnreadBookmarkList({
       renderItem={({item}) => (
         <UnreadBookmarkRow
           bookmark={item}
-          isMenuShown={isMenuShown(item)}
-          onShowMenu={() => showMenu(item)}
-          onHideMenu={hideMenu}
           onEdit={() => handleEdit(item)}
-          onMarkRead={() => handleMarkRead(item)}
-          onDelete={() => handleDelete(item)}
+          onMarkRead={() => onMarkRead(item)}
+          onDelete={() => onDelete(item)}
         />
       )}
     />

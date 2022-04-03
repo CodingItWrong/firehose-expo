@@ -1,39 +1,36 @@
 import * as Linking from 'expo-linking';
-import {Platform, Pressable} from 'react-native';
-import {List, Menu} from 'react-native-paper';
+import {Platform, StyleSheet} from 'react-native';
+import {Button, Card} from 'react-native-paper';
 
 export default function UnreadBookmarkRow({
   bookmark,
-  isMenuShown,
-  onShowMenu,
-  onHideMenu,
   onEdit,
   onMarkRead,
   onDelete,
 }) {
   return (
-    <List.Item
-      title={bookmark.attributes.title}
-      titleNumberOfLines={3}
-      description={bookmark.attributes.url}
-      descriptionNumberOfLines={1}
+    <Card
+      style={styles.card}
       onPress={() => openBookmark(bookmark.attributes.url)}
-      right={props => (
-        <Menu
-          visible={isMenuShown}
-          onDismiss={onHideMenu}
-          anchor={
-            <Pressable onPress={onShowMenu} accessibilityLabel="Actions">
-              <List.Icon {...props} icon="dots-vertical" />
-            </Pressable>
-          }
-        >
-          <Menu.Item onPress={onMarkRead} title="Mark Read" />
-          <Menu.Item onPress={onEdit} title="Edit" />
-          <Menu.Item onPress={onDelete} title="Delete" />
-        </Menu>
-      )}
-    />
+    >
+      <Card.Title
+        title={bookmark.attributes.title}
+        titleNumberOfLines={3}
+        subtitle={bookmark.attributes.url}
+        subtitleNumberOfLines={1}
+      />
+      <Card.Actions>
+        <Button style={styles.button} mode="outlined" onPress={onMarkRead}>
+          Mark Read
+        </Button>
+        <Button style={styles.button} mode="outlined" onPress={onEdit}>
+          Edit
+        </Button>
+        <Button style={styles.button} mode="contained" onPress={onDelete}>
+          Delete
+        </Button>
+      </Card.Actions>
+    </Card>
   );
 }
 
@@ -44,3 +41,13 @@ function openBookmark(url) {
     Linking.openURL(url);
   }
 }
+
+const styles = StyleSheet.create({
+  card: {
+    margin: 15,
+    marginBottom: 0,
+  },
+  button: {
+    marginRight: 8,
+  },
+});

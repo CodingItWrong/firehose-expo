@@ -229,22 +229,13 @@ describe('UnreadScreen', () => {
       http.get.mockResolvedValue(jsonApiResponse([bookmark]));
       http.patch.mockResolvedValue(jsonApiResponse());
 
-      const {
-        findByLabelText,
-        findByText,
-        getByLabelText,
-        getByText,
-        queryByText,
-      } = render(
+      const {findByText, getByText} = render(
         <PaperProvider>
           <TokenProvider skipLoading>
             <UnreadScreen />
           </TokenProvider>
         </PaperProvider>,
       );
-
-      await findByLabelText('Actions');
-      fireEvent.press(getByLabelText('Actions'));
 
       await findByText('Mark Read');
       fireEvent.press(getByText('Mark Read'));
@@ -261,9 +252,9 @@ describe('UnreadScreen', () => {
         {headers: {'Content-Type': 'application/vnd.api+json'}},
       );
 
-      await waitForElementToBeRemoved(() => getByText('Mark Read'));
-      // TODO: fix warning with Mark Read disappearing
-      expect(queryByText(bookmark.attributes.title)).toBeNull();
+      await waitForElementToBeRemoved(() =>
+        getByText(bookmark.attributes.title),
+      );
     });
 
     it('shows an error message when marking a link read fails', async () => {
@@ -271,13 +262,7 @@ describe('UnreadScreen', () => {
       http.get.mockResolvedValue(jsonApiResponse([bookmark]));
       http.patch.mockRejectedValue();
 
-      const {
-        findByLabelText,
-        findByText,
-        getByLabelText,
-        getByText,
-        queryByText,
-      } = render(
+      const {findByText, getByText, queryByText} = render(
         <PaperProvider>
           <TokenProvider skipLoading>
             <UnreadScreen />
@@ -285,8 +270,6 @@ describe('UnreadScreen', () => {
         </PaperProvider>,
       );
 
-      await findByLabelText('Actions');
-      fireEvent.press(getByLabelText('Actions'));
       await findByText('Mark Read');
       fireEvent.press(getByText('Mark Read'));
 
@@ -295,8 +278,6 @@ describe('UnreadScreen', () => {
       // clear error
       http.patch.mockResolvedValue(jsonApiResponse());
 
-      fireEvent.press(getByLabelText('Actions'));
-      await findByText('Mark Read');
       fireEvent.press(getByText('Mark Read'));
 
       expect(
@@ -316,7 +297,7 @@ describe('UnreadScreen', () => {
       const navigation = {navigate: jest.fn()};
       useNavigation.mockReturnValue(navigation);
 
-      const {findByLabelText, findByText, getByLabelText, getByText} = render(
+      const {findByText, getByText} = render(
         <PaperProvider>
           <TokenProvider skipLoading>
             <UnreadScreen />
@@ -324,13 +305,9 @@ describe('UnreadScreen', () => {
         </PaperProvider>,
       );
 
-      await findByLabelText('Actions');
-      fireEvent.press(getByLabelText('Actions'));
-
       await findByText('Edit');
       fireEvent.press(getByText('Edit'));
 
-      await waitForElementToBeRemoved(() => getByText('Edit'));
       expect(navigation.navigate).toHaveBeenCalledWith('BookmarkDetailScreen', {
         id: bookmark.id,
       });
@@ -343,13 +320,7 @@ describe('UnreadScreen', () => {
       http.get.mockResolvedValue(jsonApiResponse([bookmark]));
       http.delete.mockResolvedValue(jsonApiResponse());
 
-      const {
-        findByLabelText,
-        findByText,
-        getByLabelText,
-        getByText,
-        queryByText,
-      } = render(
+      const {findByText, getByText} = render(
         <PaperProvider>
           <TokenProvider skipLoading>
             <UnreadScreen />
@@ -357,17 +328,14 @@ describe('UnreadScreen', () => {
         </PaperProvider>,
       );
 
-      await findByLabelText('Actions');
-      fireEvent.press(getByLabelText('Actions'));
-
       await findByText('Delete');
       fireEvent.press(getByText('Delete'));
 
       expect(http.delete).toHaveBeenCalledWith('bookmarks/1');
 
-      await waitForElementToBeRemoved(() => getByText('Delete'));
-      // TODO: fix warning with Menu disappearing
-      expect(queryByText(bookmark.attributes.title)).toBeNull();
+      await waitForElementToBeRemoved(() =>
+        getByText(bookmark.attributes.title),
+      );
     });
 
     it('shows an error message when deleting a link fails', async () => {
@@ -375,13 +343,7 @@ describe('UnreadScreen', () => {
       http.get.mockResolvedValue(jsonApiResponse([bookmark]));
       http.delete.mockRejectedValue();
 
-      const {
-        findByLabelText,
-        findByText,
-        getByLabelText,
-        getByText,
-        queryByText,
-      } = render(
+      const {findByText, getByText, queryByText} = render(
         <PaperProvider>
           <TokenProvider skipLoading>
             <UnreadScreen />
@@ -389,8 +351,6 @@ describe('UnreadScreen', () => {
         </PaperProvider>,
       );
 
-      await findByLabelText('Actions');
-      fireEvent.press(getByLabelText('Actions'));
       await findByText('Delete');
       fireEvent.press(getByText('Delete'));
 
@@ -399,7 +359,6 @@ describe('UnreadScreen', () => {
       // clear error
       http.delete.mockResolvedValue(jsonApiResponse());
 
-      fireEvent.press(getByLabelText('Actions'));
       await findByText('Delete');
       fireEvent.press(getByText('Delete'));
 
