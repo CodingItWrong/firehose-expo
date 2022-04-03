@@ -1,6 +1,6 @@
 import * as Linking from 'expo-linking';
 import {Platform, Pressable, StyleSheet, View} from 'react-native';
-import {Button, Card, Text, Title} from 'react-native-paper';
+import {Button, Card, Chip, Text, Title} from 'react-native-paper';
 import domainForUrl from '../../../utils/domainForUrl';
 
 export default function UnreadBookmarkRow({
@@ -10,6 +10,10 @@ export default function UnreadBookmarkRow({
   onDelete,
 }) {
   const {title, url, source} = bookmark.attributes;
+
+  const tagList = bookmark.attributes['tag-list'];
+  const tags = tagList ? tagList.split(' ') : [];
+
   return (
     <Card style={styles.card}>
       <Card.Content>
@@ -22,6 +26,15 @@ export default function UnreadBookmarkRow({
           </Pressable>
           <Source source={source} />
         </View>
+        {tags.length > 0 && (
+          <View style={styles.tagList}>
+            {tags.map(tag => (
+              <Chip key={tag} style={styles.tag}>
+                {tag}
+              </Chip>
+            ))}
+          </View>
+        )}
       </Card.Content>
       <Card.Actions>
         <Button style={styles.button} mode="outlined" onPress={onMarkRead}>
@@ -84,5 +97,12 @@ const styles = StyleSheet.create({
   },
   urlLine: {
     flexDirection: 'row',
+  },
+  tagList: {
+    flexDirection: 'row',
+    marginTop: 8,
+  },
+  tag: {
+    marginRight: 8,
   },
 });
