@@ -18,4 +18,8 @@ describe('domainForUrl', () => {
   it('returns the domain for a url with path', () => {
     expect(domainForUrl('https://apple.com/iphone')).toEqual('apple.com');
   });
+
+  it('returns null for a string that is not a url', () => {
+    expect(domainForUrl('Fred Flintstone')).toBeNull();
+  });
 });

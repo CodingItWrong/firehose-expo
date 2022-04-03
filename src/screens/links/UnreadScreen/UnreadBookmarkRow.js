@@ -1,5 +1,5 @@
 import * as Linking from 'expo-linking';
-import {Platform, StyleSheet} from 'react-native';
+import {Platform, Pressable, StyleSheet, View} from 'react-native';
 import {Button, Card, Text, Title} from 'react-native-paper';
 import domainForUrl from '../../../utils/domainForUrl';
 
@@ -9,14 +9,19 @@ export default function UnreadBookmarkRow({
   onMarkRead,
   onDelete,
 }) {
+  const {title, url, source} = bookmark.attributes;
   return (
-    <Card
-      style={styles.card}
-      onPress={() => openBookmark(bookmark.attributes.url)}
-    >
+    <Card style={styles.card}>
       <Card.Content>
-        <Title>{bookmark.attributes.title}</Title>
-        <Text>{domainForUrl(bookmark.attributes.url)}</Text>
+        <Pressable onPress={() => openBookmark(bookmark.attributes.url)}>
+          <Title>{title}</Title>
+        </Pressable>
+        <View style={styles.urlLine}>
+          <Pressable onPress={() => openBookmark(bookmark.attributes.url)}>
+            <Text>{domainForUrl(url)}</Text>
+          </Pressable>
+          <Source source={source} />
+        </View>
       </Card.Content>
       <Card.Actions>
         <Button style={styles.button} mode="outlined" onPress={onMarkRead}>
@@ -33,15 +38,32 @@ export default function UnreadBookmarkRow({
   );
 }
 
-export function formatSource(source) {
-  try {
-    const domain = domainForUrl(source);
-    console.log({source, domain});
-    return domain;
-  } catch (e) {
-    console.log({source, e});
-    return source;
+function Source({source}) {
+  if (!source) {
+    return null;
   }
+
+  function renderSource() {
+    const domain = domainForUrl(source);
+
+    if (domain) {
+      return (
+        <Pressable onPress={() => openBookmark(source)}>
+          <Text>From {domain}</Text>
+        </Pressable>
+      );
+    } else {
+      // not a URL
+      return <Text>From {source}</Text>;
+    }
+  }
+
+  return (
+    <>
+      <Text> | </Text>
+      {renderSource()}
+    </>
+  );
 }
 
 function openBookmark(url) {
@@ -59,5 +81,8 @@ const styles = StyleSheet.create({
   },
   button: {
     marginRight: 8,
+  },
+  urlLine: {
+    flexDirection: 'row',
   },
 });

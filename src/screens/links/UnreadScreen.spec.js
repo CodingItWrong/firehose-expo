@@ -22,6 +22,7 @@ describe('UnreadScreen', () => {
     attributes: {
       title: 'Test Bookmark',
       url: 'https://www.codingitwrong.com/books',
+      source: 'Nice Referrer',
     },
   };
 
@@ -40,6 +41,7 @@ describe('UnreadScreen', () => {
       expect(http.get).toHaveBeenCalledWith('bookmarks?filter[read]=false&');
       await findByText(bookmark.attributes.title);
       expect(queryByText('codingitwrong.com')).not.toBeNull();
+      expect(queryByText(`From ${bookmark.attributes.source}`)).not.toBeNull();
       expect(queryByLabelText('Loading')).toBeNull();
     });
 
@@ -67,6 +69,69 @@ describe('UnreadScreen', () => {
       );
 
       await findByText('No unread links.');
+    });
+  });
+
+  describe('link clicking', () => {
+    it('opens a link in the browser when clicking the title', async () => {
+      const http = mockHttp();
+      http.get.mockResolvedValue(jsonApiResponse([bookmark]));
+
+      const {findByText, getByText} = render(
+        <TokenProvider skipLoading>
+          <UnreadScreen />
+        </TokenProvider>,
+      );
+
+      await findByText(bookmark.attributes.title);
+
+      fireEvent.press(getByText(bookmark.attributes.title));
+
+      expect(Linking.openURL).toHaveBeenCalledWith(bookmark.attributes.url);
+    });
+
+    it('opens a link in the browser when clicking the bookmark url', async () => {
+      const http = mockHttp();
+      http.get.mockResolvedValue(jsonApiResponse([bookmark]));
+
+      const {findByText, getByText} = render(
+        <TokenProvider skipLoading>
+          <UnreadScreen />
+        </TokenProvider>,
+      );
+
+      await findByText(bookmark.attributes.title);
+
+      fireEvent.press(getByText('codingitwrong.com'));
+
+      expect(Linking.openURL).toHaveBeenCalledWith(bookmark.attributes.url);
+    });
+
+    it('opens a link in the browser when clicking a source url', async () => {
+      const source = 'https://mastodon.technology/@codingitwrong/123';
+      const bookmarkWithUrlSource = {
+        ...bookmark,
+        attributes: {
+          ...bookmark.attributes,
+          source,
+        },
+      };
+
+      const http = mockHttp();
+      http.get.mockResolvedValue(jsonApiResponse([bookmarkWithUrlSource]));
+
+      const {findByText, getByText} = render(
+        <TokenProvider skipLoading>
+          <UnreadScreen />
+        </TokenProvider>,
+      );
+
+      const sourceText = 'From mastodon.technology';
+      await findByText(sourceText);
+
+      fireEvent.press(getByText(sourceText));
+
+      expect(Linking.openURL).toHaveBeenCalledWith(source);
     });
   });
 
@@ -105,25 +170,6 @@ describe('UnreadScreen', () => {
       fireEvent.press(getByText('Reload'));
 
       await findByText(bookmark.attributes.title);
-    });
-  });
-
-  describe('link clicking', () => {
-    it('opens a link in the browser when clicked', async () => {
-      const http = mockHttp();
-      http.get.mockResolvedValue(jsonApiResponse([bookmark]));
-
-      const {findByText, getByText} = render(
-        <TokenProvider skipLoading>
-          <UnreadScreen />
-        </TokenProvider>,
-      );
-
-      await findByText(bookmark.attributes.title);
-
-      fireEvent.press(getByText(bookmark.attributes.title));
-
-      expect(Linking.openURL).toHaveBeenCalledWith(bookmark.attributes.url);
     });
   });
 
