@@ -1,6 +1,6 @@
 import * as Linking from 'expo-linking';
 import {Platform, Pressable} from 'react-native';
-import {Card, List, Menu} from 'react-native-paper';
+import {Button, Card, List, Menu} from 'react-native-paper';
 
 export default function UnreadBookmarkRow({
   bookmark,
@@ -29,11 +29,13 @@ export default function UnreadBookmarkRow({
             </Pressable>
           }
         >
-          <Menu.Item onPress={onMarkRead} title="Mark Read" />
           <Menu.Item onPress={onEdit} title="Edit" />
           <Menu.Item onPress={onDelete} title="Delete" />
         </Menu>
       </Card.Content>
+      <Card.Actions>
+        <Button onPress={onMarkRead}>Mark Read</Button>
+      </Card.Actions>
     </Card>
   );
 }
