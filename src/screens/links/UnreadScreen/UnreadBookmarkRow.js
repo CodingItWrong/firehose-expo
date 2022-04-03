@@ -9,14 +9,15 @@ export default function UnreadBookmarkRow({
   onMarkRead,
   onDelete,
 }) {
+  const {title, url} = bookmark.attributes;
   return (
     <Card
       style={styles.card}
       onPress={() => openBookmark(bookmark.attributes.url)}
     >
       <Card.Content>
-        <Title>{bookmark.attributes.title}</Title>
-        <Text>{domainForUrl(bookmark.attributes.url)}</Text>
+        <Title>{title}</Title>
+        <Text>{domainForUrl(url)}</Text>
       </Card.Content>
       <Card.Actions>
         <Button style={styles.button} mode="outlined" onPress={onMarkRead}>
