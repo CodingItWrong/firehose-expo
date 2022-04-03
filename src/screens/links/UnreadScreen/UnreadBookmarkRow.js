@@ -18,7 +18,7 @@ export default function UnreadBookmarkRow({
       <Card.Content>
         <Title>{title}</Title>
         <Text>{domainForUrl(url)}</Text>
-        {source && <Text>From {source}</Text>}
+        <Source source={source} />
       </Card.Content>
       <Card.Actions>
         <Button style={styles.button} mode="outlined" onPress={onMarkRead}>
@@ -33,6 +33,14 @@ export default function UnreadBookmarkRow({
       </Card.Actions>
     </Card>
   );
+}
+
+function Source({source}) {
+  if (!source) {
+    return null;
+  }
+
+  return <Text>From {source}</Text>;
 }
 
 function openBookmark(url) {
