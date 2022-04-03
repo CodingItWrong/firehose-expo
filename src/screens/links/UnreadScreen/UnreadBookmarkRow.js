@@ -4,9 +4,6 @@ import {Button, Card} from 'react-native-paper';
 
 export default function UnreadBookmarkRow({
   bookmark,
-  isMenuShown,
-  onShowMenu,
-  onHideMenu,
   onEdit,
   onMarkRead,
   onDelete,
