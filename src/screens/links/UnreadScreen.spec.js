@@ -22,6 +22,7 @@ describe('UnreadScreen', () => {
     attributes: {
       title: 'Test Bookmark',
       url: 'https://www.codingitwrong.com/books',
+      comment: 'This is my book list',
       source: 'Nice Referrer',
       'tag-list': 'tag another-tag',
     },
@@ -41,6 +42,7 @@ describe('UnreadScreen', () => {
       expect(queryByLabelText('Loading')).not.toBeNull();
       expect(http.get).toHaveBeenCalledWith('bookmarks?filter[read]=false&');
       await findByText(bookmark.attributes.title);
+      expect(queryByText(bookmark.attributes.comment)).not.toBeNull();
       expect(queryByText('codingitwrong.com')).not.toBeNull();
       expect(queryByText(`From ${bookmark.attributes.source}`)).not.toBeNull();
       expect(queryByText('tag')).not.toBeNull();
