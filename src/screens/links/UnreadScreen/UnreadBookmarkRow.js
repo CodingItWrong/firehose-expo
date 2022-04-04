@@ -9,7 +9,7 @@ export default function UnreadBookmarkRow({
   onMarkRead,
   onDelete,
 }) {
-  const {title, url, source} = bookmark.attributes;
+  const {title, url, source, comment} = bookmark.attributes;
 
   const tagList = bookmark.attributes['tag-list'];
   const tags = tagList ? tagList.split(' ') : [];
@@ -20,6 +20,7 @@ export default function UnreadBookmarkRow({
         <Pressable onPress={() => openBookmark(bookmark.attributes.url)}>
           <Title>{title}</Title>
         </Pressable>
+        {comment && <Text style={styles.comment}>{comment}</Text>}
         <View style={styles.urlLine}>
           <Pressable onPress={() => openBookmark(bookmark.attributes.url)}>
             <Text>{domainForUrl(url)}</Text>
@@ -94,6 +95,9 @@ const styles = StyleSheet.create({
   },
   button: {
     marginRight: 8,
+  },
+  comment: {
+    marginBottom: 20,
   },
   urlLine: {
     flexDirection: 'row',
