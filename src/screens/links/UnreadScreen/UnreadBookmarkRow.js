@@ -5,6 +5,7 @@ import domainForUrl from '../../../utils/domainForUrl';
 
 export default function UnreadBookmarkRow({
   bookmark,
+  style,
   onEdit,
   onMarkRead,
   onDelete,
@@ -15,7 +16,7 @@ export default function UnreadBookmarkRow({
   const tags = tagList ? tagList.split(' ') : [];
 
   return (
-    <Card style={styles.card}>
+    <Card style={style}>
       <Card.Content>
         <Pressable onPress={() => openBookmark(bookmark.attributes.url)}>
           <Title>{title}</Title>
@@ -89,10 +90,6 @@ function openBookmark(url) {
 }
 
 const styles = StyleSheet.create({
-  card: {
-    margin: 15,
-    marginBottom: 0,
-  },
   button: {
     marginRight: 8,
   },

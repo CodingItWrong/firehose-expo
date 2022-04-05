@@ -1,4 +1,5 @@
 import {useNavigation} from '@react-navigation/native';
+import {Platform, StyleSheet} from 'react-native';
 import ErrorMessage from '../../../components/ErrorMessage';
 import NoRecordsMessage from '../../../components/NoRecordsMessage';
 import RefreshableFlatList from '../../../components/RefreshableFlatList';
@@ -36,10 +37,12 @@ export default function UnreadBookmarkList({
       data={bookmarks}
       onRefresh={onRefresh}
       showLoadingIndicator={bookmarks === null}
+      contentContainerStyle={styles.list}
       keyExtractor={item => item.id}
       renderItem={({item}) => (
         <UnreadBookmarkRow
           bookmark={item}
+          style={styles.card}
           onEdit={() => handleEdit(item)}
           onMarkRead={() => onMarkRead(item)}
           onDelete={() => onDelete(item)}
@@ -48,3 +51,12 @@ export default function UnreadBookmarkList({
     />
   );
 }
+
+const styles = StyleSheet.create({
+  list: {
+    paddingTop: Platform.OS === 'web' ? 0 : 15,
+  },
+  card: {
+    marginBottom: 15,
+  },
+});
