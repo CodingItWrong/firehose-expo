@@ -57,7 +57,6 @@ const styles = StyleSheet.create({
     paddingTop: Platform.OS === 'web' ? 0 : 15,
   },
   card: {
-    margin: 15,
-    marginTop: 0,
+    marginBottom: 15,
   },
 });
