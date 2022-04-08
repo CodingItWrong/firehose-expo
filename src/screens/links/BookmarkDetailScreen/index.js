@@ -1,6 +1,6 @@
 import {useEffect, useState} from 'react';
 import {View} from 'react-native';
-import {TextInput} from 'react-native-paper';
+import {Button, TextInput} from 'react-native-paper';
 import {useBookmarks} from '../../../data/bookmarks';
 
 export default function BookmarkDetailScreen({route}) {
@@ -48,6 +48,7 @@ export default function BookmarkDetailScreen({route}) {
         accessibilityLabel="Comment"
         value={bookmark.attributes.comment}
       />
+      <Button>Save</Button>
     </View>
   );
 }

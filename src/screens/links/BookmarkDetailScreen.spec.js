@@ -40,7 +40,7 @@ describe('BookmarkDetailScreen', () => {
 
     const route = {params: {id: bookmark.id}};
 
-    const {findByLabelText, getByLabelText} = render(
+    const {findByLabelText, getByLabelText, getByText} = render(
       providers(<BookmarkDetailScreen route={route} />),
     );
 
@@ -58,5 +58,6 @@ describe('BookmarkDetailScreen', () => {
     fireEvent.changeText(getByLabelText('Tags'), newTagList);
     fireEvent.changeText(getByLabelText('Source'), newSource);
     fireEvent.changeText(getByLabelText('Comment'), newComment);
+    fireEvent.press(getByText('Save'));
   });
 });
