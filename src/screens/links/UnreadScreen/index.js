@@ -1,4 +1,5 @@
-import {useCallback, useEffect, useRef, useState} from 'react';
+import {useFocusEffect} from '@react-navigation/native';
+import {useCallback, useRef, useState} from 'react';
 import CenterColumn from '../../../components/CenterColumn';
 import ScreenBackground from '../../../components/ScreenBackground';
 import {useBookmarks} from '../../../data/bookmarks';
@@ -29,9 +30,11 @@ export default function UnreadScreen() {
     }
   }, [bookmarkClient]);
 
-  useEffect(() => {
-    loadFromServer();
-  }, [loadFromServer]);
+  useFocusEffect(
+    useCallback(() => {
+      loadFromServer();
+    }, [loadFromServer]),
+  );
 
   async function refresh() {
     const reloadedBookmarks = await loadFromServer();
