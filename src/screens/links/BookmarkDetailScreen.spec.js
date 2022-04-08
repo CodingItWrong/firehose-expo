@@ -1,9 +1,13 @@
-import {fireEvent, render} from '@testing-library/react-native';
+import {useNavigation} from '@react-navigation/native';
+import {fireEvent, render, waitFor} from '@testing-library/react-native';
 import {TokenProvider} from '../../data/token';
 import {jsonApiResponse, mockHttp} from '../../testUtils';
 import BookmarkDetailScreen from './BookmarkDetailScreen';
 
 jest.mock('../../data/httpClient');
+jest.mock('@react-navigation/native', () => ({
+  useNavigation: jest.fn(),
+}));
 
 describe('BookmarkDetailScreen', () => {
   const bookmark = {
@@ -38,6 +42,9 @@ describe('BookmarkDetailScreen', () => {
     const http = mockHttp();
     http.get.mockResolvedValue(jsonApiResponse(bookmark));
     http.patch.mockResolvedValue(jsonApiResponse());
+
+    const navigation = {goBack: jest.fn()};
+    useNavigation.mockReturnValue(navigation);
 
     const route = {params: {id: bookmark.id}};
 
@@ -82,6 +89,7 @@ describe('BookmarkDetailScreen', () => {
       {headers: {'Content-Type': 'application/vnd.api+json'}},
     );
 
-    // TODO: confirm navigate back to parent screen
+    // confirm navigate back to parent screen
+    await waitFor(() => expect(navigation.goBack).toHaveBeenCalledWith());
   });
 });

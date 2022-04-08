@@ -1,9 +1,11 @@
+import {useNavigation} from '@react-navigation/native';
 import {useEffect, useState} from 'react';
 import {View} from 'react-native';
 import {Button, TextInput} from 'react-native-paper';
 import {useBookmarks} from '../../../data/bookmarks';
 
 export default function BookmarkDetailScreen({route}) {
+  const navigation = useNavigation();
   const {id} = route.params;
   const bookmarkClient = useBookmarks();
 
@@ -29,11 +31,16 @@ export default function BookmarkDetailScreen({route}) {
       .catch(console.error);
   }, [bookmarkClient, id]);
 
-  function handleSave() {
-    bookmarkClient.update({
-      id,
-      attributes: {url, title, source, comment, 'tag-list': tagList},
-    });
+  async function handleSave() {
+    try {
+      await bookmarkClient.update({
+        id,
+        attributes: {url, title, source, comment, 'tag-list': tagList},
+      });
+      navigation.goBack();
+    } catch (e) {
+      console.error(e);
+    }
   }
 
   if (!loaded) {
