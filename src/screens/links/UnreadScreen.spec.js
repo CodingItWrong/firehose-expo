@@ -44,17 +44,21 @@ describe('UnreadScreen', () => {
     },
   };
 
+  const providers = children => (
+    <SafeAreaProvider initialMetrics={safeAreaMetrics}>
+      <PaperProvider>
+        <TokenProvider skipLoading>{children}</TokenProvider>
+      </PaperProvider>
+    </SafeAreaProvider>
+  );
+
   describe('displaying links', () => {
     it('renders links from the backend', async () => {
       const http = mockHttp();
       http.get.mockResolvedValue(jsonApiResponse([bookmark]));
 
       const {findByText, queryByLabelText, queryByText} = render(
-        <SafeAreaProvider initialMetrics={safeAreaMetrics}>
-          <TokenProvider skipLoading>
-            <UnreadScreen />
-          </TokenProvider>
-        </SafeAreaProvider>,
+        providers(<UnreadScreen />),
       );
 
       expect(queryByLabelText('Loading')).not.toBeNull();
@@ -73,13 +77,7 @@ describe('UnreadScreen', () => {
       const http = mockHttp();
       http.get.mockRejectedValue();
 
-      const {findByText} = render(
-        <SafeAreaProvider initialMetrics={safeAreaMetrics}>
-          <TokenProvider skipLoading>
-            <UnreadScreen />
-          </TokenProvider>
-        </SafeAreaProvider>,
-      );
+      const {findByText} = render(providers(<UnreadScreen />));
 
       await findByText('An error occurred while loading links.');
     });
@@ -88,13 +86,7 @@ describe('UnreadScreen', () => {
       const http = mockHttp();
       http.get.mockResolvedValue(jsonApiResponse([]));
 
-      const {findByText} = render(
-        <SafeAreaProvider initialMetrics={safeAreaMetrics}>
-          <TokenProvider skipLoading>
-            <UnreadScreen />
-          </TokenProvider>
-        </SafeAreaProvider>,
-      );
+      const {findByText} = render(providers(<UnreadScreen />));
 
       await findByText('No unread links.');
     });
@@ -105,13 +97,7 @@ describe('UnreadScreen', () => {
       const http = mockHttp();
       http.get.mockResolvedValue(jsonApiResponse([bookmark]));
 
-      const {findByText, getByText} = render(
-        <SafeAreaProvider initialMetrics={safeAreaMetrics}>
-          <TokenProvider skipLoading>
-            <UnreadScreen />
-          </TokenProvider>
-        </SafeAreaProvider>,
-      );
+      const {findByText, getByText} = render(providers(<UnreadScreen />));
 
       await findByText(bookmark.attributes.title);
 
@@ -124,13 +110,7 @@ describe('UnreadScreen', () => {
       const http = mockHttp();
       http.get.mockResolvedValue(jsonApiResponse([bookmark]));
 
-      const {findByText, getByText} = render(
-        <SafeAreaProvider initialMetrics={safeAreaMetrics}>
-          <TokenProvider skipLoading>
-            <UnreadScreen />
-          </TokenProvider>
-        </SafeAreaProvider>,
-      );
+      const {findByText, getByText} = render(providers(<UnreadScreen />));
 
       await findByText(bookmark.attributes.title);
 
@@ -152,13 +132,7 @@ describe('UnreadScreen', () => {
       const http = mockHttp();
       http.get.mockResolvedValue(jsonApiResponse([bookmarkWithUrlSource]));
 
-      const {findByText, getByText} = render(
-        <SafeAreaProvider initialMetrics={safeAreaMetrics}>
-          <TokenProvider skipLoading>
-            <UnreadScreen />
-          </TokenProvider>
-        </SafeAreaProvider>,
-      );
+      const {findByText, getByText} = render(providers(<UnreadScreen />));
 
       const sourceText = 'From mastodon.technology';
       await findByText(sourceText);
@@ -174,13 +148,7 @@ describe('UnreadScreen', () => {
       const http = mockHttp();
       http.get.mockResolvedValue(jsonApiResponse([]));
 
-      const {findByText, getByTestId} = render(
-        <SafeAreaProvider initialMetrics={safeAreaMetrics}>
-          <TokenProvider skipLoading>
-            <UnreadScreen />
-          </TokenProvider>
-        </SafeAreaProvider>,
-      );
+      const {findByText, getByTestId} = render(providers(<UnreadScreen />));
 
       await findByText('No unread links.');
 
@@ -194,13 +162,7 @@ describe('UnreadScreen', () => {
       const http = mockHttp();
       http.get.mockResolvedValue(jsonApiResponse([]));
 
-      const {findByText, getByText} = render(
-        <SafeAreaProvider initialMetrics={safeAreaMetrics}>
-          <TokenProvider skipLoading>
-            <UnreadScreen />
-          </TokenProvider>
-        </SafeAreaProvider>,
-      );
+      const {findByText, getByText} = render(providers(<UnreadScreen />));
 
       await findByText('No unread links.');
 
@@ -226,13 +188,7 @@ describe('UnreadScreen', () => {
       http.post.mockResolvedValue(jsonApiResponse(newBookmark));
 
       const {findByText, getByLabelText, queryByLabelText} = render(
-        <SafeAreaProvider initialMetrics={safeAreaMetrics}>
-          <PaperProvider>
-            <TokenProvider skipLoading>
-              <UnreadScreen />
-            </TokenProvider>
-          </PaperProvider>
-        </SafeAreaProvider>,
+        providers(<UnreadScreen />),
       );
 
       const newField = getByLabelText('URL to Add');
@@ -260,15 +216,7 @@ describe('UnreadScreen', () => {
       const http = mockHttp();
       http.get.mockResolvedValue(jsonApiResponse([bookmark]));
 
-      const {getByLabelText, findByText} = render(
-        <SafeAreaProvider initialMetrics={safeAreaMetrics}>
-          <PaperProvider>
-            <TokenProvider skipLoading>
-              <UnreadScreen />
-            </TokenProvider>
-          </PaperProvider>
-        </SafeAreaProvider>,
-      );
+      const {getByLabelText, findByText} = render(providers(<UnreadScreen />));
 
       await findByText(bookmark.attributes.title);
 
@@ -284,15 +232,7 @@ describe('UnreadScreen', () => {
       http.post.mockRejectedValue();
 
       const {findByText, getByLabelText, queryByLabelText, queryByText} =
-        render(
-          <SafeAreaProvider initialMetrics={safeAreaMetrics}>
-            <PaperProvider>
-              <TokenProvider skipLoading>
-                <UnreadScreen />
-              </TokenProvider>
-            </PaperProvider>
-          </SafeAreaProvider>,
-        );
+        render(providers(<UnreadScreen />));
 
       const newField = getByLabelText('URL to Add');
       fireEvent.changeText(newField, newBookmark.attributes.url);
@@ -320,15 +260,7 @@ describe('UnreadScreen', () => {
       http.get.mockResolvedValue(jsonApiResponse([bookmark]));
       http.patch.mockResolvedValue(jsonApiResponse());
 
-      const {findByText, getByText} = render(
-        <SafeAreaProvider initialMetrics={safeAreaMetrics}>
-          <PaperProvider>
-            <TokenProvider skipLoading>
-              <UnreadScreen />
-            </TokenProvider>
-          </PaperProvider>
-        </SafeAreaProvider>,
-      );
+      const {findByText, getByText} = render(providers(<UnreadScreen />));
 
       await findByText('Mark Read');
       fireEvent.press(getByText('Mark Read'));
@@ -356,13 +288,7 @@ describe('UnreadScreen', () => {
       http.patch.mockRejectedValue();
 
       const {findByText, getByText, queryByText} = render(
-        <SafeAreaProvider initialMetrics={safeAreaMetrics}>
-          <PaperProvider>
-            <TokenProvider skipLoading>
-              <UnreadScreen />
-            </TokenProvider>
-          </PaperProvider>
-        </SafeAreaProvider>,
+        providers(<UnreadScreen />),
       );
 
       await findByText('Mark Read');
@@ -392,15 +318,7 @@ describe('UnreadScreen', () => {
       const navigation = {navigate: jest.fn()};
       useNavigation.mockReturnValue(navigation);
 
-      const {findByText, getByText} = render(
-        <SafeAreaProvider initialMetrics={safeAreaMetrics}>
-          <PaperProvider>
-            <TokenProvider skipLoading>
-              <UnreadScreen />
-            </TokenProvider>
-          </PaperProvider>
-        </SafeAreaProvider>,
-      );
+      const {findByText, getByText} = render(providers(<UnreadScreen />));
 
       await findByText('Edit');
       fireEvent.press(getByText('Edit'));
@@ -417,15 +335,7 @@ describe('UnreadScreen', () => {
       http.get.mockResolvedValue(jsonApiResponse([bookmark]));
       http.delete.mockResolvedValue(jsonApiResponse());
 
-      const {findByText, getByText} = render(
-        <SafeAreaProvider initialMetrics={safeAreaMetrics}>
-          <PaperProvider>
-            <TokenProvider skipLoading>
-              <UnreadScreen />
-            </TokenProvider>
-          </PaperProvider>
-        </SafeAreaProvider>,
-      );
+      const {findByText, getByText} = render(providers(<UnreadScreen />));
 
       await findByText('Delete');
       fireEvent.press(getByText('Delete'));
@@ -443,13 +353,7 @@ describe('UnreadScreen', () => {
       http.delete.mockRejectedValue();
 
       const {findByText, getByText, queryByText} = render(
-        <SafeAreaProvider initialMetrics={safeAreaMetrics}>
-          <PaperProvider>
-            <TokenProvider skipLoading>
-              <UnreadScreen />
-            </TokenProvider>
-          </PaperProvider>
-        </SafeAreaProvider>,
+        providers(<UnreadScreen />),
       );
 
       await findByText('Delete');
