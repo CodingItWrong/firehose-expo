@@ -28,6 +28,26 @@ export default function BookmarkDetailScreen({route}) {
         accessibilityLabel="URL"
         value={bookmark.attributes.url}
       />
+      <TextInput
+        label="Title"
+        accessibilityLabel="Title"
+        value={bookmark.attributes.title}
+      />
+      <TextInput
+        label="Tags"
+        accessibilityLabel="Tags"
+        value={bookmark.attributes['tag-list']}
+      />
+      <TextInput
+        label="Source"
+        accessibilityLabel="Source"
+        value={bookmark.attributes.source}
+      />
+      <TextInput
+        label="Comment"
+        accessibilityLabel="Comment"
+        value={bookmark.attributes.comment}
+      />
     </View>
   );
 }
