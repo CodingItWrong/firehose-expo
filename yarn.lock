@@ -7092,6 +7092,11 @@ react-native-screens@~3.10.1:
     react-freeze "^1.0.0"
     warn-once "^0.1.0"
 
+react-native-style-queries@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/react-native-style-queries/-/react-native-style-queries-0.1.0.tgz#76298272e08e40eb908c7b1f1270ac698859996e"
+  integrity sha512-uRfckLAQoYs+lde7moVzUmULyzMKFfAY+Njul5qd+aTt15LbwxHpwj/8QeBUCRSqIXTelnO/RYnKYisY+lyFzQ==
+
 react-native-web@0.17.1:
   version "0.17.1"
   resolved "https://registry.yarnpkg.com/react-native-web/-/react-native-web-0.17.1.tgz#90d473c89dd99b88bc9830b2a9fcdd2fc5f04902"
