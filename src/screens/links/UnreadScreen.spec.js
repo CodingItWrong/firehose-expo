@@ -6,6 +6,7 @@ import {
 } from '@testing-library/react-native';
 import * as Linking from 'expo-linking';
 import {Provider as PaperProvider} from 'react-native-paper';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {TokenProvider} from '../../data/token';
 import {jsonApiResponse, mockHttp} from '../../testUtils';
 import UnreadScreen from './UnreadScreen';
@@ -15,6 +16,21 @@ jest.mock('expo-linking', () => ({openURL: jest.fn()}));
 jest.mock('@react-navigation/native', () => ({
   useNavigation: jest.fn(),
 }));
+
+const safeAreaMetrics = {
+  frame: {
+    width: 320,
+    height: 640,
+    x: 0,
+    y: 0,
+  },
+  insets: {
+    left: 0,
+    right: 0,
+    bottom: 0,
+    top: 0,
+  },
+};
 
 describe('UnreadScreen', () => {
   const bookmark = {
@@ -28,15 +44,21 @@ describe('UnreadScreen', () => {
     },
   };
 
+  const providers = children => (
+    <SafeAreaProvider initialMetrics={safeAreaMetrics}>
+      <PaperProvider>
+        <TokenProvider skipLoading>{children}</TokenProvider>
+      </PaperProvider>
+    </SafeAreaProvider>
+  );
+
   describe('displaying links', () => {
     it('renders links from the backend', async () => {
       const http = mockHttp();
       http.get.mockResolvedValue(jsonApiResponse([bookmark]));
 
       const {findByText, queryByLabelText, queryByText} = render(
-        <TokenProvider skipLoading>
-          <UnreadScreen />
-        </TokenProvider>,
+        providers(<UnreadScreen />),
       );
 
       expect(queryByLabelText('Loading')).not.toBeNull();
@@ -55,11 +77,7 @@ describe('UnreadScreen', () => {
       const http = mockHttp();
       http.get.mockRejectedValue();
 
-      const {findByText} = render(
-        <TokenProvider skipLoading>
-          <UnreadScreen />
-        </TokenProvider>,
-      );
+      const {findByText} = render(providers(<UnreadScreen />));
 
       await findByText('An error occurred while loading links.');
     });
@@ -68,11 +86,7 @@ describe('UnreadScreen', () => {
       const http = mockHttp();
       http.get.mockResolvedValue(jsonApiResponse([]));
 
-      const {findByText} = render(
-        <TokenProvider skipLoading>
-          <UnreadScreen />
-        </TokenProvider>,
-      );
+      const {findByText} = render(providers(<UnreadScreen />));
 
       await findByText('No unread links.');
     });
@@ -83,11 +97,7 @@ describe('UnreadScreen', () => {
       const http = mockHttp();
       http.get.mockResolvedValue(jsonApiResponse([bookmark]));
 
-      const {findByText, getByText} = render(
-        <TokenProvider skipLoading>
-          <UnreadScreen />
-        </TokenProvider>,
-      );
+      const {findByText, getByText} = render(providers(<UnreadScreen />));
 
       await findByText(bookmark.attributes.title);
 
@@ -100,11 +110,7 @@ describe('UnreadScreen', () => {
       const http = mockHttp();
       http.get.mockResolvedValue(jsonApiResponse([bookmark]));
 
-      const {findByText, getByText} = render(
-        <TokenProvider skipLoading>
-          <UnreadScreen />
-        </TokenProvider>,
-      );
+      const {findByText, getByText} = render(providers(<UnreadScreen />));
 
       await findByText(bookmark.attributes.title);
 
@@ -126,11 +132,7 @@ describe('UnreadScreen', () => {
       const http = mockHttp();
       http.get.mockResolvedValue(jsonApiResponse([bookmarkWithUrlSource]));
 
-      const {findByText, getByText} = render(
-        <TokenProvider skipLoading>
-          <UnreadScreen />
-        </TokenProvider>,
-      );
+      const {findByText, getByText} = render(providers(<UnreadScreen />));
 
       const sourceText = 'From mastodon.technology';
       await findByText(sourceText);
@@ -146,11 +148,7 @@ describe('UnreadScreen', () => {
       const http = mockHttp();
       http.get.mockResolvedValue(jsonApiResponse([]));
 
-      const {findByText, getByTestId} = render(
-        <TokenProvider skipLoading>
-          <UnreadScreen />
-        </TokenProvider>,
-      );
+      const {findByText, getByTestId} = render(providers(<UnreadScreen />));
 
       await findByText('No unread links.');
 
@@ -164,11 +162,7 @@ describe('UnreadScreen', () => {
       const http = mockHttp();
       http.get.mockResolvedValue(jsonApiResponse([]));
 
-      const {findByText, getByText} = render(
-        <TokenProvider skipLoading>
-          <UnreadScreen />
-        </TokenProvider>,
-      );
+      const {findByText, getByText} = render(providers(<UnreadScreen />));
 
       await findByText('No unread links.');
 
@@ -194,11 +188,7 @@ describe('UnreadScreen', () => {
       http.post.mockResolvedValue(jsonApiResponse(newBookmark));
 
       const {findByText, getByLabelText, queryByLabelText} = render(
-        <PaperProvider>
-          <TokenProvider skipLoading>
-            <UnreadScreen />
-          </TokenProvider>
-        </PaperProvider>,
+        providers(<UnreadScreen />),
       );
 
       const newField = getByLabelText('URL to Add');
@@ -226,13 +216,7 @@ describe('UnreadScreen', () => {
       const http = mockHttp();
       http.get.mockResolvedValue(jsonApiResponse([bookmark]));
 
-      const {getByLabelText, findByText} = render(
-        <PaperProvider>
-          <TokenProvider skipLoading>
-            <UnreadScreen />
-          </TokenProvider>
-        </PaperProvider>,
-      );
+      const {getByLabelText, findByText} = render(providers(<UnreadScreen />));
 
       await findByText(bookmark.attributes.title);
 
@@ -248,13 +232,7 @@ describe('UnreadScreen', () => {
       http.post.mockRejectedValue();
 
       const {findByText, getByLabelText, queryByLabelText, queryByText} =
-        render(
-          <PaperProvider>
-            <TokenProvider skipLoading>
-              <UnreadScreen />
-            </TokenProvider>
-          </PaperProvider>,
-        );
+        render(providers(<UnreadScreen />));
 
       const newField = getByLabelText('URL to Add');
       fireEvent.changeText(newField, newBookmark.attributes.url);
@@ -282,13 +260,7 @@ describe('UnreadScreen', () => {
       http.get.mockResolvedValue(jsonApiResponse([bookmark]));
       http.patch.mockResolvedValue(jsonApiResponse());
 
-      const {findByText, getByText} = render(
-        <PaperProvider>
-          <TokenProvider skipLoading>
-            <UnreadScreen />
-          </TokenProvider>
-        </PaperProvider>,
-      );
+      const {findByText, getByText} = render(providers(<UnreadScreen />));
 
       await findByText('Mark Read');
       fireEvent.press(getByText('Mark Read'));
@@ -316,11 +288,7 @@ describe('UnreadScreen', () => {
       http.patch.mockRejectedValue();
 
       const {findByText, getByText, queryByText} = render(
-        <PaperProvider>
-          <TokenProvider skipLoading>
-            <UnreadScreen />
-          </TokenProvider>
-        </PaperProvider>,
+        providers(<UnreadScreen />),
       );
 
       await findByText('Mark Read');
@@ -350,13 +318,7 @@ describe('UnreadScreen', () => {
       const navigation = {navigate: jest.fn()};
       useNavigation.mockReturnValue(navigation);
 
-      const {findByText, getByText} = render(
-        <PaperProvider>
-          <TokenProvider skipLoading>
-            <UnreadScreen />
-          </TokenProvider>
-        </PaperProvider>,
-      );
+      const {findByText, getByText} = render(providers(<UnreadScreen />));
 
       await findByText('Edit');
       fireEvent.press(getByText('Edit'));
@@ -373,13 +335,7 @@ describe('UnreadScreen', () => {
       http.get.mockResolvedValue(jsonApiResponse([bookmark]));
       http.delete.mockResolvedValue(jsonApiResponse());
 
-      const {findByText, getByText} = render(
-        <PaperProvider>
-          <TokenProvider skipLoading>
-            <UnreadScreen />
-          </TokenProvider>
-        </PaperProvider>,
-      );
+      const {findByText, getByText} = render(providers(<UnreadScreen />));
 
       await findByText('Delete');
       fireEvent.press(getByText('Delete'));
@@ -397,11 +353,7 @@ describe('UnreadScreen', () => {
       http.delete.mockRejectedValue();
 
       const {findByText, getByText, queryByText} = render(
-        <PaperProvider>
-          <TokenProvider skipLoading>
-            <UnreadScreen />
-          </TokenProvider>
-        </PaperProvider>,
+        providers(<UnreadScreen />),
       );
 
       await findByText('Delete');
