@@ -37,6 +37,7 @@ describe('BookmarkDetailScreen', () => {
 
     const http = mockHttp();
     http.get.mockResolvedValue(jsonApiResponse(bookmark));
+    http.patch.mockResolvedValue(jsonApiResponse());
 
     const route = {params: {id: bookmark.id}};
 
@@ -46,6 +47,7 @@ describe('BookmarkDetailScreen', () => {
 
     expect(http.get).toHaveBeenCalledWith(`bookmarks/${bookmark.id}?`);
 
+    // displays current values from server
     await findByLabelText('URL');
     expect(getByLabelText('URL')).toHaveProp('value', url);
     expect(getByLabelText('Title')).toHaveProp('value', title);
@@ -53,11 +55,33 @@ describe('BookmarkDetailScreen', () => {
     expect(getByLabelText('Source')).toHaveProp('value', source);
     expect(getByLabelText('Comment')).toHaveProp('value', comment);
 
+    // update values
     fireEvent.changeText(getByLabelText('URL'), newUrl);
     fireEvent.changeText(getByLabelText('Title'), newTitle);
     fireEvent.changeText(getByLabelText('Tags'), newTagList);
     fireEvent.changeText(getByLabelText('Source'), newSource);
     fireEvent.changeText(getByLabelText('Comment'), newComment);
     fireEvent.press(getByText('Save'));
+
+    // confirm data saved to server
+    expect(http.patch).toHaveBeenCalledWith(
+      `bookmarks/${bookmark.id}?`,
+      {
+        data: {
+          type: 'bookmarks',
+          id: '42',
+          attributes: {
+            url: newUrl,
+            title: newTitle,
+            'tag-list': newTagList,
+            source: newSource,
+            comment: newComment,
+          },
+        },
+      },
+      {headers: {'Content-Type': 'application/vnd.api+json'}},
+    );
+
+    // TODO: confirm navigate back to parent screen
   });
 });

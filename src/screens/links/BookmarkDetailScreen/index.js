@@ -6,18 +6,37 @@ import {useBookmarks} from '../../../data/bookmarks';
 export default function BookmarkDetailScreen({route}) {
   const {id} = route.params;
   const bookmarkClient = useBookmarks();
-  const [bookmark, setBookmark] = useState(null);
+
+  const [loaded, setLoaded] = useState(false);
+  const [url, setUrl] = useState(null);
+  const [title, setTitle] = useState(null);
+  const [tagList, setTagList] = useState(null);
+  const [source, setSource] = useState(null);
+  const [comment, setComment] = useState(null);
 
   useEffect(() => {
     bookmarkClient
       .find({id})
       .then(response => {
-        setBookmark(response.data);
+        const {attributes} = response.data;
+        setLoaded(true);
+        setUrl(attributes.url);
+        setTitle(attributes.title);
+        setTagList(attributes['tag-list']);
+        setSource(attributes.source);
+        setComment(attributes.comment);
       })
       .catch(console.error);
   }, [bookmarkClient, id]);
 
-  if (!bookmark) {
+  function handleSave() {
+    bookmarkClient.update({
+      id,
+      attributes: {url, title, source, comment, 'tag-list': tagList},
+    });
+  }
+
+  if (!loaded) {
     return null; // TODO: loading state
   }
 
@@ -26,29 +45,34 @@ export default function BookmarkDetailScreen({route}) {
       <TextInput
         label="URL"
         accessibilityLabel="URL"
-        value={bookmark.attributes.url}
+        value={url}
+        onChangeText={setUrl}
       />
       <TextInput
         label="Title"
         accessibilityLabel="Title"
-        value={bookmark.attributes.title}
+        value={title}
+        onChangeText={setTitle}
       />
       <TextInput
         label="Tags"
         accessibilityLabel="Tags"
-        value={bookmark.attributes['tag-list']}
+        value={tagList}
+        onChangeText={setTagList}
       />
       <TextInput
         label="Source"
         accessibilityLabel="Source"
-        value={bookmark.attributes.source}
+        value={source}
+        onChangeText={setSource}
       />
       <TextInput
         label="Comment"
         accessibilityLabel="Comment"
-        value={bookmark.attributes.comment}
+        value={comment}
+        onChangeText={setComment}
       />
-      <Button>Save</Button>
+      <Button onPress={handleSave}>Save</Button>
     </View>
   );
 }
