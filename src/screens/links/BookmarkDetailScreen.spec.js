@@ -1,4 +1,4 @@
-import {render} from '@testing-library/react-native';
+import {fireEvent, render} from '@testing-library/react-native';
 import {TokenProvider} from '../../data/token';
 import {jsonApiResponse, mockHttp} from '../../testUtils';
 import BookmarkDetailScreen from './BookmarkDetailScreen';
@@ -29,6 +29,11 @@ describe('BookmarkDetailScreen', () => {
       comment,
       'tag-list': tagList,
     } = bookmark.attributes;
+    const newUrl = 'https://react-native.dev';
+    const newTitle = 'New Title';
+    const newSource = 'New Source';
+    const newComment = 'New Comment';
+    const newTagList = 'new-tag another-new-tag';
 
     const http = mockHttp();
     http.get.mockResolvedValue(jsonApiResponse(bookmark));
@@ -47,5 +52,11 @@ describe('BookmarkDetailScreen', () => {
     expect(getByLabelText('Tags')).toHaveProp('value', tagList);
     expect(getByLabelText('Source')).toHaveProp('value', source);
     expect(getByLabelText('Comment')).toHaveProp('value', comment);
+
+    fireEvent.changeText(getByLabelText('URL'), newUrl);
+    fireEvent.changeText(getByLabelText('Title'), newTitle);
+    fireEvent.changeText(getByLabelText('Tags'), newTagList);
+    fireEvent.changeText(getByLabelText('Source'), newSource);
+    fireEvent.changeText(getByLabelText('Comment'), newComment);
   });
 });
