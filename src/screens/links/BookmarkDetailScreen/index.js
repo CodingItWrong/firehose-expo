@@ -83,8 +83,12 @@ export default function BookmarkDetailScreen({route}) {
         value={comment}
         onChangeText={setComment}
       />
-      <Button onPress={handleSave}>Save</Button>
-      <Button onPress={handleCancel}>Cancel</Button>
+      <Button mode="contained" onPress={handleSave}>
+        Save
+      </Button>
+      <Button mode="outlined" onPress={handleCancel}>
+        Cancel
+      </Button>
     </View>
   );
 }
