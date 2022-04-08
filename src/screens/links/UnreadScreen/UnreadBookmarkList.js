@@ -1,5 +1,6 @@
 import {useNavigation} from '@react-navigation/native';
 import {Platform, StyleSheet} from 'react-native';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import ErrorMessage from '../../../components/ErrorMessage';
 import NoRecordsMessage from '../../../components/NoRecordsMessage';
 import RefreshableFlatList from '../../../components/RefreshableFlatList';
@@ -14,6 +15,7 @@ export default function UnreadBookmarkList({
   onDelete,
 }) {
   const navigation = useNavigation();
+  const insets = useSafeAreaInsets();
 
   function handleEdit(bookmark) {
     navigation.navigate('BookmarkDetailScreen', {id: bookmark.id});
@@ -37,7 +39,7 @@ export default function UnreadBookmarkList({
       data={bookmarks}
       onRefresh={onRefresh}
       showLoadingIndicator={bookmarks === null}
-      contentContainerStyle={styles.list}
+      contentContainerStyle={[styles.list, {paddingBottom: insets.bottom}]}
       keyExtractor={item => item.id}
       renderItem={({item}) => (
         <UnreadBookmarkRow
