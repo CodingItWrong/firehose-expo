@@ -1,5 +1,6 @@
 import {useWindowDimensions} from 'react-native';
 
+export const breakpointMedium = 429;
 export const breakpointLarge = 600;
 
 export const large = 'large';

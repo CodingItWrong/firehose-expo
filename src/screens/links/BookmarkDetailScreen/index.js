@@ -2,6 +2,7 @@ import {useNavigation} from '@react-navigation/native';
 import {useEffect, useState} from 'react';
 import {View} from 'react-native';
 import {Button, TextInput} from 'react-native-paper';
+import ButtonGroup from '../../../components/ButtonGroup';
 import {useBookmarks} from '../../../data/bookmarks';
 
 export default function BookmarkDetailScreen({route}) {
@@ -83,12 +84,14 @@ export default function BookmarkDetailScreen({route}) {
         value={comment}
         onChangeText={setComment}
       />
-      <Button mode="contained" onPress={handleSave}>
-        Save
-      </Button>
-      <Button mode="outlined" onPress={handleCancel}>
-        Cancel
-      </Button>
+      <ButtonGroup>
+        <Button mode="outlined" onPress={handleCancel}>
+          Cancel
+        </Button>
+        <Button mode="contained" onPress={handleSave}>
+          Save
+        </Button>
+      </ButtonGroup>
     </View>
   );
 }
