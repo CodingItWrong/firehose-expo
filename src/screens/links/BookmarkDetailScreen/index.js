@@ -43,6 +43,10 @@ export default function BookmarkDetailScreen({route}) {
     }
   }
 
+  function handleCancel() {
+    navigation.goBack();
+  }
+
   if (!loaded) {
     return null; // TODO: loading state
   }
@@ -80,6 +84,7 @@ export default function BookmarkDetailScreen({route}) {
         onChangeText={setComment}
       />
       <Button onPress={handleSave}>Save</Button>
+      <Button onPress={handleCancel}>Cancel</Button>
     </View>
   );
 }
