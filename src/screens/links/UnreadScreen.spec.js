@@ -1,4 +1,4 @@
-import {useNavigation} from '@react-navigation/native';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {
   fireEvent,
   render,
@@ -14,6 +14,7 @@ import UnreadScreen from './UnreadScreen';
 jest.mock('../../data/httpClient');
 jest.mock('expo-linking', () => ({openURL: jest.fn()}));
 jest.mock('@react-navigation/native', () => ({
+  useFocusEffect: jest.fn(),
   useNavigation: jest.fn(),
 }));
 
@@ -51,6 +52,17 @@ describe('UnreadScreen', () => {
       </PaperProvider>
     </SafeAreaProvider>
   );
+
+  beforeEach(() => {
+    // provide mock implementation of useFocusEffect to run only once
+    let effectRun = false;
+    useFocusEffect.mockImplementation(func => {
+      if (!effectRun) {
+        effectRun = true;
+        func();
+      }
+    });
+  });
 
   describe('displaying links', () => {
     it('renders links from the backend', async () => {

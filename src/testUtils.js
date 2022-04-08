@@ -2,6 +2,9 @@
 
 import httpClient from './data/httpClient';
 
+// To use this function, call the following at the top level of your test:
+//
+// jest.mock('path/to/data/httpClient');
 export function mockHttp() {
   const http = {
     get: jest.fn(),
