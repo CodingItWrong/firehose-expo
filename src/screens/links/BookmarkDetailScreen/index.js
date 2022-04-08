@@ -3,6 +3,7 @@ import {useEffect, useState} from 'react';
 import {View} from 'react-native';
 import {Button, TextInput} from 'react-native-paper';
 import ButtonGroup from '../../../components/ButtonGroup';
+import ScreenBackground from '../../../components/ScreenBackground';
 import {useBookmarks} from '../../../data/bookmarks';
 
 export default function BookmarkDetailScreen({route}) {
@@ -48,50 +49,54 @@ export default function BookmarkDetailScreen({route}) {
     navigation.goBack();
   }
 
-  if (!loaded) {
-    return null; // TODO: loading state
+  function contents() {
+    if (!loaded) {
+      return null; // TODO: loading state
+    } else {
+      return (
+        <>
+          <TextInput
+            label="URL"
+            accessibilityLabel="URL"
+            value={url}
+            onChangeText={setUrl}
+          />
+          <TextInput
+            label="Title"
+            accessibilityLabel="Title"
+            value={title}
+            onChangeText={setTitle}
+          />
+          <TextInput
+            label="Tags"
+            accessibilityLabel="Tags"
+            value={tagList}
+            onChangeText={setTagList}
+          />
+          <TextInput
+            label="Source"
+            accessibilityLabel="Source"
+            value={source}
+            onChangeText={setSource}
+          />
+          <TextInput
+            label="Comment"
+            accessibilityLabel="Comment"
+            value={comment}
+            onChangeText={setComment}
+          />
+          <ButtonGroup>
+            <Button mode="outlined" onPress={handleCancel}>
+              Cancel
+            </Button>
+            <Button mode="contained" onPress={handleSave}>
+              Save
+            </Button>
+          </ButtonGroup>
+        </>
+      );
+    }
   }
 
-  return (
-    <View>
-      <TextInput
-        label="URL"
-        accessibilityLabel="URL"
-        value={url}
-        onChangeText={setUrl}
-      />
-      <TextInput
-        label="Title"
-        accessibilityLabel="Title"
-        value={title}
-        onChangeText={setTitle}
-      />
-      <TextInput
-        label="Tags"
-        accessibilityLabel="Tags"
-        value={tagList}
-        onChangeText={setTagList}
-      />
-      <TextInput
-        label="Source"
-        accessibilityLabel="Source"
-        value={source}
-        onChangeText={setSource}
-      />
-      <TextInput
-        label="Comment"
-        accessibilityLabel="Comment"
-        value={comment}
-        onChangeText={setComment}
-      />
-      <ButtonGroup>
-        <Button mode="outlined" onPress={handleCancel}>
-          Cancel
-        </Button>
-        <Button mode="contained" onPress={handleSave}>
-          Save
-        </Button>
-      </ButtonGroup>
-    </View>
-  );
+  return <ScreenBackground>{contents()}</ScreenBackground>;
 }
