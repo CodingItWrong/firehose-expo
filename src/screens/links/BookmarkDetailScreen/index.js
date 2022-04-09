@@ -1,6 +1,6 @@
 import {useNavigation} from '@react-navigation/native';
 import {useEffect, useState} from 'react';
-import {Platform, View} from 'react-native';
+import {Platform} from 'react-native';
 import {Button, TextInput} from 'react-native-paper';
 import ButtonGroup from '../../../components/ButtonGroup';
 import ScreenBackground from '../../../components/ScreenBackground';
