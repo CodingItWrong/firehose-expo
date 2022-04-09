@@ -170,8 +170,16 @@ describe('UnreadScreen', () => {
 
         http.get.mockResolvedValue(jsonApiResponse([bookmark]));
         fireEvent(getByTestId('unread-bookmarks-list'), 'refresh');
+        expect(getByTestId('unread-bookmarks-list')).toHaveProp(
+          'refreshing',
+          true,
+        );
 
         await findByText(bookmark.attributes.title);
+        expect(getByTestId('unread-bookmarks-list')).toHaveProp(
+          'refreshing',
+          false,
+        );
       });
     });
 
