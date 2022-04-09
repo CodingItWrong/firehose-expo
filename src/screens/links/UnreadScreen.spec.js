@@ -159,32 +159,36 @@ describe('UnreadScreen', () => {
   });
 
   describe('refreshing', () => {
-    it('refreshes the list when pulling down on mobile', async () => {
-      const http = mockHttp();
-      http.get.mockResolvedValue(jsonApiResponse([]));
+    describe('pulling on mobile', () => {
+      it('refreshes the list', async () => {
+        const http = mockHttp();
+        http.get.mockResolvedValue(jsonApiResponse([]));
 
-      const {findByText, getByTestId} = render(providers(<UnreadScreen />));
+        const {findByText, getByTestId} = render(providers(<UnreadScreen />));
 
-      await findByText('No unread links.');
+        await findByText('No unread links.');
 
-      http.get.mockResolvedValue(jsonApiResponse([bookmark]));
-      fireEvent(getByTestId('unread-bookmarks-list'), 'refresh');
+        http.get.mockResolvedValue(jsonApiResponse([bookmark]));
+        fireEvent(getByTestId('unread-bookmarks-list'), 'refresh');
 
-      await findByText(bookmark.attributes.title);
+        await findByText(bookmark.attributes.title);
+      });
     });
 
-    it('refreshes by clicking a button on web', async () => {
-      const http = mockHttp();
-      http.get.mockResolvedValue(jsonApiResponse([]));
+    describe('clicking a button on web', () => {
+      it('refreshes the list', async () => {
+        const http = mockHttp();
+        http.get.mockResolvedValue(jsonApiResponse([]));
 
-      const {findByText, getByText} = render(providers(<UnreadScreen />));
+        const {findByText, getByText} = render(providers(<UnreadScreen />));
 
-      await findByText('No unread links.');
+        await findByText('No unread links.');
 
-      http.get.mockResolvedValue(jsonApiResponse([bookmark]));
-      fireEvent.press(getByText('Reload'));
+        http.get.mockResolvedValue(jsonApiResponse([bookmark]));
+        fireEvent.press(getByText('Reload'));
 
-      await findByText(bookmark.attributes.title);
+        await findByText(bookmark.attributes.title);
+      });
     });
   });
 
