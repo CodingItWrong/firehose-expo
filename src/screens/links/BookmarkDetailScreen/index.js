@@ -3,6 +3,7 @@ import {useEffect, useState} from 'react';
 import {Platform} from 'react-native';
 import {Button, TextInput} from 'react-native-paper';
 import ButtonGroup from '../../../components/ButtonGroup';
+import CenterColumn from '../../../components/CenterColumn';
 import ScreenBackground from '../../../components/ScreenBackground';
 import {useBookmarks} from '../../../data/bookmarks';
 
@@ -108,5 +109,9 @@ export default function BookmarkDetailScreen({route}) {
     }
   }
 
-  return <ScreenBackground>{contents()}</ScreenBackground>;
+  return (
+    <ScreenBackground>
+      <CenterColumn>{contents()}</CenterColumn>
+    </ScreenBackground>
+  );
 }
