@@ -1,6 +1,7 @@
 import {useNavigation} from '@react-navigation/native';
 import {useEffect, useState} from 'react';
 import {Platform} from 'react-native';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {Button, TextInput} from 'react-native-paper';
 import {screenWidthMin, useStyleQueries} from 'react-native-style-queries';
 import {breakpointMedium} from '../../../breakpoints';
@@ -100,9 +101,10 @@ export default function BookmarkDetailScreen({route}) {
           <TextInput
             label="Comment"
             accessibilityLabel="Comment"
-            mode="outlined"
             value={comment}
             onChangeText={setComment}
+            mode="outlined"
+            multiline
           />
           <ButtonGroup>
             <Button
@@ -123,9 +125,11 @@ export default function BookmarkDetailScreen({route}) {
 
   return (
     <ScreenBackground>
-      <CenterColumn columnStyle={sharedStyles.bodyPadding}>
-        {contents()}
-      </CenterColumn>
+      <KeyboardAwareScrollView>
+        <CenterColumn columnStyle={sharedStyles.bodyPadding}>
+          {contents()}
+        </CenterColumn>
+      </KeyboardAwareScrollView>
     </ScreenBackground>
   );
 }
