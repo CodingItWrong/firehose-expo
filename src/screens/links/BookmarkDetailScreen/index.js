@@ -100,9 +100,10 @@ export default function BookmarkDetailScreen({route}) {
           <TextInput
             label="Comment"
             accessibilityLabel="Comment"
-            mode="outlined"
             value={comment}
             onChangeText={setComment}
+            mode="outlined"
+            multiline
           />
           <ButtonGroup>
             <Button
