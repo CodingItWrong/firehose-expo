@@ -201,19 +201,23 @@ describe('UnreadScreen', () => {
       });
     });
 
-    describe('clicking a button on web', () => {
+    describe.only('clicking a button on web', () => {
       it('refreshes the list', async () => {
         const http = mockHttp();
         http.get.mockResolvedValue(jsonApiResponse([]));
 
-        const {findByText, getByText} = render(providers(<UnreadScreen />));
+        const {findByText, getByText, queryByLabelText} = render(
+          providers(<UnreadScreen />),
+        );
 
         await findByText('No unread links.');
 
         http.get.mockResolvedValue(jsonApiResponse([bookmark]));
         fireEvent.press(getByText('Reload'));
+        expect(queryByLabelText('Loading')).not.toBeNull();
 
         await findByText(bookmark.attributes.title);
+        expect(queryByLabelText('Loading')).toBeNull();
       });
     });
   });
