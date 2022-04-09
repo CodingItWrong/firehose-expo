@@ -6,6 +6,7 @@ import ButtonGroup from '../../../components/ButtonGroup';
 import CenterColumn from '../../../components/CenterColumn';
 import ScreenBackground from '../../../components/ScreenBackground';
 import {useBookmarks} from '../../../data/bookmarks';
+import sharedStyles from '../../../sharedStyles';
 
 export default function BookmarkDetailScreen({route}) {
   const navigation = useNavigation();
@@ -111,7 +112,9 @@ export default function BookmarkDetailScreen({route}) {
 
   return (
     <ScreenBackground>
-      <CenterColumn>{contents()}</CenterColumn>
+      <CenterColumn columnStyle={sharedStyles.bodyPadding}>
+        {contents()}
+      </CenterColumn>
     </ScreenBackground>
   );
 }
