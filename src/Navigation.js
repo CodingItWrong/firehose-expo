@@ -7,6 +7,7 @@ import CustomNavigationDrawer from './components/CustomNavigationDrawer';
 import {useToken} from './data/token';
 import SignInScreen from './screens/SignInScreen';
 import BookmarkDetailScreen from './screens/links/BookmarkDetailScreen';
+import ReadScreen from './screens/links/ReadScreen';
 import UnreadScreen from './screens/links/UnreadScreen';
 
 const linking = {
@@ -23,6 +24,12 @@ const linking = {
         screens: {
           UnreadScreen: '/links/unread',
           BookmarkDetailScreen: '/links/unread/:id',
+        },
+      },
+      Read: {
+        initialRouteName: 'ReadScreen',
+        screens: {
+          ReadScreen: '/links/read',
         },
       },
     },
@@ -47,6 +54,21 @@ const Unread = () => (
       options={{title: 'Edit Link'}}
     />
   </UnreadStack.Navigator>
+);
+
+const ReadStack = createNativeStackNavigator();
+const Read = () => (
+  <ReadStack.Navigator
+    screenOptions={{
+      header: props => <CustomNavigationBar {...props} />,
+    }}
+  >
+    <ReadStack.Screen
+      name="ReadScreen"
+      component={ReadScreen}
+      options={{title: 'Read Links'}}
+    />
+  </ReadStack.Navigator>
 );
 
 const SignInStack = createNativeStackNavigator();
@@ -85,6 +107,7 @@ function NavigationContents() {
       {isLoggedIn ? (
         <>
           <Drawer.Screen name="Unread" component={Unread} />
+          <Drawer.Screen name="Read" component={Read} />
         </>
       ) : (
         <Drawer.Screen name="Sign in" component={SignIn} />
