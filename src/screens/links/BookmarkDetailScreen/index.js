@@ -1,7 +1,9 @@
 import {useNavigation} from '@react-navigation/native';
 import {useEffect, useState} from 'react';
-import {Platform, StyleSheet} from 'react-native';
+import {Platform} from 'react-native';
 import {Button, TextInput} from 'react-native-paper';
+import {screenWidthMin, useStyleQueries} from 'react-native-style-queries';
+import {breakpointMedium} from '../../../breakpoints';
 import ButtonGroup from '../../../components/ButtonGroup';
 import CenterColumn from '../../../components/CenterColumn';
 import ScreenBackground from '../../../components/ScreenBackground';
@@ -12,6 +14,7 @@ export default function BookmarkDetailScreen({route}) {
   const navigation = useNavigation();
   const {id} = route.params;
   const bookmarkClient = useBookmarks();
+  const styles = useStyleQueries(styleQueries);
 
   const [loaded, setLoaded] = useState(false);
   const [url, setUrl] = useState(null);
@@ -100,13 +103,16 @@ export default function BookmarkDetailScreen({route}) {
             mode="outlined"
             value={comment}
             onChangeText={setComment}
-            style={styles.formField}
           />
           <ButtonGroup>
-            <Button mode="outlined" onPress={handleCancel}>
+            <Button
+              onPress={handleCancel}
+              mode="outlined"
+              style={styles.button}
+            >
               Cancel
             </Button>
-            <Button mode="contained" onPress={handleSave}>
+            <Button onPress={handleSave} mode="contained" style={styles.button}>
               Save
             </Button>
           </ButtonGroup>
@@ -124,8 +130,16 @@ export default function BookmarkDetailScreen({route}) {
   );
 }
 
-const styles = StyleSheet.create({
+const styleQueries = {
   formField: {
     marginBottom: 10,
   },
-});
+  button: [
+    {
+      marginTop: 10,
+    },
+    screenWidthMin(breakpointMedium, {
+      marginLeft: 10,
+    }),
+  ],
+};
