@@ -7,6 +7,10 @@ import NewBookmarkForm from './NewBookmarkForm';
 import UnreadBookmarkList from './UnreadBookmarkList';
 
 export default function UnreadScreen() {
+  return <BookmarkList />;
+}
+
+function BookmarkList() {
   const bookmarkClient = useBookmarks();
 
   const [isPerformingInitialLoad, setIsPerformingInitialLoad] = useState(true);
