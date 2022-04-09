@@ -14,9 +14,8 @@ export default function BookmarkDetailForm({attributes, onSave, onCancel}) {
   const [source, setSource] = useState(attributes.source);
   const [comment, setComment] = useState(attributes.comment);
 
-  function handleSave() {
+  const handleSave = () =>
     onSave({url, title, source, comment, 'tag-list': tagList});
-  }
 
   return (
     <>
