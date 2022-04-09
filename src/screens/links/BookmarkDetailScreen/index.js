@@ -1,6 +1,6 @@
 import {useNavigation} from '@react-navigation/native';
 import {useEffect, useState} from 'react';
-import {View} from 'react-native';
+import {Platform, View} from 'react-native';
 import {Button, TextInput} from 'react-native-paper';
 import ButtonGroup from '../../../components/ButtonGroup';
 import ScreenBackground from '../../../components/ScreenBackground';
@@ -60,6 +60,7 @@ export default function BookmarkDetailScreen({route}) {
             accessibilityLabel="URL"
             value={url}
             onChangeText={setUrl}
+            keyboardType={Platform.OS === 'android' ? 'default' : 'url'}
           />
           <TextInput
             label="Title"
@@ -72,12 +73,16 @@ export default function BookmarkDetailScreen({route}) {
             accessibilityLabel="Tags"
             value={tagList}
             onChangeText={setTagList}
+            autoCapitalize="none"
+            autoCorrect={false}
           />
           <TextInput
             label="Source"
             accessibilityLabel="Source"
             value={source}
             onChangeText={setSource}
+            autoCapitalize="none"
+            autoCorrect={false}
           />
           <TextInput
             label="Comment"
