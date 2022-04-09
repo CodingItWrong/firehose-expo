@@ -1,5 +1,6 @@
 import {useNavigation} from '@react-navigation/native';
 import {fireEvent, render, waitFor} from '@testing-library/react-native';
+import {Platform} from 'react-native';
 import {TokenProvider} from '../../data/token';
 import {jsonApiResponse, mockHttp} from '../../testUtils';
 import BookmarkDetailScreen from './BookmarkDetailScreen';
@@ -29,6 +30,11 @@ describe('BookmarkDetailScreen', () => {
   const providers = children => (
     <TokenProvider skipLoading>{children}</TokenProvider>
   );
+
+  beforeEach(() => {
+    // fix error in KeyboardAwareHOC in tests
+    Platform.constants.reactNativeVersion = {};
+  });
 
   it('allows editing fields on the bookmark', async () => {
     const {
