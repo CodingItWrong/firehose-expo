@@ -60,6 +60,7 @@ export default function BookmarkDetailScreen({route}) {
             accessibilityLabel="URL"
             value={url}
             onChangeText={setUrl}
+            mode="outlined"
             keyboardType={Platform.OS === 'android' ? 'default' : 'url'}
           />
           <TextInput
@@ -67,12 +68,14 @@ export default function BookmarkDetailScreen({route}) {
             accessibilityLabel="Title"
             value={title}
             onChangeText={setTitle}
+            mode="outlined"
           />
           <TextInput
             label="Tags"
             accessibilityLabel="Tags"
             value={tagList}
             onChangeText={setTagList}
+            mode="outlined"
             autoCapitalize="none"
             autoCorrect={false}
           />
@@ -81,12 +84,14 @@ export default function BookmarkDetailScreen({route}) {
             accessibilityLabel="Source"
             value={source}
             onChangeText={setSource}
+            mode="outlined"
             autoCapitalize="none"
             autoCorrect={false}
           />
           <TextInput
             label="Comment"
             accessibilityLabel="Comment"
+            mode="outlined"
             value={comment}
             onChangeText={setComment}
           />
