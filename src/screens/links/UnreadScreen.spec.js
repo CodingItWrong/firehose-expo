@@ -181,6 +181,24 @@ describe('UnreadScreen', () => {
           false,
         );
       });
+
+      it('shows an error upon reload failure', async () => {
+        const http = mockHttp();
+        http.get.mockResolvedValue(jsonApiResponse([]));
+
+        const {findByText, getByTestId} = render(providers(<UnreadScreen />));
+
+        await findByText('No unread links.');
+
+        http.get.mockRejectedValue();
+        fireEvent(getByTestId('unread-bookmarks-list'), 'refresh');
+
+        await findByText('An error occurred while loading links.');
+        expect(getByTestId('unread-bookmarks-list')).toHaveProp(
+          'refreshing',
+          false,
+        );
+      });
     });
 
     describe('clicking a button on web', () => {

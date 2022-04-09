@@ -20,10 +20,9 @@ export default function RefreshableFlatList({
     ? LOADING_INDICATOR.STANDALONE
     : internalLoadingIndicator;
 
-  async function refreshFromList() {
+  function refreshFromList() {
     setInternalLoadingIndicator(LOADING_INDICATOR.FLATLIST);
-    await onRefresh();
-    setInternalLoadingIndicator(null);
+    return onRefresh().finally(() => setInternalLoadingIndicator(null));
   }
 
   async function refreshFromButton() {
