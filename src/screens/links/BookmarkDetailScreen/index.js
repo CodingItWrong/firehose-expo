@@ -1,15 +1,20 @@
 import {useNavigation} from '@react-navigation/native';
 import {useEffect, useState} from 'react';
-import {Platform, View} from 'react-native';
+import {Platform} from 'react-native';
 import {Button, TextInput} from 'react-native-paper';
+import {screenWidthMin, useStyleQueries} from 'react-native-style-queries';
+import {breakpointMedium} from '../../../breakpoints';
 import ButtonGroup from '../../../components/ButtonGroup';
+import CenterColumn from '../../../components/CenterColumn';
 import ScreenBackground from '../../../components/ScreenBackground';
 import {useBookmarks} from '../../../data/bookmarks';
+import sharedStyles from '../../../sharedStyles';
 
 export default function BookmarkDetailScreen({route}) {
   const navigation = useNavigation();
   const {id} = route.params;
   const bookmarkClient = useBookmarks();
+  const styles = useStyleQueries(styleQueries);
 
   const [loaded, setLoaded] = useState(false);
   const [url, setUrl] = useState(null);
@@ -60,41 +65,54 @@ export default function BookmarkDetailScreen({route}) {
             accessibilityLabel="URL"
             value={url}
             onChangeText={setUrl}
+            mode="outlined"
             keyboardType={Platform.OS === 'android' ? 'default' : 'url'}
+            style={styles.formField}
           />
           <TextInput
             label="Title"
             accessibilityLabel="Title"
             value={title}
             onChangeText={setTitle}
+            mode="outlined"
+            style={styles.formField}
           />
           <TextInput
             label="Tags"
             accessibilityLabel="Tags"
             value={tagList}
             onChangeText={setTagList}
+            mode="outlined"
             autoCapitalize="none"
             autoCorrect={false}
+            style={styles.formField}
           />
           <TextInput
             label="Source"
             accessibilityLabel="Source"
             value={source}
             onChangeText={setSource}
+            mode="outlined"
             autoCapitalize="none"
             autoCorrect={false}
+            style={styles.formField}
           />
           <TextInput
             label="Comment"
             accessibilityLabel="Comment"
+            mode="outlined"
             value={comment}
             onChangeText={setComment}
           />
           <ButtonGroup>
-            <Button mode="outlined" onPress={handleCancel}>
+            <Button
+              onPress={handleCancel}
+              mode="outlined"
+              style={styles.button}
+            >
               Cancel
             </Button>
-            <Button mode="contained" onPress={handleSave}>
+            <Button onPress={handleSave} mode="contained" style={styles.button}>
               Save
             </Button>
           </ButtonGroup>
@@ -103,5 +121,25 @@ export default function BookmarkDetailScreen({route}) {
     }
   }
 
-  return <ScreenBackground>{contents()}</ScreenBackground>;
+  return (
+    <ScreenBackground>
+      <CenterColumn columnStyle={sharedStyles.bodyPadding}>
+        {contents()}
+      </CenterColumn>
+    </ScreenBackground>
+  );
 }
+
+const styleQueries = {
+  formField: {
+    marginBottom: 10,
+  },
+  button: [
+    {
+      marginTop: 10,
+    },
+    screenWidthMin(breakpointMedium, {
+      marginLeft: 10,
+    }),
+  ],
+};

@@ -1,9 +1,9 @@
 import {StyleSheet, View} from 'react-native';
 
-export default function CenterColumn({children}) {
+export default function CenterColumn({columnStyle, children}) {
   return (
     <View style={styles.columnWrapper}>
-      <View style={styles.column}>{children}</View>
+      <View style={[styles.column, columnStyle]}>{children}</View>
     </View>
   );
 }
