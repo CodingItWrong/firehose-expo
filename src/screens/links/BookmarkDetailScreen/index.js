@@ -1,6 +1,6 @@
 import {useNavigation} from '@react-navigation/native';
 import {useEffect, useState} from 'react';
-import {Platform} from 'react-native';
+import {Platform, StyleSheet} from 'react-native';
 import {Button, TextInput} from 'react-native-paper';
 import ButtonGroup from '../../../components/ButtonGroup';
 import CenterColumn from '../../../components/CenterColumn';
@@ -64,6 +64,7 @@ export default function BookmarkDetailScreen({route}) {
             onChangeText={setUrl}
             mode="outlined"
             keyboardType={Platform.OS === 'android' ? 'default' : 'url'}
+            style={styles.formField}
           />
           <TextInput
             label="Title"
@@ -71,6 +72,7 @@ export default function BookmarkDetailScreen({route}) {
             value={title}
             onChangeText={setTitle}
             mode="outlined"
+            style={styles.formField}
           />
           <TextInput
             label="Tags"
@@ -80,6 +82,7 @@ export default function BookmarkDetailScreen({route}) {
             mode="outlined"
             autoCapitalize="none"
             autoCorrect={false}
+            style={styles.formField}
           />
           <TextInput
             label="Source"
@@ -89,6 +92,7 @@ export default function BookmarkDetailScreen({route}) {
             mode="outlined"
             autoCapitalize="none"
             autoCorrect={false}
+            style={styles.formField}
           />
           <TextInput
             label="Comment"
@@ -96,6 +100,7 @@ export default function BookmarkDetailScreen({route}) {
             mode="outlined"
             value={comment}
             onChangeText={setComment}
+            style={styles.formField}
           />
           <ButtonGroup>
             <Button mode="outlined" onPress={handleCancel}>
@@ -118,3 +123,9 @@ export default function BookmarkDetailScreen({route}) {
     </ScreenBackground>
   );
 }
+
+const styles = StyleSheet.create({
+  formField: {
+    marginBottom: 10,
+  },
+});
