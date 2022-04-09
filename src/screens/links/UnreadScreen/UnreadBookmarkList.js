@@ -8,6 +8,7 @@ import UnreadBookmarkRow from './UnreadBookmarkRow';
 
 export default function UnreadBookmarkList({
   listRef,
+  isPerformingInitialLoad,
   bookmarks,
   errorMessage,
   onRefresh,
@@ -38,7 +39,7 @@ export default function UnreadBookmarkList({
       ListHeaderComponent={listHeader()}
       data={bookmarks}
       onRefresh={onRefresh}
-      showLoadingIndicator={bookmarks === null}
+      showLoadingIndicator={isPerformingInitialLoad}
       contentContainerStyle={[styles.list, {paddingBottom: insets.bottom}]}
       keyExtractor={item => item.id}
       renderItem={({item}) => (

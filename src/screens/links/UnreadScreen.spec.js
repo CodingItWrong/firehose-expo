@@ -89,9 +89,12 @@ describe('UnreadScreen', () => {
       const http = mockHttp();
       http.get.mockRejectedValue();
 
-      const {findByText} = render(providers(<UnreadScreen />));
+      const {findByText, queryByLabelText} = render(
+        providers(<UnreadScreen />),
+      );
 
       await findByText('An error occurred while loading links.');
+      expect(queryByLabelText('Loading')).toBeNull();
     });
 
     it('shows a message when there are no links to display', async () => {
@@ -156,32 +159,83 @@ describe('UnreadScreen', () => {
   });
 
   describe('refreshing', () => {
-    it('refreshes the list when pulling down on mobile', async () => {
-      const http = mockHttp();
-      http.get.mockResolvedValue(jsonApiResponse([]));
+    describe('pulling on mobile', () => {
+      it('refreshes the list', async () => {
+        const http = mockHttp();
+        http.get.mockResolvedValue(jsonApiResponse([]));
 
-      const {findByText, getByTestId} = render(providers(<UnreadScreen />));
+        const {findByText, getByTestId} = render(providers(<UnreadScreen />));
 
-      await findByText('No unread links.');
+        await findByText('No unread links.');
 
-      http.get.mockResolvedValue(jsonApiResponse([bookmark]));
-      fireEvent(getByTestId('unread-bookmarks-list'), 'refresh');
+        http.get.mockResolvedValue(jsonApiResponse([bookmark]));
+        fireEvent(getByTestId('unread-bookmarks-list'), 'refresh');
+        expect(getByTestId('unread-bookmarks-list')).toHaveProp(
+          'refreshing',
+          true,
+        );
 
-      await findByText(bookmark.attributes.title);
+        await findByText(bookmark.attributes.title);
+        expect(getByTestId('unread-bookmarks-list')).toHaveProp(
+          'refreshing',
+          false,
+        );
+      });
+
+      it('shows an error upon reload failure', async () => {
+        const http = mockHttp();
+        http.get.mockResolvedValue(jsonApiResponse([]));
+
+        const {findByText, getByTestId} = render(providers(<UnreadScreen />));
+
+        await findByText('No unread links.');
+
+        http.get.mockRejectedValue();
+        fireEvent(getByTestId('unread-bookmarks-list'), 'refresh');
+
+        await findByText('An error occurred while loading links.');
+        expect(getByTestId('unread-bookmarks-list')).toHaveProp(
+          'refreshing',
+          false,
+        );
+      });
     });
 
-    it('refreshes by clicking a button on web', async () => {
-      const http = mockHttp();
-      http.get.mockResolvedValue(jsonApiResponse([]));
+    describe('clicking a button on web', () => {
+      it('refreshes the list', async () => {
+        const http = mockHttp();
+        http.get.mockResolvedValue(jsonApiResponse([]));
 
-      const {findByText, getByText} = render(providers(<UnreadScreen />));
+        const {findByText, getByText, queryByLabelText} = render(
+          providers(<UnreadScreen />),
+        );
 
-      await findByText('No unread links.');
+        await findByText('No unread links.');
 
-      http.get.mockResolvedValue(jsonApiResponse([bookmark]));
-      fireEvent.press(getByText('Reload'));
+        http.get.mockResolvedValue(jsonApiResponse([bookmark]));
+        fireEvent.press(getByText('Reload'));
+        expect(queryByLabelText('Loading')).not.toBeNull();
 
-      await findByText(bookmark.attributes.title);
+        await findByText(bookmark.attributes.title);
+        expect(queryByLabelText('Loading')).toBeNull();
+      });
+
+      it('shows an error upon reload failure', async () => {
+        const http = mockHttp();
+        http.get.mockResolvedValue(jsonApiResponse([]));
+
+        const {findByText, getByText, queryByLabelText} = render(
+          providers(<UnreadScreen />),
+        );
+
+        await findByText('No unread links.');
+
+        http.get.mockRejectedValue();
+        fireEvent.press(getByText('Reload'));
+
+        await findByText('An error occurred while loading links.');
+        expect(queryByLabelText('Loading')).toBeNull();
+      });
     });
   });
 

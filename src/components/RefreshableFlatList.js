@@ -20,17 +20,15 @@ export default function RefreshableFlatList({
     ? LOADING_INDICATOR.STANDALONE
     : internalLoadingIndicator;
 
-  async function refreshFromList() {
-    setInternalLoadingIndicator(LOADING_INDICATOR.FLATLIST);
-    await onRefresh();
-    setInternalLoadingIndicator(null);
+  function refreshWithIndicator(indicator) {
+    setInternalLoadingIndicator(indicator);
+    return onRefresh().finally(() => setInternalLoadingIndicator(null));
   }
 
-  async function refreshFromButton() {
-    setInternalLoadingIndicator(LOADING_INDICATOR.STANDALONE);
-    await onRefresh();
-    setInternalLoadingIndicator(null);
-  }
+  const refreshFromList = () =>
+    refreshWithIndicator(LOADING_INDICATOR.FLATLIST);
+  const refreshFromButton = () =>
+    refreshWithIndicator(LOADING_INDICATOR.STANDALONE);
 
   const showReloadButton =
     Platform.OS === 'web' || process.env.NODE_ENV === 'test';
