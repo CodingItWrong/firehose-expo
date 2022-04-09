@@ -201,7 +201,7 @@ describe('UnreadScreen', () => {
       });
     });
 
-    describe.only('clicking a button on web', () => {
+    describe('clicking a button on web', () => {
       it('refreshes the list', async () => {
         const http = mockHttp();
         http.get.mockResolvedValue(jsonApiResponse([]));
@@ -217,6 +217,23 @@ describe('UnreadScreen', () => {
         expect(queryByLabelText('Loading')).not.toBeNull();
 
         await findByText(bookmark.attributes.title);
+        expect(queryByLabelText('Loading')).toBeNull();
+      });
+
+      it('shows an error upon reload failure', async () => {
+        const http = mockHttp();
+        http.get.mockResolvedValue(jsonApiResponse([]));
+
+        const {findByText, getByText, queryByLabelText} = render(
+          providers(<UnreadScreen />),
+        );
+
+        await findByText('No unread links.');
+
+        http.get.mockRejectedValue();
+        fireEvent.press(getByText('Reload'));
+
+        await findByText('An error occurred while loading links.');
         expect(queryByLabelText('Loading')).toBeNull();
       });
     });

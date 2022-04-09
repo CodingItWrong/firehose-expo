@@ -25,10 +25,9 @@ export default function RefreshableFlatList({
     return onRefresh().finally(() => setInternalLoadingIndicator(null));
   }
 
-  async function refreshFromButton() {
+  function refreshFromButton() {
     setInternalLoadingIndicator(LOADING_INDICATOR.STANDALONE);
-    await onRefresh();
-    setInternalLoadingIndicator(null);
+    return onRefresh().finally(() => setInternalLoadingIndicator(null));
   }
 
   const showReloadButton =
