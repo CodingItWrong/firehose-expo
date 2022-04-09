@@ -87,9 +87,7 @@ function NavigationContents() {
           <Drawer.Screen name="Unread" component={Unread} />
         </>
       ) : (
-        <>
-          <Drawer.Screen name="Sign in" component={SignIn} />
-        </>
+        <Drawer.Screen name="Sign in" component={SignIn} />
       )}
     </Drawer.Navigator>
   );
