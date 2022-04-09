@@ -89,9 +89,12 @@ describe('UnreadScreen', () => {
       const http = mockHttp();
       http.get.mockRejectedValue();
 
-      const {findByText} = render(providers(<UnreadScreen />));
+      const {findByText, queryByLabelText} = render(
+        providers(<UnreadScreen />),
+      );
 
       await findByText('An error occurred while loading links.');
+      expect(queryByLabelText('Loading')).toBeNull();
     });
 
     it('shows a message when there are no links to display', async () => {

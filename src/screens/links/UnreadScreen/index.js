@@ -9,6 +9,7 @@ import UnreadBookmarkList from './UnreadBookmarkList';
 export default function UnreadScreen() {
   const bookmarkClient = useBookmarks();
 
+  const [isPerformingInitialLoad, setIsPerformingInitialLoad] = useState(true);
   const [errorMessage, setErrorMessage] = useState(null);
   const clearErrorMessage = () => setErrorMessage(null);
   const [bookmarks, setBookmarks] = useState(null);
@@ -32,7 +33,7 @@ export default function UnreadScreen() {
 
   useFocusEffect(
     useCallback(() => {
-      loadFromServer();
+      loadFromServer().finally(() => setIsPerformingInitialLoad(false));
     }, [loadFromServer]),
   );
 
@@ -87,6 +88,7 @@ export default function UnreadScreen() {
         <NewBookmarkForm isCreating={isCreating} onCreate={addBookmark} />
         <UnreadBookmarkList
           listRef={listRef}
+          isPerformingInitialLoad={isPerformingInitialLoad}
           bookmarks={bookmarks}
           errorMessage={errorMessage}
           onRefresh={refresh}
