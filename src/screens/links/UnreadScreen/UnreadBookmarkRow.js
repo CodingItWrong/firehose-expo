@@ -21,7 +21,7 @@ export default function UnreadBookmarkRow({
         <Pressable onPress={() => openBookmark(bookmark.attributes.url)}>
           <Title>{title}</Title>
         </Pressable>
-        {comment && <Text style={styles.comment}>{comment}</Text>}
+        {comment ? <Text style={styles.comment}>{comment}</Text> : null}
         <View style={styles.urlLine}>
           <Pressable onPress={() => openBookmark(bookmark.attributes.url)}>
             <Text>{domainForUrl(url)}</Text>
