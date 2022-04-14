@@ -7,10 +7,17 @@ import NewBookmarkForm from './NewBookmarkForm';
 import UnreadBookmarkList from './UnreadBookmarkList';
 
 export default function UnreadScreen() {
-  return <BookmarkList />;
+  const bookmarkClient = useBookmarks();
+
+  const onLoad = useCallback(
+    () => bookmarkClient.where({filter: {read: false}}),
+    [bookmarkClient],
+  );
+
+  return <BookmarkList onLoad={onLoad} />;
 }
 
-function BookmarkList() {
+function BookmarkList({onLoad}) {
   const bookmarkClient = useBookmarks();
 
   const [isPerformingInitialLoad, setIsPerformingInitialLoad] = useState(true);
@@ -26,14 +33,14 @@ function BookmarkList() {
 
   const loadFromServer = useCallback(async () => {
     try {
-      const response = await bookmarkClient.where({filter: {read: false}});
+      const response = await onLoad();
       const loadedBookmarks = response.data;
       setBookmarks(loadedBookmarks);
       return loadedBookmarks;
     } catch (e) {
       setErrorMessage('An error occurred while loading links.');
     }
-  }, [bookmarkClient]);
+  }, [onLoad]);
 
   useFocusEffect(
     useCallback(() => {
