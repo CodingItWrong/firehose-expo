@@ -1,8 +1,8 @@
 import {Platform, StyleSheet} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import ErrorMessage from '../../../../components/ErrorMessage';
-import NoRecordsMessage from '../../../../components/NoRecordsMessage';
-import RefreshableFlatList from '../../../../components/RefreshableFlatList';
+import ErrorMessage from '../ErrorMessage';
+import NoRecordsMessage from '../NoRecordsMessage';
+import RefreshableFlatList from '../RefreshableFlatList';
 import BookmarkRow from './BookmarkRow';
 
 export default function BookmarkFlatList({

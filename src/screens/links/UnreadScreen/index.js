@@ -1,6 +1,6 @@
 import {useCallback} from 'react';
+import BookmarkList from '../../../components/BookmarkList';
 import {useBookmarks} from '../../../data/bookmarks';
-import BookmarkList from './BookmarkList';
 
 export default function UnreadScreen() {
   const bookmarkClient = useBookmarks();
