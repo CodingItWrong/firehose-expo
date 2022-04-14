@@ -1,4 +1,3 @@
-import {useNavigation} from '@react-navigation/native';
 import {Platform, StyleSheet} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import ErrorMessage from '../../../components/ErrorMessage';
@@ -11,16 +10,12 @@ export default function UnreadBookmarkList({
   isPerformingInitialLoad,
   bookmarks,
   errorMessage,
+  onEdit,
   onRefresh,
   onMarkRead,
   onDelete,
 }) {
-  const navigation = useNavigation();
   const insets = useSafeAreaInsets();
-
-  function handleEdit(bookmark) {
-    navigation.navigate('BookmarkDetailScreen', {id: bookmark.id});
-  }
 
   function listHeader() {
     if (errorMessage) {
@@ -46,7 +41,7 @@ export default function UnreadBookmarkList({
         <UnreadBookmarkRow
           bookmark={item}
           style={styles.card}
-          onEdit={() => handleEdit(item)}
+          onEdit={() => onEdit(item)}
           onMarkRead={() => onMarkRead(item)}
           onDelete={() => onDelete(item)}
         />

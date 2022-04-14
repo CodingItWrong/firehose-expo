@@ -1,4 +1,5 @@
 import {useFocusEffect} from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import {useCallback, useRef, useState} from 'react';
 import CenterColumn from '../../../components/CenterColumn';
 import ScreenBackground from '../../../components/ScreenBackground';
@@ -7,6 +8,7 @@ import NewBookmarkForm from './NewBookmarkForm';
 import UnreadBookmarkList from './UnreadBookmarkList';
 
 export default function BookmarkList({onLoad}) {
+  const navigation = useNavigation();
   const bookmarkClient = useBookmarks();
 
   const [isPerformingInitialLoad, setIsPerformingInitialLoad] = useState(true);
@@ -59,6 +61,10 @@ export default function BookmarkList({onLoad}) {
     }
   }
 
+  function goToBookmark(bookmark) {
+    navigation.navigate('BookmarkDetailScreen', {id: bookmark.id});
+  }
+
   async function markRead(bookmark) {
     try {
       clearErrorMessage();
@@ -91,6 +97,7 @@ export default function BookmarkList({onLoad}) {
           isPerformingInitialLoad={isPerformingInitialLoad}
           bookmarks={bookmarks}
           errorMessage={errorMessage}
+          onEdit={goToBookmark}
           onRefresh={refresh}
           onMarkRead={markRead}
           onDelete={deleteBookmark}
