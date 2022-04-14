@@ -3,7 +3,7 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import ErrorMessage from '../../../components/ErrorMessage';
 import NoRecordsMessage from '../../../components/NoRecordsMessage';
 import RefreshableFlatList from '../../../components/RefreshableFlatList';
-import UnreadBookmarkRow from './UnreadBookmarkRow';
+import BookmarkRow from './BookmarkRow';
 
 export default function UnreadBookmarkList({
   listRef,
@@ -38,7 +38,7 @@ export default function UnreadBookmarkList({
       contentContainerStyle={[styles.list, {paddingBottom: insets.bottom}]}
       keyExtractor={item => item.id}
       renderItem={({item}) => (
-        <UnreadBookmarkRow
+        <BookmarkRow
           bookmark={item}
           style={styles.card}
           onEdit={() => onEdit(item)}
