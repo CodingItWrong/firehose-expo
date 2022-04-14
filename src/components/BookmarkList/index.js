@@ -6,7 +6,7 @@ import ScreenBackground from '../ScreenBackground';
 import BookmarkFlatList from './BookmarkFlatList';
 import NewBookmarkForm from './NewBookmarkForm';
 
-export default function BookmarkList({onLoad}) {
+export default function BookmarkList({onLoad, showAddForm = false}) {
   const navigation = useNavigation();
   const bookmarkClient = useBookmarks();
 
@@ -90,7 +90,9 @@ export default function BookmarkList({onLoad}) {
   return (
     <ScreenBackground>
       <CenterColumn>
-        <NewBookmarkForm isCreating={isCreating} onCreate={addBookmark} />
+        {showAddForm && (
+          <NewBookmarkForm isCreating={isCreating} onCreate={addBookmark} />
+        )}
         <BookmarkFlatList
           listRef={listRef}
           isPerformingInitialLoad={isPerformingInitialLoad}

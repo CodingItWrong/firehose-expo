@@ -54,4 +54,17 @@ describe('ReadScreen', () => {
       await findByText(bookmark.attributes.title);
     });
   });
+
+  describe('adding a link', () => {
+    it('does not allow adding a link to the list', async () => {
+      const http = mockHttp();
+      http.get.mockResolvedValue(jsonApiResponse([bookmark]));
+
+      const {findByText, queryByLabelText} = render(providers(<ReadScreen />));
+
+      await findByText(bookmark.attributes.title);
+
+      expect(queryByLabelText('URL to Add')).toBeNull();
+    });
+  });
 });
