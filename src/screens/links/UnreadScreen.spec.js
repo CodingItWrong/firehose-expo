@@ -8,7 +8,7 @@ import * as Linking from 'expo-linking';
 import {Provider as PaperProvider} from 'react-native-paper';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {TokenProvider} from '../../data/token';
-import {jsonApiResponse, mockHttp} from '../../testUtils';
+import {jsonApiResponse, mockHttp, safeAreaMetrics} from '../../testUtils';
 import UnreadScreen from './UnreadScreen';
 
 jest.mock('../../data/httpClient');
@@ -17,21 +17,6 @@ jest.mock('@react-navigation/native', () => ({
   useFocusEffect: jest.fn(),
   useNavigation: jest.fn(),
 }));
-
-const safeAreaMetrics = {
-  frame: {
-    width: 320,
-    height: 640,
-    x: 0,
-    y: 0,
-  },
-  insets: {
-    left: 0,
-    right: 0,
-    bottom: 0,
-    top: 0,
-  },
-};
 
 describe('UnreadScreen', () => {
   const bookmark = {
