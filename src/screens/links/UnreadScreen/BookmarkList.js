@@ -4,8 +4,8 @@ import {useCallback, useRef, useState} from 'react';
 import CenterColumn from '../../../components/CenterColumn';
 import ScreenBackground from '../../../components/ScreenBackground';
 import {useBookmarks} from '../../../data/bookmarks';
+import BookmarkFlatList from './BookmarkFlatList';
 import NewBookmarkForm from './NewBookmarkForm';
-import UnreadBookmarkList from './UnreadBookmarkList';
 
 export default function BookmarkList({onLoad}) {
   const navigation = useNavigation();
@@ -92,7 +92,7 @@ export default function BookmarkList({onLoad}) {
     <ScreenBackground>
       <CenterColumn>
         <NewBookmarkForm isCreating={isCreating} onCreate={addBookmark} />
-        <UnreadBookmarkList
+        <BookmarkFlatList
           listRef={listRef}
           isPerformingInitialLoad={isPerformingInitialLoad}
           bookmarks={bookmarks}

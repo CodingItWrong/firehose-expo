@@ -5,7 +5,7 @@ import NoRecordsMessage from '../../../components/NoRecordsMessage';
 import RefreshableFlatList from '../../../components/RefreshableFlatList';
 import BookmarkRow from './BookmarkRow';
 
-export default function UnreadBookmarkList({
+export default function BookmarkFlatList({
   listRef,
   isPerformingInitialLoad,
   bookmarks,
