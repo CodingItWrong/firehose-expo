@@ -1,8 +1,8 @@
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {useCallback, useRef, useState} from 'react';
-import CenterColumn from '../../../components/CenterColumn';
-import ScreenBackground from '../../../components/ScreenBackground';
-import {useBookmarks} from '../../../data/bookmarks';
+import CenterColumn from '../../../../components/CenterColumn';
+import ScreenBackground from '../../../../components/ScreenBackground';
+import {useBookmarks} from '../../../../data/bookmarks';
 import BookmarkFlatList from './BookmarkFlatList';
 import NewBookmarkForm from './NewBookmarkForm';
 
