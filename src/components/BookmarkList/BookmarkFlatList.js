@@ -13,6 +13,7 @@ export default function BookmarkFlatList({
   onEdit,
   onRefresh,
   onMarkRead,
+  onMarkUnread,
   onDelete,
 }) {
   const insets = useSafeAreaInsets();
@@ -43,6 +44,7 @@ export default function BookmarkFlatList({
           style={styles.card}
           onEdit={() => onEdit(item)}
           onMarkRead={() => onMarkRead(item)}
+          onMarkUnread={() => onMarkUnread(item)}
           onDelete={() => onDelete(item)}
         />
       )}

@@ -77,6 +77,19 @@ export default function BookmarkList({onLoad, showAddForm = false}) {
     }
   }
 
+  async function markUnread(bookmark) {
+    try {
+      clearErrorMessage();
+      await bookmarkClient.update({
+        id: bookmark.id,
+        attributes: {read: false},
+      });
+      removeBookmark(bookmark);
+    } catch {
+      setErrorMessage('An error occurred while marking link unread.');
+    }
+  }
+
   async function deleteBookmark(bookmark) {
     try {
       clearErrorMessage();
@@ -101,6 +114,7 @@ export default function BookmarkList({onLoad, showAddForm = false}) {
           onEdit={goToBookmark}
           onRefresh={refresh}
           onMarkRead={markRead}
+          onMarkUnread={markUnread}
           onDelete={deleteBookmark}
         />
       </CenterColumn>

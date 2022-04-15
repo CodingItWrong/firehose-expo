@@ -1,5 +1,9 @@
 import {useFocusEffect} from '@react-navigation/native';
-import {render} from '@testing-library/react-native';
+import {
+  fireEvent,
+  render,
+  waitForElementToBeRemoved,
+} from '@testing-library/react-native';
 import {Provider as PaperProvider} from 'react-native-paper';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {TokenProvider} from '../../data/token';
@@ -21,6 +25,7 @@ describe('ReadScreen', () => {
       comment: 'This is my book list',
       source: 'Nice Referrer',
       'tag-list': 'tag another-tag',
+      read: true,
     },
   };
 
@@ -65,6 +70,62 @@ describe('ReadScreen', () => {
       await findByText(bookmark.attributes.title);
 
       expect(queryByLabelText('URL to Add')).toBeNull();
+    });
+  });
+
+  describe('mark unread', () => {
+    it('allows marking a link as unread', async () => {
+      const http = mockHttp();
+      http.get.mockResolvedValue(jsonApiResponse([bookmark]));
+      http.patch.mockResolvedValue(jsonApiResponse());
+
+      const {findByText, getByText} = render(providers(<ReadScreen />));
+
+      await findByText('Mark Unread');
+      fireEvent.press(getByText('Mark Unread'));
+
+      expect(http.patch).toHaveBeenCalledWith(
+        'bookmarks/1?',
+        {
+          data: {
+            type: 'bookmarks',
+            id: '1',
+            attributes: {read: false},
+          },
+        },
+        {headers: {'Content-Type': 'application/vnd.api+json'}},
+      );
+
+      await waitForElementToBeRemoved(() =>
+        getByText(bookmark.attributes.title),
+      );
+    });
+
+    it('shows an error message when marking a link read fails', async () => {
+      const http = mockHttp();
+      http.get.mockResolvedValue(jsonApiResponse([bookmark]));
+      http.patch.mockRejectedValue();
+
+      const {findByText, getByText, queryByText} = render(
+        providers(<ReadScreen />),
+      );
+
+      await findByText('Mark Unread');
+      fireEvent.press(getByText('Mark Unread'));
+
+      await findByText('An error occurred while marking link unread.');
+
+      // clear error
+      http.patch.mockResolvedValue(jsonApiResponse());
+
+      fireEvent.press(getByText('Mark Unread'));
+
+      expect(
+        queryByText('An error occurred while marking link unread.'),
+      ).toBeNull();
+      await waitForElementToBeRemoved(() =>
+        getByText(bookmark.attributes.title),
+      );
     });
   });
 });
