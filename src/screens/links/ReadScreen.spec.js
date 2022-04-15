@@ -55,7 +55,9 @@ describe('ReadScreen', () => {
 
       const {findByText} = render(providers(<ReadScreen />));
 
-      expect(http.get).toHaveBeenCalledWith('bookmarks?filter[read]=true&');
+      expect(http.get).toHaveBeenCalledWith(
+        'bookmarks?filter[read]=true&page[number]=1',
+      );
       await findByText(bookmark.attributes.title);
     });
   });
