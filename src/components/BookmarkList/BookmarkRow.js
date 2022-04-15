@@ -1,13 +1,14 @@
 import * as Linking from 'expo-linking';
 import {Platform, Pressable, StyleSheet, View} from 'react-native';
 import {Button, Card, Chip, Text, Title} from 'react-native-paper';
-import domainForUrl from '../../../utils/domainForUrl';
+import domainForUrl from '../../utils/domainForUrl';
 
-export default function UnreadBookmarkRow({
+export default function BookmarkRow({
   bookmark,
   style,
   onEdit,
   onMarkRead,
+  onMarkUnread,
   onDelete,
 }) {
   const {title, url, source, comment} = bookmark.attributes;
@@ -39,9 +40,15 @@ export default function UnreadBookmarkRow({
         )}
       </Card.Content>
       <Card.Actions>
-        <Button style={styles.button} mode="outlined" onPress={onMarkRead}>
-          Mark Read
-        </Button>
+        {bookmark.attributes.read ? (
+          <Button style={styles.button} mode="outlined" onPress={onMarkUnread}>
+            Mark Unread
+          </Button>
+        ) : (
+          <Button style={styles.button} mode="outlined" onPress={onMarkRead}>
+            Mark Read
+          </Button>
+        )}
         <Button style={styles.button} mode="outlined" onPress={onEdit}>
           Edit
         </Button>

@@ -6,9 +6,13 @@ export default function UnreadScreen() {
   const bookmarkClient = useBookmarks();
 
   const onLoad = useCallback(
-    () => bookmarkClient.where({filter: {read: false}}),
+    () =>
+      bookmarkClient.where({
+        filter: {read: true},
+        options: {'page[number]': 1},
+      }),
     [bookmarkClient],
   );
 
-  return <BookmarkList onLoad={onLoad} showAddForm />;
+  return <BookmarkList onLoad={onLoad} />;
 }

@@ -1,26 +1,22 @@
-import {useNavigation} from '@react-navigation/native';
 import {Platform, StyleSheet} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import ErrorMessage from '../../../components/ErrorMessage';
-import NoRecordsMessage from '../../../components/NoRecordsMessage';
-import RefreshableFlatList from '../../../components/RefreshableFlatList';
-import UnreadBookmarkRow from './UnreadBookmarkRow';
+import ErrorMessage from '../ErrorMessage';
+import NoRecordsMessage from '../NoRecordsMessage';
+import RefreshableFlatList from '../RefreshableFlatList';
+import BookmarkRow from './BookmarkRow';
 
-export default function UnreadBookmarkList({
+export default function BookmarkFlatList({
   listRef,
   isPerformingInitialLoad,
   bookmarks,
   errorMessage,
+  onEdit,
   onRefresh,
   onMarkRead,
+  onMarkUnread,
   onDelete,
 }) {
-  const navigation = useNavigation();
   const insets = useSafeAreaInsets();
-
-  function handleEdit(bookmark) {
-    navigation.navigate('BookmarkDetailScreen', {id: bookmark.id});
-  }
 
   function listHeader() {
     if (errorMessage) {
@@ -43,11 +39,12 @@ export default function UnreadBookmarkList({
       contentContainerStyle={[styles.list, {paddingBottom: insets.bottom}]}
       keyExtractor={item => item.id}
       renderItem={({item}) => (
-        <UnreadBookmarkRow
+        <BookmarkRow
           bookmark={item}
           style={styles.card}
-          onEdit={() => handleEdit(item)}
+          onEdit={() => onEdit(item)}
           onMarkRead={() => onMarkRead(item)}
+          onMarkUnread={() => onMarkUnread(item)}
           onDelete={() => onDelete(item)}
         />
       )}
