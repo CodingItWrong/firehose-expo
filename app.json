@@ -20,7 +20,7 @@
       "**/*"
     ],
     "ios": {
-      "buildNumber": "18",
+      "buildNumber": "19",
       "supportsTablet": true,
       "bundleIdentifier": "com.codingitwrong.firehose",
       "config": {
