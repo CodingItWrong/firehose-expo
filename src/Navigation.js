@@ -30,6 +30,7 @@ const linking = {
         initialRouteName: 'ReadScreen',
         screens: {
           ReadScreen: '/links/read',
+          BookmarkDetailScreen: '/links/read/:id',
         },
       },
     },
@@ -67,6 +68,11 @@ const Read = () => (
       name="ReadScreen"
       component={ReadScreen}
       options={{title: 'Read Links'}}
+    />
+    <UnreadStack.Screen
+      name="BookmarkDetailScreen"
+      component={BookmarkDetailScreen}
+      options={{title: 'Edit Link'}}
     />
   </ReadStack.Navigator>
 );
