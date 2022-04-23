@@ -67,17 +67,18 @@ function Source({source}) {
 
   function renderSource() {
     const domain = domainForUrl(source);
+    const contents = (
+      <Text numberOfLines={1} ellipsizeMode="tail">
+        From {domain || source}
+      </Text>
+    );
+    const wrapper = domain ? (
+      <Pressable onPress={() => openBookmark(source)}>{contents}</Pressable>
+    ) : (
+      contents
+    );
 
-    if (domain) {
-      return (
-        <Pressable onPress={() => openBookmark(source)}>
-          <Text>From {domain}</Text>
-        </Pressable>
-      );
-    } else {
-      // not a URL
-      return <Text>From {source}</Text>;
-    }
+    return <View style={styles.source}>{wrapper}</View>;
   }
 
   return (
@@ -105,6 +106,9 @@ const styles = StyleSheet.create({
   },
   urlLine: {
     flexDirection: 'row',
+  },
+  source: {
+    flex: 1,
   },
   tagList: {
     flexDirection: 'row',
