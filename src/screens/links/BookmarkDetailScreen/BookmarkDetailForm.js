@@ -45,7 +45,6 @@ export default function BookmarkDetailForm({attributes, onSave, onCancel}) {
         accessibilityLabel="Comment"
         value={comment}
         onChangeText={setComment}
-        multiline
       />
       <ButtonGroup>
         <Button
@@ -70,6 +69,7 @@ export default function BookmarkDetailForm({attributes, onSave, onCancel}) {
 const TextInput = ({label, ...props}) => (
   <PaperTextInput
     mode="outlined"
+    multiline
     label={label}
     accessibilityLabel={label}
     style={styles.formField}
