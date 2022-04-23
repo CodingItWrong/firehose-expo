@@ -1,10 +1,18 @@
 {
   "expo": {
+    "ios": {
+      "buildNumber": "19",
+      "supportsTablet": true,
+      "bundleIdentifier": "com.codingitwrong.firehose",
+      "config": {
+        "usesNonExemptEncryption": false
+      }
+    },
+    "version": "1.0.0",
     "name": "Firehose",
     "description": "A simple link-saving app focused on reading.",
     "githubUrl": "https://github.com/CodingItWrong/firehose-expo",
     "slug": "firehose",
-    "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
@@ -19,14 +27,6 @@
     "assetBundlePatterns": [
       "**/*"
     ],
-    "ios": {
-      "buildNumber": "19",
-      "supportsTablet": true,
-      "bundleIdentifier": "com.codingitwrong.firehose",
-      "config": {
-        "usesNonExemptEncryption": false
-      }
-    },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
