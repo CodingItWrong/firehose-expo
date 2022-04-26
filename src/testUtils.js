@@ -1,5 +1,3 @@
-/* eslint-disable no-undef */
-
 export function jsonApiResponseBody(records) {
   return {data: records};
 }
