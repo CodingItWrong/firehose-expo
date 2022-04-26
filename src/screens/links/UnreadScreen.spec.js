@@ -5,13 +5,13 @@ import {
   waitForElementToBeRemoved,
 } from '@testing-library/react-native';
 import * as Linking from 'expo-linking';
+import nock from 'nock';
 import {Provider as PaperProvider} from 'react-native-paper';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {TokenProvider} from '../../data/token';
-import {jsonApiResponse, mockHttp, safeAreaMetrics} from '../../testUtils';
+import {jsonApiResponseBody, safeAreaMetrics} from '../../testUtils';
 import UnreadScreen from './UnreadScreen';
 
-jest.mock('../../data/httpClient');
 jest.mock('expo-linking', () => ({openURL: jest.fn()}));
 jest.mock('@react-navigation/native', () => ({
   useFocusEffect: jest.fn(),
@@ -51,15 +51,16 @@ describe('UnreadScreen', () => {
 
   describe('displaying links', () => {
     it('renders links from the backend', async () => {
-      const http = mockHttp();
-      http.get.mockResolvedValue(jsonApiResponse([bookmark]));
+      const mockedServer = nock('http://localhost:3000')
+        .get('/api/bookmarks?filter[read]=false&')
+        .reply(200, jsonApiResponseBody([bookmark]));
 
       const {findByText, queryByLabelText, queryByText} = render(
         providers(<UnreadScreen />),
       );
 
       expect(queryByLabelText('Loading')).not.toBeNull();
-      expect(http.get).toHaveBeenCalledWith('bookmarks?filter[read]=false&');
+      // expect(http.get).toHaveBeenCalledWith('bookmarks?filter[read]=false&');
       await findByText(bookmark.attributes.title);
       expect(queryByText(bookmark.attributes.comment)).not.toBeNull();
       expect(queryByText('codingitwrong.com')).not.toBeNull();
@@ -68,11 +69,14 @@ describe('UnreadScreen', () => {
       expect(queryByText('another-tag')).not.toBeNull();
 
       expect(queryByLabelText('Loading')).toBeNull();
+
+      mockedServer.done();
     });
 
     it('shows an error message when loading links fails', async () => {
-      const http = mockHttp();
-      http.get.mockRejectedValue();
+      nock('http://localhost:3000')
+        .get('/api/bookmarks?filter[read]=false&')
+        .reply(500);
 
       const {findByText, queryByLabelText} = render(
         providers(<UnreadScreen />),
@@ -83,8 +87,9 @@ describe('UnreadScreen', () => {
     });
 
     it('shows a message when there are no links to display', async () => {
-      const http = mockHttp();
-      http.get.mockResolvedValue(jsonApiResponse([]));
+      nock('http://localhost:3000')
+        .get('/api/bookmarks?filter[read]=false&')
+        .reply(200, jsonApiResponseBody([]));
 
       const {findByText} = render(providers(<UnreadScreen />));
 
@@ -94,8 +99,9 @@ describe('UnreadScreen', () => {
 
   describe('link clicking', () => {
     it('opens a link in the browser when clicking the title', async () => {
-      const http = mockHttp();
-      http.get.mockResolvedValue(jsonApiResponse([bookmark]));
+      nock('http://localhost:3000')
+        .get('/api/bookmarks?filter[read]=false&')
+        .reply(200, jsonApiResponseBody([bookmark]));
 
       const {findByText, getByText} = render(providers(<UnreadScreen />));
 
@@ -107,8 +113,9 @@ describe('UnreadScreen', () => {
     });
 
     it('opens a link in the browser when clicking the bookmark url', async () => {
-      const http = mockHttp();
-      http.get.mockResolvedValue(jsonApiResponse([bookmark]));
+      nock('http://localhost:3000')
+        .get('/api/bookmarks?filter[read]=false&')
+        .reply(200, jsonApiResponseBody([bookmark]));
 
       const {findByText, getByText} = render(providers(<UnreadScreen />));
 
@@ -129,8 +136,9 @@ describe('UnreadScreen', () => {
         },
       };
 
-      const http = mockHttp();
-      http.get.mockResolvedValue(jsonApiResponse([bookmarkWithUrlSource]));
+      nock('http://localhost:3000')
+        .get('/api/bookmarks?filter[read]=false&')
+        .reply(200, jsonApiResponseBody([bookmarkWithUrlSource]));
 
       const {findByText, getByText} = render(providers(<UnreadScreen />));
 
@@ -146,14 +154,16 @@ describe('UnreadScreen', () => {
   describe('refreshing', () => {
     describe('pulling on mobile', () => {
       it('refreshes the list', async () => {
-        const http = mockHttp();
-        http.get.mockResolvedValue(jsonApiResponse([]));
+        nock('http://localhost:3000')
+          .get('/api/bookmarks?filter[read]=false&')
+          .reply(200, jsonApiResponseBody([]))
+          .get('/api/bookmarks?filter[read]=false&')
+          .reply(200, jsonApiResponseBody([bookmark]));
 
         const {findByText, getByTestId} = render(providers(<UnreadScreen />));
 
         await findByText('No unread links.');
 
-        http.get.mockResolvedValue(jsonApiResponse([bookmark]));
         fireEvent(getByTestId('unread-bookmarks-list'), 'refresh');
         expect(getByTestId('unread-bookmarks-list')).toHaveProp(
           'refreshing',
@@ -168,14 +178,16 @@ describe('UnreadScreen', () => {
       });
 
       it('shows an error upon reload failure', async () => {
-        const http = mockHttp();
-        http.get.mockResolvedValue(jsonApiResponse([]));
+        nock('http://localhost:3000')
+          .get('/api/bookmarks?filter[read]=false&')
+          .reply(200, jsonApiResponseBody([]))
+          .get('/api/bookmarks?filter[read]=false&')
+          .reply(500);
 
         const {findByText, getByTestId} = render(providers(<UnreadScreen />));
 
         await findByText('No unread links.');
 
-        http.get.mockRejectedValue();
         fireEvent(getByTestId('unread-bookmarks-list'), 'refresh');
 
         await findByText('An error occurred while loading links.');
@@ -188,8 +200,11 @@ describe('UnreadScreen', () => {
 
     describe('clicking a button on web', () => {
       it('refreshes the list', async () => {
-        const http = mockHttp();
-        http.get.mockResolvedValue(jsonApiResponse([]));
+        nock('http://localhost:3000')
+          .get('/api/bookmarks?filter[read]=false&')
+          .reply(200, jsonApiResponseBody([]))
+          .get('/api/bookmarks?filter[read]=false&')
+          .reply(200, jsonApiResponseBody([bookmark]));
 
         const {findByText, getByText, queryByLabelText} = render(
           providers(<UnreadScreen />),
@@ -197,7 +212,6 @@ describe('UnreadScreen', () => {
 
         await findByText('No unread links.');
 
-        http.get.mockResolvedValue(jsonApiResponse([bookmark]));
         fireEvent.press(getByText('Reload'));
         expect(queryByLabelText('Loading')).not.toBeNull();
 
@@ -206,8 +220,11 @@ describe('UnreadScreen', () => {
       });
 
       it('shows an error upon reload failure', async () => {
-        const http = mockHttp();
-        http.get.mockResolvedValue(jsonApiResponse([]));
+        nock('http://localhost:3000')
+          .get('/api/bookmarks?filter[read]=false&')
+          .reply(200, jsonApiResponseBody([]))
+          .get('/api/bookmarks?filter[read]=false&')
+          .reply(500);
 
         const {findByText, getByText, queryByLabelText} = render(
           providers(<UnreadScreen />),
@@ -215,7 +232,6 @@ describe('UnreadScreen', () => {
 
         await findByText('No unread links.');
 
-        http.get.mockRejectedValue();
         fireEvent.press(getByText('Reload'));
 
         await findByText('An error occurred while loading links.');
@@ -234,9 +250,16 @@ describe('UnreadScreen', () => {
     };
 
     it('allows adding a link to the list', async () => {
-      const http = mockHttp();
-      http.get.mockResolvedValue(jsonApiResponse([bookmark]));
-      http.post.mockResolvedValue(jsonApiResponse(newBookmark));
+      const mockedServer = nock('http://localhost:3000')
+        .get('/api/bookmarks?filter[read]=false&')
+        .reply(200, jsonApiResponseBody([bookmark]))
+        .post('/api/bookmarks?', {
+          data: {
+            type: 'bookmarks',
+            attributes: {url: newBookmark.attributes.url},
+          },
+        })
+        .reply(200, jsonApiResponseBody(newBookmark));
 
       const {findByText, getByLabelText, queryByLabelText} = render(
         providers(<UnreadScreen />),
@@ -247,25 +270,17 @@ describe('UnreadScreen', () => {
       fireEvent(newField, 'submitEditing');
       expect(queryByLabelText('Adding URL')).not.toBeNull();
 
-      expect(http.post).toHaveBeenCalledWith(
-        'bookmarks?',
-        {
-          data: {
-            type: 'bookmarks',
-            attributes: {url: newBookmark.attributes.url},
-          },
-        },
-        {headers: {'Content-Type': 'application/vnd.api+json'}},
-      );
-
       await findByText(newBookmark.attributes.title);
       expect(newField).toHaveProp('value', '');
       expect(queryByLabelText('Adding URL')).toBeNull();
+
+      mockedServer.done();
     });
 
     it('does not send a request to the server if the url is blank', async () => {
-      const http = mockHttp();
-      http.get.mockResolvedValue(jsonApiResponse([bookmark]));
+      const mockedServer = nock('http://localhost:3000')
+        .get('/api/bookmarks?filter[read]=false&')
+        .reply(200, jsonApiResponseBody([bookmark]));
 
       const {getByLabelText, findByText} = render(providers(<UnreadScreen />));
 
@@ -274,13 +289,17 @@ describe('UnreadScreen', () => {
       const newField = getByLabelText('URL to Add');
       fireEvent(newField, 'submitEditing');
 
-      expect(http.post).not.toHaveBeenCalled();
+      mockedServer.done();
     });
 
     it('shows an error message when adding link fails', async () => {
-      const http = mockHttp();
-      http.get.mockResolvedValue(jsonApiResponse([bookmark]));
-      http.post.mockRejectedValue();
+      const mockedServer = nock('http://localhost:3000')
+        .get('/api/bookmarks?filter[read]=false&')
+        .reply(200, jsonApiResponseBody([bookmark]))
+        .post('/api/bookmarks?')
+        .reply(500)
+        .post('/api/bookmarks?')
+        .reply(200, jsonApiResponseBody(newBookmark));
 
       const {findByText, getByLabelText, queryByLabelText, queryByText} =
         render(providers(<UnreadScreen />));
@@ -294,49 +313,50 @@ describe('UnreadScreen', () => {
       expect(newField).toHaveProp('value', newBookmark.attributes.url);
       expect(queryByLabelText('Adding URL')).toBeNull();
 
-      // clear error
-      http.post.mockResolvedValue(jsonApiResponse(newBookmark));
-
       fireEvent(newField, 'submitEditing');
 
       expect(queryByText('An error occurred while adding URL.')).toBeNull();
 
       await findByText(newBookmark.attributes.title);
+
+      mockedServer.done();
     });
   });
 
   describe('mark read', () => {
     it('allows marking a link as read', async () => {
-      const http = mockHttp();
-      http.get.mockResolvedValue(jsonApiResponse([bookmark]));
-      http.patch.mockResolvedValue(jsonApiResponse());
+      const mockedServer = nock('http://localhost:3000')
+        .get('/api/bookmarks?filter[read]=false&')
+        .reply(200, jsonApiResponseBody([bookmark]))
+        .patch('/api/bookmarks/1?', {
+          data: {
+            type: 'bookmarks',
+            id: '1',
+            attributes: {read: true},
+          },
+        })
+        .reply(200);
 
       const {findByText, getByText} = render(providers(<UnreadScreen />));
 
       await findByText('Mark Read');
       fireEvent.press(getByText('Mark Read'));
 
-      expect(http.patch).toHaveBeenCalledWith(
-        'bookmarks/1?',
-        {
-          data: {
-            type: 'bookmarks',
-            id: '1',
-            attributes: {read: true},
-          },
-        },
-        {headers: {'Content-Type': 'application/vnd.api+json'}},
-      );
-
       await waitForElementToBeRemoved(() =>
         getByText(bookmark.attributes.title),
       );
+
+      mockedServer.done();
     });
 
     it('shows an error message when marking a link read fails', async () => {
-      const http = mockHttp();
-      http.get.mockResolvedValue(jsonApiResponse([bookmark]));
-      http.patch.mockRejectedValue();
+      nock('http://localhost:3000')
+        .get('/api/bookmarks?filter[read]=false&')
+        .reply(200, jsonApiResponseBody([bookmark]))
+        .patch('/api/bookmarks/1?')
+        .reply(500)
+        .patch('/api/bookmarks/1?')
+        .reply(200);
 
       const {findByText, getByText, queryByText} = render(
         providers(<UnreadScreen />),
@@ -348,8 +368,6 @@ describe('UnreadScreen', () => {
       await findByText('An error occurred while marking link read.');
 
       // clear error
-      http.patch.mockResolvedValue(jsonApiResponse());
-
       fireEvent.press(getByText('Mark Read'));
 
       expect(
@@ -363,8 +381,9 @@ describe('UnreadScreen', () => {
 
   describe('edit', () => {
     it('navigates to the bookmark detail screen', async () => {
-      const http = mockHttp();
-      http.get.mockResolvedValue(jsonApiResponse([bookmark]));
+      nock('http://localhost:3000')
+        .get('/api/bookmarks?filter[read]=false&')
+        .reply(200, jsonApiResponseBody([bookmark]));
 
       const navigation = {navigate: jest.fn()};
       useNavigation.mockReturnValue(navigation);
@@ -382,26 +401,32 @@ describe('UnreadScreen', () => {
 
   describe('delete', () => {
     it('allows deleting a link', async () => {
-      const http = mockHttp();
-      http.get.mockResolvedValue(jsonApiResponse([bookmark]));
-      http.delete.mockResolvedValue(jsonApiResponse());
+      const mockedServer = nock('http://localhost:3000')
+        .get('/api/bookmarks?filter[read]=false&')
+        .reply(200, jsonApiResponseBody([bookmark]))
+        .delete('/api/bookmarks/1?')
+        .reply(200);
 
       const {findByText, getByText} = render(providers(<UnreadScreen />));
 
       await findByText('Delete');
       fireEvent.press(getByText('Delete'));
 
-      expect(http.delete).toHaveBeenCalledWith('bookmarks/1');
-
       await waitForElementToBeRemoved(() =>
         getByText(bookmark.attributes.title),
       );
+
+      mockedServer.done();
     });
 
     it('shows an error message when deleting a link fails', async () => {
-      const http = mockHttp();
-      http.get.mockResolvedValue(jsonApiResponse([bookmark]));
-      http.delete.mockRejectedValue();
+      nock('http://localhost:3000')
+        .get('/api/bookmarks?filter[read]=false&')
+        .reply(200, jsonApiResponseBody([bookmark]))
+        .delete('/api/bookmarks/1?')
+        .reply(500)
+        .delete('/api/bookmarks/1?')
+        .reply(200);
 
       const {findByText, getByText, queryByText} = render(
         providers(<UnreadScreen />),
@@ -413,8 +438,6 @@ describe('UnreadScreen', () => {
       await findByText('An error occurred while deleting link.');
 
       // clear error
-      http.delete.mockResolvedValue(jsonApiResponse());
-
       await findByText('Delete');
       fireEvent.press(getByText('Delete'));
 
