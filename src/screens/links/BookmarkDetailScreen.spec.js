@@ -1,11 +1,11 @@
 import {useNavigation} from '@react-navigation/native';
 import {fireEvent, render, waitFor} from '@testing-library/react-native';
+import nock from 'nock';
 import {Platform} from 'react-native';
 import {TokenProvider} from '../../data/token';
-import {jsonApiResponse, mockHttp} from '../../testUtils';
+import {jsonApiResponseBody} from '../../testUtils';
 import BookmarkDetailScreen from './BookmarkDetailScreen';
 
-jest.mock('../../data/httpClient');
 jest.mock('@react-navigation/native', () => ({
   useNavigation: jest.fn(),
 }));
@@ -45,9 +45,23 @@ describe('BookmarkDetailScreen', () => {
       'tag-list': tagList,
     } = bookmark.attributes;
 
-    const http = mockHttp();
-    http.get.mockResolvedValue(jsonApiResponse(bookmark));
-    http.patch.mockResolvedValue(jsonApiResponse());
+    const mockedServer = nock('http://localhost:3000')
+      .get(`/api/bookmarks/${bookmark.id}?`)
+      .reply(200, jsonApiResponseBody(bookmark))
+      .patch(`/api/bookmarks/${bookmark.id}?`, {
+        data: {
+          type: 'bookmarks',
+          id: '42',
+          attributes: {
+            url: newUrl,
+            title: newTitle,
+            'tag-list': newTagList,
+            source: newSource,
+            comment: newComment,
+          },
+        },
+      })
+      .reply(200);
 
     const navigation = {goBack: jest.fn()};
     useNavigation.mockReturnValue(navigation);
@@ -57,8 +71,6 @@ describe('BookmarkDetailScreen', () => {
     const {findByLabelText, getByLabelText, getByText} = render(
       providers(<BookmarkDetailScreen route={route} />),
     );
-
-    expect(http.get).toHaveBeenCalledWith(`bookmarks/${bookmark.id}?`);
 
     // displays current values from server
     await findByLabelText('URL');
@@ -76,33 +88,17 @@ describe('BookmarkDetailScreen', () => {
     fireEvent.changeText(getByLabelText('Comment'), newComment);
     fireEvent.press(getByText('Save'));
 
-    // confirm data saved to server
-    expect(http.patch).toHaveBeenCalledWith(
-      `bookmarks/${bookmark.id}?`,
-      {
-        data: {
-          type: 'bookmarks',
-          id: '42',
-          attributes: {
-            url: newUrl,
-            title: newTitle,
-            'tag-list': newTagList,
-            source: newSource,
-            comment: newComment,
-          },
-        },
-      },
-      {headers: {'Content-Type': 'application/vnd.api+json'}},
-    );
-
     // confirm navigate back to parent screen
     await waitFor(() => expect(navigation.goBack).toHaveBeenCalledWith());
+
+    // confirm data saved to server
+    mockedServer.done();
   });
 
   it('does not save the bookmark upon cancelling', async () => {
-    const http = mockHttp();
-    http.get.mockResolvedValue(jsonApiResponse(bookmark));
-    http.patch.mockResolvedValue(jsonApiResponse());
+    nock('http://localhost:3000')
+      .get(`/api/bookmarks/${bookmark.id}?`)
+      .reply(200, jsonApiResponseBody(bookmark));
 
     const navigation = {goBack: jest.fn()};
     useNavigation.mockReturnValue(navigation);
@@ -125,7 +121,6 @@ describe('BookmarkDetailScreen', () => {
     // confirm navigate back to parent screen
     expect(navigation.goBack).toHaveBeenCalledWith();
 
-    // confirm data saved to server
-    expect(http.patch).not.toHaveBeenCalled();
+    // data not saved to server, because patch not mocked
   });
 });
