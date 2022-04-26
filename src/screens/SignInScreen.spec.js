@@ -1,10 +1,9 @@
 import {fireEvent, render, waitFor} from '@testing-library/react-native';
+import nock from 'nock';
 import {useToken} from '../data/token';
-import {mockHttp} from '../testUtils';
 import SignInScreen from './SignInScreen';
 
 jest.mock('../data/token', () => ({useToken: jest.fn()}));
-jest.mock('../data/httpClient');
 
 describe('SignInScreen', () => {
   const email = 'example@example.com';
@@ -12,8 +11,14 @@ describe('SignInScreen', () => {
   const testToken = 'test_token';
 
   it('sets the token upon successful login', async () => {
-    const http = mockHttp();
-    http.post.mockResolvedValue({data: {access_token: testToken}});
+    nock('http://localhost:3000')
+      .post('/api/oauth/token', {
+        grant_type: 'password',
+        username: email,
+        password,
+      })
+      .reply(200, {access_token: testToken});
+
     const setToken = jest.fn();
     useToken.mockReturnValue({setToken});
 
@@ -23,20 +28,19 @@ describe('SignInScreen', () => {
     fireEvent.changeText(getByLabelText('Password'), password);
     fireEvent.press(getByText('Sign in'));
 
-    expect(http.post).toHaveBeenCalledWith('/oauth/token', {
-      grant_type: 'password',
-      username: email,
-      password,
-    });
     await waitFor(() => expect(setToken).toHaveBeenCalledWith(testToken));
   });
 
   it('shows the returned auth error and does not set the token upon auth failure', async () => {
-    const http = mockHttp();
     const errorMessage = 'errorMessage';
-    http.post.mockRejectedValue({
-      response: {data: {error_description: errorMessage}},
-    });
+    nock('http://localhost:3000')
+      .post('/api/oauth/token', {
+        grant_type: 'password',
+        username: email,
+        password,
+      })
+      .reply(401, {error_description: errorMessage});
+
     const setToken = jest.fn();
     useToken.mockReturnValue({setToken});
 
@@ -51,8 +55,14 @@ describe('SignInScreen', () => {
   });
 
   it('shows a general error and does not set the token upon server failure', async () => {
-    const http = mockHttp();
-    http.post.mockRejectedValue();
+    nock('http://localhost:3000')
+      .post('/api/oauth/token', {
+        grant_type: 'password',
+        username: email,
+        password,
+      })
+      .reply(500);
+
     const setToken = jest.fn();
     useToken.mockReturnValue({setToken});
 
