@@ -17,7 +17,11 @@ export function mockHttp() {
 }
 
 export function jsonApiResponse(records) {
-  return {data: {data: records}};
+  return {data: jsonApiResponseBody(records)};
+}
+
+export function jsonApiResponseBody(records) {
+  return {data: records};
 }
 
 export const safeAreaMetrics = {
