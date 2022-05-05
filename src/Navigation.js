@@ -65,7 +65,7 @@ const Read = () => (
       component={ReadScreen}
       options={{title: 'Read Links'}}
     />
-    <UnreadStack.Screen
+    <ReadStack.Screen
       name="BookmarkDetailScreen"
       component={BookmarkDetailScreen}
       options={{title: 'Edit Link'}}
