@@ -1,7 +1,7 @@
 {
   "expo": {
     "ios": {
-      "buildNumber": "21",
+      "buildNumber": "22",
       "supportsTablet": true,
       "bundleIdentifier": "com.codingitwrong.firehose",
       "config": {
