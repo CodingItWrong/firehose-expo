@@ -37,13 +37,13 @@ const linking = {
   },
 };
 
+const stackScreenOptions = {
+  header: props => <CustomNavigationBar {...props} />,
+};
+
 const UnreadStack = createNativeStackNavigator();
 const Unread = () => (
-  <UnreadStack.Navigator
-    screenOptions={{
-      header: props => <CustomNavigationBar {...props} />,
-    }}
-  >
+  <UnreadStack.Navigator screenOptions={stackScreenOptions}>
     <UnreadStack.Screen
       name="UnreadScreen"
       component={UnreadScreen}
@@ -59,11 +59,7 @@ const Unread = () => (
 
 const ReadStack = createNativeStackNavigator();
 const Read = () => (
-  <ReadStack.Navigator
-    screenOptions={{
-      header: props => <CustomNavigationBar {...props} />,
-    }}
-  >
+  <ReadStack.Navigator screenOptions={stackScreenOptions}>
     <ReadStack.Screen
       name="ReadScreen"
       component={ReadScreen}
@@ -79,11 +75,7 @@ const Read = () => (
 
 const SignInStack = createNativeStackNavigator();
 const SignIn = () => (
-  <SignInStack.Navigator
-    screenOptions={{
-      header: props => <CustomNavigationBar {...props} />,
-    }}
-  >
+  <SignInStack.Navigator screenOptions={stackScreenOptions}>
     <SignInStack.Screen
       name="SignInScreen"
       component={SignInScreen}
