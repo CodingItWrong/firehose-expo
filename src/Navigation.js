@@ -9,6 +9,7 @@ import SignInScreen from './screens/SignInScreen';
 import BookmarkDetailScreen from './screens/links/BookmarkDetailScreen';
 import ReadScreen from './screens/links/ReadScreen';
 import UnreadScreen from './screens/links/UnreadScreen';
+import TagListScreen from './screens/tags/TagListScreen';
 
 const linking = {
   config: {
@@ -31,6 +32,12 @@ const linking = {
         screens: {
           ReadScreen: '/links/read',
           BookmarkDetailScreen: '/links/read/:id',
+        },
+      },
+      Tags: {
+        initialRouteName: 'TagListScreen',
+        screens: {
+          TagListScreen: '/tags',
         },
       },
     },
@@ -73,6 +80,17 @@ const Read = () => (
   </ReadStack.Navigator>
 );
 
+const TagStack = createNativeStackNavigator();
+const Tags = () => (
+  <TagStack.Navigator screenOptions={stackScreenOptions}>
+    <TagStack.Screen
+      name="TagListScreen"
+      component={TagListScreen}
+      options={{title: 'Tags'}}
+    />
+  </TagStack.Navigator>
+);
+
 const SignInStack = createNativeStackNavigator();
 const SignIn = () => (
   <SignInStack.Navigator screenOptions={stackScreenOptions}>
@@ -106,6 +124,7 @@ function NavigationContents() {
         <>
           <Drawer.Screen name="Unread" component={Unread} />
           <Drawer.Screen name="Read" component={Read} />
+          <Drawer.Screen name="Tags" component={Tags} />
         </>
       ) : (
         <Drawer.Screen name="Sign in" component={SignIn} />
