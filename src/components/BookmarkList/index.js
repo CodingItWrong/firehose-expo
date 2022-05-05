@@ -2,11 +2,20 @@ import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {useCallback, useRef, useState} from 'react';
 import {useBookmarks} from '../../data/bookmarks';
 import CenterColumn from '../CenterColumn';
+import PaginationControls from '../PaginationControls';
 import ScreenBackground from '../ScreenBackground';
 import BookmarkFlatList from './BookmarkFlatList';
 import NewBookmarkForm from './NewBookmarkForm';
 
-export default function BookmarkList({onLoad, showAddForm = false}) {
+export default function BookmarkList({
+  onLoad,
+  paginate,
+  pageNumber,
+  maxPageNumber,
+  onIncrement,
+  onDecrement,
+  showAddForm = false,
+}) {
   const navigation = useNavigation();
   const bookmarkClient = useBookmarks();
 
@@ -105,6 +114,14 @@ export default function BookmarkList({onLoad, showAddForm = false}) {
       <CenterColumn>
         {showAddForm && (
           <NewBookmarkForm isCreating={isCreating} onCreate={addBookmark} />
+        )}
+        {paginate && (
+          <PaginationControls
+            pageNumber={pageNumber}
+            maxPageNumber={maxPageNumber}
+            onIncrement={onIncrement}
+            onDecrement={onDecrement}
+          />
         )}
         <BookmarkFlatList
           listRef={listRef}
