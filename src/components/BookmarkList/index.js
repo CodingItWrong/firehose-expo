@@ -6,6 +6,7 @@ import PaginationControls from '../PaginationControls';
 import ScreenBackground from '../ScreenBackground';
 import BookmarkFlatList from './BookmarkFlatList';
 import NewBookmarkForm from './NewBookmarkForm';
+import SearchForm from './SearchForm';
 
 export default function BookmarkList({
   onLoad,
@@ -14,7 +15,9 @@ export default function BookmarkList({
   maxPageNumber,
   onIncrement,
   onDecrement,
+  onSearch,
   showAddForm = false,
+  showSearchForm = false,
 }) {
   const navigation = useNavigation();
   const bookmarkClient = useBookmarks();
@@ -115,6 +118,7 @@ export default function BookmarkList({
         {showAddForm && (
           <NewBookmarkForm isCreating={isCreating} onCreate={addBookmark} />
         )}
+        {showSearchForm && <SearchForm onSubmit={onSearch} />}
         {paginate && (
           <PaginationControls
             pageNumber={pageNumber}

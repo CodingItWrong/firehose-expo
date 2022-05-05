@@ -29,6 +29,13 @@ describe('ReadScreen', () => {
       read: true,
     },
   };
+  const bookmark2 = {
+    id: '2',
+    attributes: {
+      ...bookmark.attributes,
+      title: 'Bookmark 2',
+    },
+  };
 
   const providers = children => (
     <SafeAreaProvider initialMetrics={safeAreaMetrics}>
@@ -62,15 +69,27 @@ describe('ReadScreen', () => {
       mockedServer.done();
     });
 
-    it('allows pagination', async () => {
-      const bookmark2 = {
-        id: '2',
-        attributes: {
-          ...bookmark.attributes,
-          title: 'Bookmark 2',
-        },
-      };
+    it('allows searching', async () => {
+      const mockedServer = nock('http://localhost:3000')
+        .get('/api/bookmarks?filter[read]=true&page[number]=1')
+        .reply(200, jsonApiResponseBody([bookmark], meta))
+        .get('/api/bookmarks?filter[read]=true&filter[title]=2&page[number]=1')
+        .reply(200, jsonApiResponseBody([bookmark2], meta));
 
+      const {findByText, getByLabelText} = render(providers(<ReadScreen />));
+
+      await findByText(bookmark.attributes.title);
+
+      const searchField = getByLabelText('Search');
+      fireEvent.changeText(searchField, '2');
+      fireEvent(searchField, 'submitEditing');
+
+      await findByText(bookmark2.attributes.title);
+
+      mockedServer.done();
+    });
+
+    it('allows pagination', async () => {
       const mockedServer = nock('http://localhost:3000')
         .get('/api/bookmarks?filter[read]=true&page[number]=1')
         .reply(200, jsonApiResponseBody([bookmark], meta))
