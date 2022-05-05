@@ -11,6 +11,7 @@ export default function BookmarkList({
   onLoad,
   paginate,
   pageNumber,
+  maxPageNumber,
   onIncrement,
   onDecrement,
   showAddForm = false,
@@ -117,6 +118,7 @@ export default function BookmarkList({
         {paginate && (
           <PaginationControls
             pageNumber={pageNumber}
+            maxPageNumber={maxPageNumber}
             onIncrement={onIncrement}
             onDecrement={onDecrement}
           />

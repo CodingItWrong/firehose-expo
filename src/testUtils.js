@@ -1,5 +1,5 @@
-export function jsonApiResponseBody(records) {
-  return {data: records};
+export function jsonApiResponseBody(records, meta = null) {
+  return {data: records, meta};
 }
 
 export const safeAreaMetrics = {

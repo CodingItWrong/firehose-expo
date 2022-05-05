@@ -4,29 +4,27 @@ import {useBookmarks} from '../../../data/bookmarks';
 
 export default function UnreadScreen() {
   const [page, setPage] = useState(1);
+  const [maxPage, setMaxPage] = useState(null);
   const bookmarkClient = useBookmarks();
 
-  const onLoad = useCallback(
-    () =>
-      bookmarkClient.where({
-        filter: {read: true},
-        options: {'page[number]': page},
-      }),
-    [bookmarkClient, page],
-  );
+  const onLoad = useCallback(async () => {
+    const response = await bookmarkClient.where({
+      filter: {read: true},
+      options: {'page[number]': page},
+    });
+    setMaxPage(response.meta['page-count']);
+    return response;
+  }, [bookmarkClient, page]);
 
   const increment = () => setPage(page + 1);
   const decrement = () => setPage(page - 1);
-
-  // TODO: make this dynamic
-  const maxPageNumber = 10;
 
   return (
     <BookmarkList
       onLoad={onLoad}
       paginate
       pageNumber={page}
-      maxPageNumber={maxPageNumber}
+      maxPageNumber={maxPage}
       onIncrement={increment}
       onDecrement={decrement}
     />

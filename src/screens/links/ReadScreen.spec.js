@@ -17,6 +17,7 @@ jest.mock('@react-navigation/native', () => ({
 }));
 
 describe('ReadScreen', () => {
+  const meta = {'page-count': 7};
   const bookmark = {
     id: '1',
     attributes: {
@@ -52,7 +53,7 @@ describe('ReadScreen', () => {
     it('renders links from the backend', async () => {
       const mockedServer = nock('http://localhost:3000')
         .get('/api/bookmarks?filter[read]=true&page[number]=1')
-        .reply(200, jsonApiResponseBody([bookmark]));
+        .reply(200, jsonApiResponseBody([bookmark], meta));
 
       const {findByText} = render(providers(<ReadScreen />));
 
@@ -72,15 +73,18 @@ describe('ReadScreen', () => {
 
       const mockedServer = nock('http://localhost:3000')
         .get('/api/bookmarks?filter[read]=true&page[number]=1')
-        .reply(200, jsonApiResponseBody([bookmark]))
+        .reply(200, jsonApiResponseBody([bookmark], meta))
         .get('/api/bookmarks?filter[read]=true&page[number]=2')
-        .reply(200, jsonApiResponseBody([bookmark2]))
+        .reply(200, jsonApiResponseBody([bookmark2], meta))
         .get('/api/bookmarks?filter[read]=true&page[number]=1')
-        .reply(200, jsonApiResponseBody([bookmark]));
+        .reply(200, jsonApiResponseBody([bookmark], meta));
 
-      const {findByText, getByLabelText} = render(providers(<ReadScreen />));
+      const {findByText, getByLabelText, queryByText} = render(
+        providers(<ReadScreen />),
+      );
 
       await findByText(bookmark.attributes.title);
+      expect(queryByText('Page 1 of 7')).not.toBeNull();
 
       fireEvent.press(getByLabelText('Go to next page'));
       await findByText(bookmark2.attributes.title);
@@ -96,7 +100,7 @@ describe('ReadScreen', () => {
     it('does not allow adding a link to the list', async () => {
       nock('http://localhost:3000')
         .get('/api/bookmarks?filter[read]=true&page[number]=1')
-        .reply(200, jsonApiResponseBody([bookmark]));
+        .reply(200, jsonApiResponseBody([bookmark], meta));
 
       const {findByText, queryByLabelText} = render(providers(<ReadScreen />));
 
@@ -110,7 +114,7 @@ describe('ReadScreen', () => {
     it('allows marking a link as unread', async () => {
       nock('http://localhost:3000')
         .get('/api/bookmarks?filter[read]=true&page[number]=1')
-        .reply(200, jsonApiResponseBody([bookmark]))
+        .reply(200, jsonApiResponseBody([bookmark], meta))
         .patch('/api/bookmarks/1?', {
           data: {
             type: 'bookmarks',
@@ -133,7 +137,7 @@ describe('ReadScreen', () => {
     it('shows an error message when marking a link read fails', async () => {
       nock('http://localhost:3000')
         .get('/api/bookmarks?filter[read]=true&page[number]=1')
-        .reply(200, jsonApiResponseBody([bookmark]))
+        .reply(200, jsonApiResponseBody([bookmark], meta))
         .patch('/api/bookmarks/1?')
         .reply(500)
         .patch('/api/bookmarks/1?')
