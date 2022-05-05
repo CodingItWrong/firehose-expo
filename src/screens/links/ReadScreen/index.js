@@ -24,6 +24,11 @@ export default function UnreadScreen() {
   const increment = () => setPage(page + 1);
   const decrement = () => setPage(page - 1);
 
+  function search(newSearchText) {
+    setSearchText(newSearchText);
+    setPage(1);
+  }
+
   return (
     <BookmarkList
       onLoad={onLoad}
@@ -33,7 +38,7 @@ export default function UnreadScreen() {
       onIncrement={increment}
       onDecrement={decrement}
       showSearchForm
-      onSearch={setSearchText}
+      onSearch={search}
     />
   );
 }
