@@ -38,12 +38,12 @@ describe('ReadScreen', () => {
   );
 
   beforeEach(() => {
-    // provide mock implementation of useFocusEffect to run only once
-    let effectRun = false;
-    useFocusEffect.mockImplementation(func => {
-      if (!effectRun) {
-        effectRun = true;
-        func();
+    // provide mock implementation of useFocusEffect to run once each time callback changes
+    let lastCallback = null;
+    useFocusEffect.mockImplementation(callback => {
+      if (lastCallback !== callback) {
+        lastCallback = callback;
+        callback();
       }
     });
   });
