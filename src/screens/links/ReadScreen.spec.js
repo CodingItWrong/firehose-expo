@@ -60,6 +60,36 @@ describe('ReadScreen', () => {
 
       mockedServer.done();
     });
+
+    it('allows pagination', async () => {
+      const bookmark2 = {
+        id: '2',
+        attributes: {
+          ...bookmark.attributes,
+          title: 'Bookmark 2',
+        },
+      };
+
+      const mockedServer = nock('http://localhost:3000')
+        .get('/api/bookmarks?filter[read]=true&page[number]=1')
+        .reply(200, jsonApiResponseBody([bookmark]))
+        .get('/api/bookmarks?filter[read]=true&page[number]=2')
+        .reply(200, jsonApiResponseBody([bookmark2]))
+        .get('/api/bookmarks?filter[read]=true&page[number]=1')
+        .reply(200, jsonApiResponseBody([bookmark]));
+
+      const {findByText, getByLabelText} = render(providers(<ReadScreen />));
+
+      await findByText(bookmark.attributes.title);
+
+      fireEvent.press(getByLabelText('Go to next page'));
+      await findByText(bookmark2.attributes.title);
+
+      fireEvent.press(getByLabelText('Go to previous page'));
+      await findByText(bookmark.attributes.title);
+
+      mockedServer.done();
+    });
   });
 
   describe('adding a link', () => {
