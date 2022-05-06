@@ -1,5 +1,5 @@
 import {useFocusEffect} from '@react-navigation/native';
-import {useCallback, useRef, useState} from 'react';
+import {useCallback, useState} from 'react';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import ErrorMessage from '../../../components/ErrorMessage';
 import NoRecordsMessage from '../../../components/NoRecordsMessage';
@@ -12,8 +12,6 @@ export default function TagListScreen() {
   const tagClient = useTags();
   const [tags, setTags] = useState();
   const [errorMessage, setErrorMessage] = useState();
-  const [isPerformingInitialLoad, setIsPerformingInitialLoad] = useState(true);
-  const listRef = useRef(null);
 
   const loadFromServer = useCallback(async () => {
     try {
@@ -28,7 +26,7 @@ export default function TagListScreen() {
 
   useFocusEffect(
     useCallback(() => {
-      loadFromServer().finally(() => setIsPerformingInitialLoad(false));
+      loadFromServer();
     }, [loadFromServer]),
   );
 
@@ -42,21 +40,10 @@ export default function TagListScreen() {
     }
   }
 
-  async function refresh() {
-    const reloadedTags = await loadFromServer();
-    if (reloadedTags.length > 0) {
-      listRef.current.scrollToIndex({index: 0});
-    }
-  }
-
   return (
     <RefreshableFlatList
-      testID="tag-list"
-      listRef={listRef}
       ListHeaderComponent={listHeader()}
       data={tags}
-      onRefresh={refresh}
-      showLoadingIndicator={isPerformingInitialLoad}
       contentContainerStyle={{paddingBottom: insets.bottom}}
       keyExtractor={item => item.id}
       renderItem={({item}) => (
