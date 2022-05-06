@@ -1,9 +1,9 @@
 import {useFocusEffect} from '@react-navigation/native';
 import {useCallback, useState} from 'react';
+import {ScrollView, StyleSheet, View} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import ErrorMessage from '../../../components/ErrorMessage';
 import NoRecordsMessage from '../../../components/NoRecordsMessage';
-import RefreshableFlatList from '../../../components/RefreshableFlatList';
 import Tag from '../../../components/Tag';
 import {useTags} from '../../../data/tags';
 
@@ -41,14 +41,26 @@ export default function TagListScreen() {
   }
 
   return (
-    <RefreshableFlatList
-      ListHeaderComponent={listHeader()}
-      data={tags}
-      contentContainerStyle={{paddingBottom: insets.bottom}}
-      keyExtractor={item => item.id}
-      renderItem={({item}) => (
-        <Tag key={item.attributes.name} name={item.attributes.name} />
-      )}
-    />
+    <ScrollView contentContainerStyle={{paddingBottom: insets.bottom}}>
+      {listHeader()}
+      <View style={styles.tagContainer}>
+        {tags?.map(tag => (
+          <Tag
+            key={tag.attributes.name}
+            name={tag.attributes.name}
+            style={styles.tag}
+          />
+        ))}
+      </View>
+    </ScrollView>
   );
 }
+
+const styles = StyleSheet.create({
+  tagContainer: {
+    flexDirection: 'row',
+  },
+  tag: {
+    marginRight: 8,
+  },
+});
