@@ -13,7 +13,11 @@ import nock from 'nock';
 import {Provider as PaperProvider} from 'react-native-paper';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {TokenProvider} from '../../data/token';
-import {jsonApiResponseBody, safeAreaMetrics} from '../../testUtils';
+import {
+  jsonApiResponseBody,
+  mockUseFocusEffect,
+  safeAreaMetrics,
+} from '../../testUtils';
 import UnreadScreen from './UnreadScreen';
 
 jest.mock('expo-linking', () => ({openURL: jest.fn()}));
@@ -45,14 +49,7 @@ describe('UnreadScreen', () => {
   );
 
   beforeEach(() => {
-    // provide mock implementation of useFocusEffect to run only once
-    let effectRun = false;
-    useFocusEffect.mockImplementation(func => {
-      if (!effectRun) {
-        effectRun = true;
-        func();
-      }
-    });
+    mockUseFocusEffect();
   });
 
   describe('displaying links', () => {

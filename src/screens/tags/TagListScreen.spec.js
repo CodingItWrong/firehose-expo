@@ -3,7 +3,11 @@ import {fireEvent, render} from '@testing-library/react-native';
 import nock from 'nock';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {TokenProvider} from '../../data/token';
-import {jsonApiResponseBody, safeAreaMetrics} from '../../testUtils';
+import {
+  jsonApiResponseBody,
+  mockUseFocusEffect,
+  safeAreaMetrics,
+} from '../../testUtils';
 import TagListScreen from './TagListScreen';
 
 jest.mock('@react-navigation/native', () => ({
@@ -21,14 +25,7 @@ describe('TagListScreen', () => {
   );
 
   beforeEach(() => {
-    // provide mock implementation of useFocusEffect to run once each time callback changes
-    let lastCallback = null;
-    useFocusEffect.mockImplementation(callback => {
-      if (lastCallback !== callback) {
-        lastCallback = callback;
-        callback();
-      }
-    });
+    mockUseFocusEffect();
   });
 
   describe('displaying tags', () => {

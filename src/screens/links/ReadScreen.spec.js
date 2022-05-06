@@ -8,7 +8,11 @@ import nock from 'nock';
 import {Provider as PaperProvider} from 'react-native-paper';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {TokenProvider} from '../../data/token';
-import {jsonApiResponseBody, safeAreaMetrics} from '../../testUtils';
+import {
+  jsonApiResponseBody,
+  mockUseFocusEffect,
+  safeAreaMetrics,
+} from '../../testUtils';
 import ReadScreen from './ReadScreen';
 
 jest.mock('@react-navigation/native', () => ({
@@ -47,14 +51,7 @@ describe('ReadScreen', () => {
   );
 
   beforeEach(() => {
-    // provide mock implementation of useFocusEffect to run once each time callback changes
-    let lastCallback = null;
-    useFocusEffect.mockImplementation(callback => {
-      if (lastCallback !== callback) {
-        lastCallback = callback;
-        callback();
-      }
-    });
+    mockUseFocusEffect();
   });
 
   describe('displaying links', () => {

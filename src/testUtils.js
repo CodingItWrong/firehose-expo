@@ -1,3 +1,5 @@
+import {useFocusEffect} from '@react-navigation/native';
+
 export function jsonApiResponseBody(records, meta = null) {
   return {data: records, meta};
 }
@@ -16,3 +18,21 @@ export const safeAreaMetrics = {
     top: 0,
   },
 };
+
+// provide mock implementation of useFocusEffect to run once each time callback changes
+//
+// requires running this in the test file:
+//
+//  jest.mock('@react-navigation/native', () => ({
+//    useFocusEffect: jest.fn(),
+//    // ...
+//  }));
+export function mockUseFocusEffect() {
+  let lastCallback = null;
+  useFocusEffect.mockImplementation(callback => {
+    if (lastCallback !== callback) {
+      lastCallback = callback;
+      callback();
+    }
+  });
+}
