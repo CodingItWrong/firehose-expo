@@ -120,6 +120,7 @@ function NavigationContents() {
       screenOptions={{
         headerShown: false,
         drawerType: drawerTypeForBreakpoint,
+        drawerStyle: {width: 150},
       }}
       drawerContent={props => <CustomNavigationDrawer {...props} />}
     >
