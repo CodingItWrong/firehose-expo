@@ -2,11 +2,13 @@ import * as Linking from 'expo-linking';
 import {Platform, Pressable, StyleSheet, View} from 'react-native';
 import {Button, Card, Chip, Text, Title} from 'react-native-paper';
 import domainForUrl from '../../utils/domainForUrl';
+import Tag from '../Tag';
 
 export default function BookmarkRow({
   bookmark,
   style,
   onEdit,
+  onPressTag,
   onMarkRead,
   onMarkUnread,
   onDelete,
@@ -32,9 +34,12 @@ export default function BookmarkRow({
         {tags.length > 0 && (
           <View style={styles.tagList}>
             {tags.map(tag => (
-              <Chip key={tag} style={styles.tag}>
-                {tag}
-              </Chip>
+              <Tag
+                key={tag}
+                style={styles.tag}
+                name={tag}
+                onPress={() => onPressTag(tag)}
+              />
             ))}
           </View>
         )}

@@ -1,4 +1,8 @@
-import {useFocusEffect, useNavigation} from '@react-navigation/native';
+import {
+  useFocusEffect,
+  useLinkTo,
+  useNavigation,
+} from '@react-navigation/native';
 import {
   fireEvent,
   render,
@@ -9,16 +13,22 @@ import nock from 'nock';
 import {Provider as PaperProvider} from 'react-native-paper';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {TokenProvider} from '../../data/token';
-import {jsonApiResponseBody, safeAreaMetrics} from '../../testUtils';
+import {
+  jsonApiResponseBody,
+  mockUseFocusEffect,
+  safeAreaMetrics,
+} from '../../testUtils';
 import UnreadScreen from './UnreadScreen';
 
 jest.mock('expo-linking', () => ({openURL: jest.fn()}));
 jest.mock('@react-navigation/native', () => ({
   useFocusEffect: jest.fn(),
+  useLinkTo: jest.fn(),
   useNavigation: jest.fn(),
 }));
 
 describe('UnreadScreen', () => {
+  const tagName = 'another-tag';
   const bookmark = {
     id: '1',
     attributes: {
@@ -26,7 +36,7 @@ describe('UnreadScreen', () => {
       url: 'https://www.codingitwrong.com/books',
       comment: 'This is my book list',
       source: 'Nice Referrer',
-      'tag-list': 'tag another-tag',
+      'tag-list': `tag ${tagName}`,
     },
   };
 
@@ -39,14 +49,7 @@ describe('UnreadScreen', () => {
   );
 
   beforeEach(() => {
-    // provide mock implementation of useFocusEffect to run only once
-    let effectRun = false;
-    useFocusEffect.mockImplementation(func => {
-      if (!effectRun) {
-        effectRun = true;
-        func();
-      }
-    });
+    mockUseFocusEffect();
   });
 
   describe('displaying links', () => {
@@ -151,6 +154,24 @@ describe('UnreadScreen', () => {
     });
   });
 
+  describe('clicking a tag', () => {
+    it('navigates to the tagged links screen for that tag', async () => {
+      nock('http://localhost:3000')
+        .get('/api/bookmarks?filter[read]=false&')
+        .reply(200, jsonApiResponseBody([bookmark]));
+
+      const linkTo = jest.fn();
+      useLinkTo.mockReturnValue(linkTo);
+
+      const {findByText, getByText} = render(providers(<UnreadScreen />));
+
+      await findByText(tagName);
+      fireEvent.press(getByText(tagName));
+
+      expect(linkTo).toHaveBeenCalledWith(`/tags/${tagName}`);
+    });
+  });
+
   describe('refreshing', () => {
     describe('pulling on mobile', () => {
       it('refreshes the list', async () => {
@@ -164,17 +185,11 @@ describe('UnreadScreen', () => {
 
         await findByText('No unread links.');
 
-        fireEvent(getByTestId('unread-bookmarks-list'), 'refresh');
-        expect(getByTestId('unread-bookmarks-list')).toHaveProp(
-          'refreshing',
-          true,
-        );
+        fireEvent(getByTestId('bookmarks-list'), 'refresh');
+        expect(getByTestId('bookmarks-list')).toHaveProp('refreshing', true);
 
         await findByText(bookmark.attributes.title);
-        expect(getByTestId('unread-bookmarks-list')).toHaveProp(
-          'refreshing',
-          false,
-        );
+        expect(getByTestId('bookmarks-list')).toHaveProp('refreshing', false);
       });
 
       it('shows an error upon reload failure', async () => {
@@ -188,13 +203,10 @@ describe('UnreadScreen', () => {
 
         await findByText('No unread links.');
 
-        fireEvent(getByTestId('unread-bookmarks-list'), 'refresh');
+        fireEvent(getByTestId('bookmarks-list'), 'refresh');
 
         await findByText('An error occurred while loading links.');
-        expect(getByTestId('unread-bookmarks-list')).toHaveProp(
-          'refreshing',
-          false,
-        );
+        expect(getByTestId('bookmarks-list')).toHaveProp('refreshing', false);
       });
     });
 

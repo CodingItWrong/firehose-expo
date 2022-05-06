@@ -9,6 +9,8 @@ import SignInScreen from './screens/SignInScreen';
 import BookmarkDetailScreen from './screens/links/BookmarkDetailScreen';
 import ReadScreen from './screens/links/ReadScreen';
 import UnreadScreen from './screens/links/UnreadScreen';
+import TagListScreen from './screens/tags/TagListScreen';
+import TaggedLinksScreen from './screens/tags/TaggedLinksScreen';
 
 const linking = {
   config: {
@@ -33,17 +35,24 @@ const linking = {
           BookmarkDetailScreen: '/links/read/:id',
         },
       },
+      Tags: {
+        initialRouteName: 'TagListScreen',
+        screens: {
+          TagListScreen: '/tags',
+          TaggedLinksScreen: '/tags/:tag',
+        },
+      },
     },
   },
 };
 
+const stackScreenOptions = {
+  header: props => <CustomNavigationBar {...props} />,
+};
+
 const UnreadStack = createNativeStackNavigator();
 const Unread = () => (
-  <UnreadStack.Navigator
-    screenOptions={{
-      header: props => <CustomNavigationBar {...props} />,
-    }}
-  >
+  <UnreadStack.Navigator screenOptions={stackScreenOptions}>
     <UnreadStack.Screen
       name="UnreadScreen"
       component={UnreadScreen}
@@ -59,17 +68,13 @@ const Unread = () => (
 
 const ReadStack = createNativeStackNavigator();
 const Read = () => (
-  <ReadStack.Navigator
-    screenOptions={{
-      header: props => <CustomNavigationBar {...props} />,
-    }}
-  >
+  <ReadStack.Navigator screenOptions={stackScreenOptions}>
     <ReadStack.Screen
       name="ReadScreen"
       component={ReadScreen}
       options={{title: 'Read Links'}}
     />
-    <UnreadStack.Screen
+    <ReadStack.Screen
       name="BookmarkDetailScreen"
       component={BookmarkDetailScreen}
       options={{title: 'Edit Link'}}
@@ -77,13 +82,21 @@ const Read = () => (
   </ReadStack.Navigator>
 );
 
+const TagStack = createNativeStackNavigator();
+const Tags = () => (
+  <TagStack.Navigator screenOptions={stackScreenOptions}>
+    <TagStack.Screen
+      name="TagListScreen"
+      component={TagListScreen}
+      options={{title: 'Tags'}}
+    />
+    <TagStack.Screen name="TaggedLinksScreen" component={TaggedLinksScreen} />
+  </TagStack.Navigator>
+);
+
 const SignInStack = createNativeStackNavigator();
 const SignIn = () => (
-  <SignInStack.Navigator
-    screenOptions={{
-      header: props => <CustomNavigationBar {...props} />,
-    }}
-  >
+  <SignInStack.Navigator screenOptions={stackScreenOptions}>
     <SignInStack.Screen
       name="SignInScreen"
       component={SignInScreen}
@@ -114,6 +127,7 @@ function NavigationContents() {
         <>
           <Drawer.Screen name="Unread" component={Unread} />
           <Drawer.Screen name="Read" component={Read} />
+          <Drawer.Screen name="Tags" component={Tags} />
         </>
       ) : (
         <Drawer.Screen name="Sign in" component={SignIn} />
