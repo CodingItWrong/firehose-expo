@@ -32,7 +32,7 @@ export default function BookmarkFlatList({
   return (
     <RefreshableFlatList
       listRef={listRef}
-      testID="unread-bookmarks-list"
+      testID="bookmarks-list"
       ListHeaderComponent={listHeader()}
       data={bookmarks}
       onRefresh={onRefresh}

@@ -188,17 +188,11 @@ describe('UnreadScreen', () => {
 
         await findByText('No unread links.');
 
-        fireEvent(getByTestId('unread-bookmarks-list'), 'refresh');
-        expect(getByTestId('unread-bookmarks-list')).toHaveProp(
-          'refreshing',
-          true,
-        );
+        fireEvent(getByTestId('bookmarks-list'), 'refresh');
+        expect(getByTestId('bookmarks-list')).toHaveProp('refreshing', true);
 
         await findByText(bookmark.attributes.title);
-        expect(getByTestId('unread-bookmarks-list')).toHaveProp(
-          'refreshing',
-          false,
-        );
+        expect(getByTestId('bookmarks-list')).toHaveProp('refreshing', false);
       });
 
       it('shows an error upon reload failure', async () => {
@@ -212,13 +206,10 @@ describe('UnreadScreen', () => {
 
         await findByText('No unread links.');
 
-        fireEvent(getByTestId('unread-bookmarks-list'), 'refresh');
+        fireEvent(getByTestId('bookmarks-list'), 'refresh');
 
         await findByText('An error occurred while loading links.');
-        expect(getByTestId('unread-bookmarks-list')).toHaveProp(
-          'refreshing',
-          false,
-        );
+        expect(getByTestId('bookmarks-list')).toHaveProp('refreshing', false);
       });
     });
 
