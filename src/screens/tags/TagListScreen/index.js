@@ -52,8 +52,8 @@ export default function TagListScreen() {
 
   return (
     <ScreenBackground>
-      <CenterColumn columnStyle={sharedStyles.bodyPadding}>
-        <ScrollView contentContainerStyle={{paddingBottom: insets.bottom}}>
+      <ScrollView contentContainerStyle={{paddingBottom: insets.bottom}}>
+        <CenterColumn columnStyle={sharedStyles.bodyPadding}>
           {listHeader()}
           <View style={styles.tagContainer}>
             {tags?.map(tag => (
@@ -65,8 +65,8 @@ export default function TagListScreen() {
               />
             ))}
           </View>
-        </ScrollView>
-      </CenterColumn>
+        </CenterColumn>
+      </ScrollView>
     </ScreenBackground>
   );
 }
