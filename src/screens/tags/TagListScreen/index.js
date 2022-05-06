@@ -74,8 +74,10 @@ export default function TagListScreen() {
 const styles = StyleSheet.create({
   tagContainer: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
   },
   tag: {
     marginRight: 8,
+    marginBottom: 8,
   },
 });
