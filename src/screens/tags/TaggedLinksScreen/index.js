@@ -1,4 +1,6 @@
 import {useNavigation} from '@react-navigation/native';
+import reverse from 'lodash/reverse';
+import sortBy from 'lodash/sortBy';
 import {useCallback, useEffect} from 'react';
 import BookmarkList from '../../../components/BookmarkList';
 import {useTags} from '../../../data/tags';
@@ -17,8 +19,10 @@ export default function TaggedLinksScreen({route}) {
       filter: {name: tagName},
       options: {include: 'bookmarks'},
     });
+    const bookmarks = response.included;
+    const sortedBookmarks = reverse(sortBy(bookmarks, 'moved-to-list-at'));
     // TODO: this is kind of hacky
-    return {data: response.included};
+    return {data: sortedBookmarks};
   }, [tagClient, tagName]);
 
   return <BookmarkList onLoad={onLoad} />;
