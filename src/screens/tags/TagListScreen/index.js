@@ -1,4 +1,5 @@
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
+import sortBy from 'lodash/sortBy';
 import {useCallback, useState} from 'react';
 import {ScrollView, StyleSheet, View} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
@@ -21,8 +22,9 @@ export default function TagListScreen() {
     try {
       const response = await tagClient.all();
       const loadedTags = response.data;
-      setTags(loadedTags);
-      return loadedTags;
+      const sortedTags = sortBy(loadedTags, 'attributes.name');
+      setTags(sortedTags);
+      return sortedTags;
     } catch (e) {
       setErrorMessage('An error occurred while loading tags.');
     }
