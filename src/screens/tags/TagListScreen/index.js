@@ -2,10 +2,13 @@ import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {useCallback, useState} from 'react';
 import {ScrollView, StyleSheet, View} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import CenterColumn from '../../../components/CenterColumn';
 import ErrorMessage from '../../../components/ErrorMessage';
 import NoRecordsMessage from '../../../components/NoRecordsMessage';
+import ScreenBackground from '../../../components/ScreenBackground';
 import Tag from '../../../components/Tag';
 import {useTags} from '../../../data/tags';
+import sharedStyles from '../../../sharedStyles';
 
 export default function TagListScreen() {
   const navigation = useNavigation();
@@ -46,19 +49,23 @@ export default function TagListScreen() {
   }
 
   return (
-    <ScrollView contentContainerStyle={{paddingBottom: insets.bottom}}>
-      {listHeader()}
-      <View style={styles.tagContainer}>
-        {tags?.map(tag => (
-          <Tag
-            key={tag.attributes.name}
-            name={tag.attributes.name}
-            style={styles.tag}
-            onPress={() => goToTag(tag)}
-          />
-        ))}
-      </View>
-    </ScrollView>
+    <ScreenBackground>
+      <CenterColumn columnStyle={sharedStyles.bodyPadding}>
+        <ScrollView contentContainerStyle={{paddingBottom: insets.bottom}}>
+          {listHeader()}
+          <View style={styles.tagContainer}>
+            {tags?.map(tag => (
+              <Tag
+                key={tag.attributes.name}
+                name={tag.attributes.name}
+                style={styles.tag}
+                onPress={() => goToTag(tag)}
+              />
+            ))}
+          </View>
+        </ScrollView>
+      </CenterColumn>
+    </ScreenBackground>
   );
 }
 
