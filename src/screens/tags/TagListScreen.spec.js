@@ -1,4 +1,4 @@
-import {useFocusEffect} from '@react-navigation/native';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {fireEvent, render} from '@testing-library/react-native';
 import nock from 'nock';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
@@ -63,6 +63,27 @@ describe('TagListScreen', () => {
       const {findByText} = render(providers(<TagListScreen />));
 
       await findByText('No tags.');
+    });
+  });
+
+  describe('clicking a tag', () => {
+    it('navigates to the tagged links screen for that tag', async () => {
+      nock('http://localhost:3000')
+        .get('/api/tags?')
+        .reply(200, jsonApiResponseBody([tag]));
+
+      const navigation = {navigate: jest.fn()};
+      useNavigation.mockReturnValue(navigation);
+
+      const {findByText, getByText} = render(providers(<TagListScreen />));
+
+      const tagName = tag.attributes.name;
+      await findByText(tagName);
+      fireEvent.press(getByText(tagName));
+
+      expect(navigation.navigate).toHaveBeenCalledWith('TaggedLinksScreen', {
+        tag: tagName,
+      });
     });
   });
 });

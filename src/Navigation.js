@@ -10,6 +10,7 @@ import BookmarkDetailScreen from './screens/links/BookmarkDetailScreen';
 import ReadScreen from './screens/links/ReadScreen';
 import UnreadScreen from './screens/links/UnreadScreen';
 import TagListScreen from './screens/tags/TagListScreen';
+import TaggedLinksScreen from './screens/tags/TaggedLinksScreen';
 
 const linking = {
   config: {
@@ -38,6 +39,7 @@ const linking = {
         initialRouteName: 'TagListScreen',
         screens: {
           TagListScreen: '/tags',
+          TaggedLinksScreen: '/tags/:tag',
         },
       },
     },
@@ -88,6 +90,7 @@ const Tags = () => (
       component={TagListScreen}
       options={{title: 'Tags'}}
     />
+    <TagStack.Screen name="TaggedLinksScreen" component={TaggedLinksScreen} />
   </TagStack.Navigator>
 );
 

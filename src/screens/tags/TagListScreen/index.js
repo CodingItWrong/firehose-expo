@@ -1,4 +1,4 @@
-import {useFocusEffect} from '@react-navigation/native';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {useCallback, useState} from 'react';
 import {ScrollView, StyleSheet, View} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
@@ -8,6 +8,7 @@ import Tag from '../../../components/Tag';
 import {useTags} from '../../../data/tags';
 
 export default function TagListScreen() {
+  const navigation = useNavigation();
   const insets = useSafeAreaInsets();
   const tagClient = useTags();
   const [tags, setTags] = useState();
@@ -40,6 +41,10 @@ export default function TagListScreen() {
     }
   }
 
+  function goToTag(tag) {
+    navigation.navigate('TaggedLinksScreen', {tag: tag.attributes.name});
+  }
+
   return (
     <ScrollView contentContainerStyle={{paddingBottom: insets.bottom}}>
       {listHeader()}
@@ -49,6 +54,7 @@ export default function TagListScreen() {
             key={tag.attributes.name}
             name={tag.attributes.name}
             style={styles.tag}
+            onPress={() => goToTag(tag)}
           />
         ))}
       </View>
