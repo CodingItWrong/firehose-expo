@@ -5619,10 +5619,10 @@ jest-environment-node@^26.6.2:
     jest-mock "^26.6.2"
     jest-util "^26.6.2"
 
-jest-expo@^45.0.0-beta:
-  version "45.0.0-beta.2"
-  resolved "https://registry.yarnpkg.com/jest-expo/-/jest-expo-45.0.0-beta.2.tgz#ee883736174512d4e8dc74a0e984ab206e666548"
-  integrity sha512-OBi5VEthNjRaS2xk9RTbABzkPoTUdQCQFRmggTBjgsbeOTF+faUea5EQtD0P+dhD8zqAP1lT4DqNBRB87KJbnQ==
+jest-expo@^45.0.0:
+  version "45.0.0"
+  resolved "https://registry.yarnpkg.com/jest-expo/-/jest-expo-45.0.0.tgz#3885c68fff4194dc202a571a5fd9ef42248263d7"
+  integrity sha512-tI9HbRPBnT6A6avsqNg/VUisCwhxeL3bv/JOJWTfujvmw+PdLpnm13EloY7JkMi4dnHHU77OfBMmh6f+PJI6Cw==
   dependencies:
     "@expo/config" "^6.0.14"
     "@jest/create-cache-key-function" "^26.6.2"

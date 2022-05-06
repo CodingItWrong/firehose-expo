@@ -45,7 +45,7 @@
     "eslint": "^7.0",
     "eslint-plugin-import": "^2.26.0",
     "jest": "^26.6.3",
-    "jest-expo": "^45.0.0-beta",
+    "jest-expo": "^45.0.0",
     "nock": "^13.2.4"
   },
   "jest": {
