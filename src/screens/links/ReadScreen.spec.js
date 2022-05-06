@@ -13,6 +13,7 @@ import ReadScreen from './ReadScreen';
 
 jest.mock('@react-navigation/native', () => ({
   useFocusEffect: jest.fn(),
+  useLinkTo: jest.fn(),
   useNavigation: jest.fn(),
 }));
 

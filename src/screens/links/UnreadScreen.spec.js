@@ -1,4 +1,8 @@
-import {useFocusEffect, useNavigation} from '@react-navigation/native';
+import {
+  useFocusEffect,
+  useLinkTo,
+  useNavigation,
+} from '@react-navigation/native';
 import {
   fireEvent,
   render,
@@ -15,10 +19,12 @@ import UnreadScreen from './UnreadScreen';
 jest.mock('expo-linking', () => ({openURL: jest.fn()}));
 jest.mock('@react-navigation/native', () => ({
   useFocusEffect: jest.fn(),
+  useLinkTo: jest.fn(),
   useNavigation: jest.fn(),
 }));
 
 describe('UnreadScreen', () => {
+  const tagName = 'another-tag';
   const bookmark = {
     id: '1',
     attributes: {
@@ -26,7 +32,7 @@ describe('UnreadScreen', () => {
       url: 'https://www.codingitwrong.com/books',
       comment: 'This is my book list',
       source: 'Nice Referrer',
-      'tag-list': 'tag another-tag',
+      'tag-list': `tag ${tagName}`,
     },
   };
 
@@ -148,6 +154,24 @@ describe('UnreadScreen', () => {
       fireEvent.press(getByText(sourceText));
 
       expect(Linking.openURL).toHaveBeenCalledWith(source);
+    });
+  });
+
+  describe('clicking a tag', () => {
+    it('navigates to the tagged links screen for that tag', async () => {
+      nock('http://localhost:3000')
+        .get('/api/bookmarks?filter[read]=false&')
+        .reply(200, jsonApiResponseBody([bookmark]));
+
+      const linkTo = jest.fn();
+      useLinkTo.mockReturnValue(linkTo);
+
+      const {findByText, getByText} = render(providers(<UnreadScreen />));
+
+      await findByText(tagName);
+      fireEvent.press(getByText(tagName));
+
+      expect(linkTo).toHaveBeenCalledWith(`/tags/${tagName}`);
     });
   });
 

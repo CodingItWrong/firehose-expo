@@ -8,6 +8,7 @@ export default function BookmarkRow({
   bookmark,
   style,
   onEdit,
+  onPressTag,
   onMarkRead,
   onMarkUnread,
   onDelete,
@@ -33,7 +34,12 @@ export default function BookmarkRow({
         {tags.length > 0 && (
           <View style={styles.tagList}>
             {tags.map(tag => (
-              <Tag key={tag} style={styles.tag} name={tag} />
+              <Tag
+                key={tag}
+                style={styles.tag}
+                name={tag}
+                onPress={() => onPressTag(tag)}
+              />
             ))}
           </View>
         )}

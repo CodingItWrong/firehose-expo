@@ -1,4 +1,8 @@
-import {useFocusEffect, useNavigation} from '@react-navigation/native';
+import {
+  useFocusEffect,
+  useLinkTo,
+  useNavigation,
+} from '@react-navigation/native';
 import {useCallback, useRef, useState} from 'react';
 import {useBookmarks} from '../../data/bookmarks';
 import CenterColumn from '../CenterColumn';
@@ -20,6 +24,7 @@ export default function BookmarkList({
   showSearchForm = false,
 }) {
   const navigation = useNavigation();
+  const linkTo = useLinkTo();
   const bookmarkClient = useBookmarks();
 
   const [isPerformingInitialLoad, setIsPerformingInitialLoad] = useState(true);
@@ -74,6 +79,10 @@ export default function BookmarkList({
 
   function goToBookmark(bookmark) {
     navigation.navigate('BookmarkDetailScreen', {id: bookmark.id});
+  }
+
+  function goToTag(tagName) {
+    linkTo(`/tags/${tagName}`);
   }
 
   async function markRead(bookmark) {
@@ -133,6 +142,7 @@ export default function BookmarkList({
           bookmarks={bookmarks}
           errorMessage={errorMessage}
           onEdit={goToBookmark}
+          onPressTag={goToTag}
           onRefresh={refresh}
           onMarkRead={markRead}
           onMarkUnread={markUnread}

@@ -11,6 +11,7 @@ export default function BookmarkFlatList({
   bookmarks,
   errorMessage,
   onEdit,
+  onPressTag,
   onRefresh,
   onMarkRead,
   onMarkUnread,
@@ -43,6 +44,7 @@ export default function BookmarkFlatList({
           bookmark={item}
           style={styles.card}
           onEdit={() => onEdit(item)}
+          onPressTag={onPressTag}
           onMarkRead={() => onMarkRead(item)}
           onMarkUnread={() => onMarkUnread(item)}
           onDelete={() => onDelete(item)}
