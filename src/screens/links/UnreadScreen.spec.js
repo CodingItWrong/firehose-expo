@@ -1,8 +1,4 @@
-import {
-  useFocusEffect,
-  useLinkTo,
-  useNavigation,
-} from '@react-navigation/native';
+import {useLinkTo, useNavigation} from '@react-navigation/native';
 import {
   fireEvent,
   render,

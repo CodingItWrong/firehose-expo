@@ -48,7 +48,7 @@ describe('TaggedLinksScreen', () => {
   });
 
   describe('displaying links', () => {
-    it.only('renders links from the backend', async () => {
+    it('renders links from the backend', async () => {
       const mockedServer = nock('http://localhost:3000')
         .get(`/api/tags?filter[name]=${tagName}&include=bookmarks`)
         .reply(200, {included: [bookmark]});
