@@ -24,3 +24,12 @@ jobs:
         run: yarn test --watchAll=false
       - name: ESLint
         run: yarn lint
+      - name: Install Expo CLI
+        run: yarn global add expo-cli
+      - name: Install Sharp CLI
+        run: yarn global add sharp-cli
+      - name: Cypress run
+        uses: cypress-io/github-action@v2
+        with:
+          start: yarn web
+          wait-on: 'http://localhost:19006'
