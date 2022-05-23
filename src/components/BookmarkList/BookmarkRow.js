@@ -50,7 +50,12 @@ export default function BookmarkRow({
             Mark Unread
           </Button>
         ) : (
-          <Button style={styles.button} mode="outlined" onPress={onMarkRead}>
+          <Button
+            style={styles.button}
+            mode="outlined"
+            onPress={onMarkRead}
+            testID="mark-read-button"
+          >
             Mark Read
           </Button>
         )}

@@ -20,6 +20,7 @@ export default function NewBookmarkForm({isCreating, onCreate}) {
     <TextInput
       label="URL to Add"
       accessibilityLabel="URL to Add"
+      testID="url-to-add-field"
       value={url}
       onChangeText={setUrl}
       onSubmitEditing={handleCreate}
