@@ -25,6 +25,7 @@ export default function SignInScreen() {
         <TextInput
           label="Email"
           accessibilityLabel="Email"
+          testID="email-field"
           value={username}
           onChangeText={handleChange('username')}
           keyboardType="email-address"
@@ -34,12 +35,14 @@ export default function SignInScreen() {
         <TextInput
           label="Password"
           accessibilityLabel="Password"
+          testID="password-field"
           value={password}
           onChangeText={handleChange('password')}
           secureTextEntry
         />
         <ErrorMessage>{error}</ErrorMessage>
         <Button
+          testID="sign-in-button"
           mode="contained"
           onPress={handleLogIn}
           accessibilityLabel="Sign in"
