@@ -11,9 +11,13 @@ const ACCESS_TOKEN_KEY = 'FIREHOSE_ACCESS_TOKEN';
 
 const TokenContext = createContext(null);
 
-export function TokenProvider({skipLoading = false, children}) {
+export function TokenProvider({
+  skipLoading = false,
+  initialToken = null,
+  children,
+}) {
   const [isTokenLoaded, setIsTokenLoaded] = useState(false);
-  const [token, setToken] = useState(null);
+  const [token, setToken] = useState(initialToken);
 
   return (
     <TokenContext.Provider
