@@ -2,6 +2,8 @@
 
 Client for the [Firehose link-saving app](https://github.com/CodingItWrong/firehose-api). Implemented with Expo. Runs on Android, iOS, and web.
 
+Most of the app was built on a live stream; [watch the recordings](https://codingitwrong.com/streams/expo-mobile-web)!
+
 ## Requirements
 
 - [Yarn](https://yarnpkg.com/en/docs/install)
