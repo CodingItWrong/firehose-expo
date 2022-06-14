@@ -4,6 +4,8 @@ import {Button, Card, Text, Title} from 'react-native-paper';
 import domainForUrl from '../../utils/domainForUrl';
 import Tag from '../Tag';
 
+const isWeb = Platform.OS === 'web';
+
 export default function BookmarkRow({
   bookmark,
   style,
@@ -18,17 +20,45 @@ export default function BookmarkRow({
   const tagList = bookmark.attributes['tag-list'];
   const tags = tagList ? tagList.split(' ') : [];
 
-  return (
-    <Card style={style}>
-      <Card.Content>
+  function renderTitle() {
+    if (isWeb) {
+      return (
+        <Title href={bookmark.attributes.url} hrefAttrs={{target: '_blank'}}>
+          {title}
+        </Title>
+      );
+    } else {
+      return (
         <Pressable onPress={() => openBookmark(bookmark.attributes.url)}>
           <Title>{title}</Title>
         </Pressable>
+      );
+    }
+  }
+
+  function renderUrl() {
+    if (isWeb) {
+      return (
+        <Text href={bookmark.attributes.url} hrefAttrs={{target: '_blank'}}>
+          {domainForUrl(url)}
+        </Text>
+      );
+    } else {
+      return (
+        <Pressable onPress={() => openBookmark(bookmark.attributes.url)}>
+          <Text>{domainForUrl(url)}</Text>
+        </Pressable>
+      );
+    }
+  }
+
+  return (
+    <Card style={style}>
+      <Card.Content>
+        {renderTitle()}
         {comment ? <Text style={styles.comment}>{comment}</Text> : null}
         <View style={styles.urlLine}>
-          <Pressable onPress={() => openBookmark(bookmark.attributes.url)}>
-            <Text>{domainForUrl(url)}</Text>
-          </Pressable>
+          {renderUrl()}
           <Source source={source} />
         </View>
         {tags.length > 0 && (
