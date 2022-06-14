@@ -1,5 +1,5 @@
 import * as Linking from 'expo-linking';
-import {Platform, Pressable, StyleSheet, View} from 'react-native';
+import {Platform, Pressable, Share, StyleSheet, View} from 'react-native';
 import {Button, Card, Text, Title} from 'react-native-paper';
 import domainForUrl from '../../utils/domainForUrl';
 import Tag from '../Tag';
@@ -20,6 +20,10 @@ export default function BookmarkRow({
   const tagList = bookmark.attributes['tag-list'];
   const tags = tagList ? tagList.split(' ') : [];
 
+  function share() {
+    Share.share({url: bookmark.attributes.url});
+  }
+
   function renderTitle() {
     if (isWeb) {
       return (
@@ -29,7 +33,10 @@ export default function BookmarkRow({
       );
     } else {
       return (
-        <Pressable onPress={() => openBookmark(bookmark.attributes.url)}>
+        <Pressable
+          onPress={() => openBookmark(bookmark.attributes.url)}
+          onLongPress={share}
+        >
           <Title>{title}</Title>
         </Pressable>
       );
@@ -45,7 +52,10 @@ export default function BookmarkRow({
       );
     } else {
       return (
-        <Pressable onPress={() => openBookmark(bookmark.attributes.url)}>
+        <Pressable
+          onPress={() => openBookmark(bookmark.attributes.url)}
+          onLongPress={share}
+        >
           <Text>{domainForUrl(url)}</Text>
         </Pressable>
       );
