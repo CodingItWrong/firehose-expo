@@ -31,6 +31,7 @@ export default function ReadScreen() {
 
   return (
     <BookmarkList
+      queryKey={['read-links', searchText, page]}
       onLoad={onLoad}
       paginate
       pageNumber={page}

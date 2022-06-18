@@ -10,5 +10,5 @@ export default function UnreadScreen() {
     [bookmarkClient],
   );
 
-  return <BookmarkList onLoad={onLoad} showAddForm />;
+  return <BookmarkList queryKey="unread-links" onLoad={onLoad} showAddForm />;
 }

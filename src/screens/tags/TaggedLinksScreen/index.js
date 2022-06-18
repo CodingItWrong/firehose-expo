@@ -25,5 +25,5 @@ export default function TaggedLinksScreen({route}) {
     return {data: sortedBookmarks};
   }, [tagClient, tagName]);
 
-  return <BookmarkList onLoad={onLoad} />;
+  return <BookmarkList queryKey={['links-for-tag', tagName]} onLoad={onLoad} />;
 }
