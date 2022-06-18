@@ -2,8 +2,7 @@ import {useNavigation} from '@react-navigation/native';
 import {fireEvent, render, waitFor} from '@testing-library/react-native';
 import nock from 'nock';
 import {Platform} from 'react-native';
-import {TokenProvider} from '../../data/token';
-import {jsonApiResponseBody} from '../../testUtils';
+import {jsonApiResponseBody, providers} from '../../testUtils';
 import BookmarkDetailScreen from './BookmarkDetailScreen';
 
 jest.mock('@react-navigation/native', () => ({
@@ -26,10 +25,6 @@ describe('BookmarkDetailScreen', () => {
   const newSource = 'New Source';
   const newComment = 'New Comment';
   const newTagList = 'new-tag another-new-tag';
-
-  const providers = children => (
-    <TokenProvider skipLoading>{children}</TokenProvider>
-  );
 
   beforeEach(() => {
     // fix error in KeyboardAwareHOC in tests

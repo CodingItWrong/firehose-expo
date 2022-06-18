@@ -6,13 +6,10 @@ import {
 } from '@testing-library/react-native';
 import * as Linking from 'expo-linking';
 import nock from 'nock';
-import {Provider as PaperProvider} from 'react-native-paper';
-import {SafeAreaProvider} from 'react-native-safe-area-context';
-import {TokenProvider} from '../../data/token';
 import {
   jsonApiResponseBody,
   mockUseFocusEffect,
-  safeAreaMetrics,
+  providers,
 } from '../../testUtils';
 import UnreadScreen from './UnreadScreen';
 
@@ -35,14 +32,6 @@ describe('UnreadScreen', () => {
       'tag-list': `tag ${tagName}`,
     },
   };
-
-  const providers = children => (
-    <SafeAreaProvider initialMetrics={safeAreaMetrics}>
-      <PaperProvider>
-        <TokenProvider skipLoading>{children}</TokenProvider>
-      </PaperProvider>
-    </SafeAreaProvider>
-  );
 
   beforeEach(() => {
     mockUseFocusEffect();

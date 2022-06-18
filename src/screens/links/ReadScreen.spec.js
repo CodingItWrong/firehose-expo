@@ -4,13 +4,10 @@ import {
   waitForElementToBeRemoved,
 } from '@testing-library/react-native';
 import nock from 'nock';
-import {Provider as PaperProvider} from 'react-native-paper';
-import {SafeAreaProvider} from 'react-native-safe-area-context';
-import {TokenProvider} from '../../data/token';
 import {
   jsonApiResponseBody,
   mockUseFocusEffect,
-  safeAreaMetrics,
+  providers,
 } from '../../testUtils';
 import ReadScreen from './ReadScreen';
 
@@ -40,14 +37,6 @@ describe('ReadScreen', () => {
       title: 'Bookmark 2',
     },
   };
-
-  const providers = children => (
-    <SafeAreaProvider initialMetrics={safeAreaMetrics}>
-      <PaperProvider>
-        <TokenProvider skipLoading>{children}</TokenProvider>
-      </PaperProvider>
-    </SafeAreaProvider>
-  );
 
   beforeEach(() => {
     mockUseFocusEffect();
