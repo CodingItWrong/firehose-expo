@@ -1,4 +1,5 @@
 import {useFocusEffect} from '@react-navigation/native';
+import {Provider as PaperProvider} from 'react-native-paper';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {QueryClient, QueryClientProvider} from 'react-query';
 import {TokenProvider} from './data/token';
@@ -52,7 +53,9 @@ export function providers(children) {
   return (
     <SafeAreaProvider initialMetrics={safeAreaMetrics}>
       <QueryClientProvider client={queryClient}>
-        <TokenProvider skipLoading>{children}</TokenProvider>
+        <PaperProvider>
+          <TokenProvider skipLoading>{children}</TokenProvider>
+        </PaperProvider>
       </QueryClientProvider>
     </SafeAreaProvider>
   );
