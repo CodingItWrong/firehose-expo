@@ -2,7 +2,7 @@ import {useCallback, useState} from 'react';
 import BookmarkList from '../../../components/BookmarkList';
 import {useBookmarks} from '../../../data/bookmarks';
 
-export default function UnreadScreen() {
+export default function ReadScreen() {
   const [page, setPage] = useState(1);
   const [maxPage, setMaxPage] = useState(null);
   const [searchText, setSearchText] = useState('');
