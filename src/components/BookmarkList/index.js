@@ -7,6 +7,7 @@ import {useCallback, useRef, useState} from 'react';
 import {useBookmarks} from '../../data/bookmarks';
 import CenterColumn from '../CenterColumn';
 import PaginationControls from '../PaginationControls';
+import {LOADING_INDICATOR} from '../RefreshableFlatList';
 import ScreenBackground from '../ScreenBackground';
 import BookmarkFlatList from './BookmarkFlatList';
 import NewBookmarkForm from './NewBookmarkForm';
@@ -30,7 +31,7 @@ export default function BookmarkList({
   const [isPerformingInitialLoad, setIsPerformingInitialLoad] = useState(true);
   const [loadingIndicator, setLoadingIndicator] = useState(null);
   const loadingIndicatorToShow = isPerformingInitialLoad
-    ? 'STANDALONE'
+    ? LOADING_INDICATOR.STANDALONE
     : loadingIndicator;
 
   const [errorMessage, setErrorMessage] = useState(null);

@@ -2,7 +2,7 @@ import {FlatList, Platform, StyleSheet} from 'react-native';
 import {Button} from 'react-native-paper';
 import LoadingIndicator from './LoadingIndicator';
 
-const LOADING_INDICATOR = {
+export const LOADING_INDICATOR = {
   FLATLIST: 'FLATLIST', // intuitive on mobile
   STANDALONE: 'STANDALONE', // for initial loading and loading via button on web
 };
