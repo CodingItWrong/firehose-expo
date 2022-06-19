@@ -8,6 +8,7 @@ import BookmarkRow from './BookmarkRow';
 export default function BookmarkFlatList({
   listRef,
   isPerformingInitialLoad,
+  loadingIndicator,
   bookmarks,
   errorMessage,
   onEdit,
@@ -37,6 +38,7 @@ export default function BookmarkFlatList({
       data={bookmarks}
       onRefresh={onRefresh}
       showLoadingIndicator={isPerformingInitialLoad}
+      loadingIndicator={loadingIndicator}
       contentContainerStyle={[styles.list, {paddingBottom: insets.bottom}]}
       keyExtractor={item => item.id}
       renderItem={({item}) => (

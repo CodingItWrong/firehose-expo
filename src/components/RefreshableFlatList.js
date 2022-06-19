@@ -11,24 +11,16 @@ const LOADING_INDICATOR = {
 export default function RefreshableFlatList({
   listRef,
   showLoadingIndicator,
+  loadingIndicator,
   onRefresh,
   ...props
 }) {
-  const [internalLoadingIndicator, setInternalLoadingIndicator] =
-    useState(null);
   const loadingIndicatorToShow = showLoadingIndicator
     ? LOADING_INDICATOR.STANDALONE
-    : internalLoadingIndicator;
+    : loadingIndicator;
 
-  function refreshWithIndicator(indicator) {
-    setInternalLoadingIndicator(indicator);
-    return onRefresh().finally(() => setInternalLoadingIndicator(null));
-  }
-
-  const refreshFromList = () =>
-    refreshWithIndicator(LOADING_INDICATOR.FLATLIST);
-  const refreshFromButton = () =>
-    refreshWithIndicator(LOADING_INDICATOR.STANDALONE);
+  const refreshFromList = () => onRefresh(LOADING_INDICATOR.FLATLIST);
+  const refreshFromButton = () => onRefresh(LOADING_INDICATOR.STANDALONE);
 
   const showReloadButton =
     Platform.OS === 'web' || process.env.NODE_ENV === 'test';

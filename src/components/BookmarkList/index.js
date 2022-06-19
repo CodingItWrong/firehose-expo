@@ -28,6 +28,7 @@ export default function BookmarkList({
   const bookmarkClient = useBookmarks();
 
   const [isPerformingInitialLoad, setIsPerformingInitialLoad] = useState(true);
+  const [loadingIndicator, setLoadingIndicator] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
   const clearErrorMessage = () => setErrorMessage(null);
   const [bookmarks, setBookmarks] = useState(null);
@@ -55,10 +56,15 @@ export default function BookmarkList({
     }, [loadFromServer]),
   );
 
-  async function refresh() {
-    const reloadedBookmarks = await loadFromServer();
-    if (reloadedBookmarks.length > 0) {
-      listRef.current.scrollToIndex({index: 0});
+  async function refresh(newLoadingIndicator) {
+    setLoadingIndicator(newLoadingIndicator);
+    try {
+      const reloadedBookmarks = await loadFromServer();
+      if (reloadedBookmarks.length > 0) {
+        listRef.current.scrollToIndex({index: 0});
+      }
+    } finally {
+      setLoadingIndicator(null);
     }
   }
 
@@ -139,6 +145,7 @@ export default function BookmarkList({
         <BookmarkFlatList
           listRef={listRef}
           isPerformingInitialLoad={isPerformingInitialLoad}
+          loadingIndicator={loadingIndicator}
           bookmarks={bookmarks}
           errorMessage={errorMessage}
           onEdit={goToBookmark}
