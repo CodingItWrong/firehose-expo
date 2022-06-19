@@ -29,6 +29,10 @@ export default function BookmarkList({
 
   const [isPerformingInitialLoad, setIsPerformingInitialLoad] = useState(true);
   const [loadingIndicator, setLoadingIndicator] = useState(null);
+  const loadingIndicatorToShow = isPerformingInitialLoad
+    ? 'STANDALONE'
+    : loadingIndicator;
+
   const [errorMessage, setErrorMessage] = useState(null);
   const clearErrorMessage = () => setErrorMessage(null);
   const [bookmarks, setBookmarks] = useState(null);
@@ -144,8 +148,7 @@ export default function BookmarkList({
         )}
         <BookmarkFlatList
           listRef={listRef}
-          isPerformingInitialLoad={isPerformingInitialLoad}
-          loadingIndicator={loadingIndicator}
+          loadingIndicator={loadingIndicatorToShow}
           bookmarks={bookmarks}
           errorMessage={errorMessage}
           onEdit={goToBookmark}
