@@ -3,7 +3,8 @@ import {
   useLinkTo,
   useNavigation,
 } from '@react-navigation/native';
-import {useCallback, useRef, useState} from 'react';
+import {useCallback, useEffect, useRef, useState} from 'react';
+import {useQuery, useQueryClient} from 'react-query';
 import {useBookmarks} from '../../data/bookmarks';
 import CenterColumn from '../CenterColumn';
 import PaginationControls from '../PaginationControls';
@@ -14,6 +15,7 @@ import NewBookmarkForm from './NewBookmarkForm';
 import SearchForm from './SearchForm';
 
 export default function BookmarkList({
+  queryKey,
   onLoad,
   paginate,
   pageNumber,
@@ -30,56 +32,46 @@ export default function BookmarkList({
 
   const [isPerformingInitialLoad, setIsPerformingInitialLoad] = useState(true);
   const [loadingIndicator, setLoadingIndicator] = useState(null);
-  const loadingIndicatorToShow = isPerformingInitialLoad
-    ? LOADING_INDICATOR.STANDALONE
-    : loadingIndicator;
 
   const [errorMessage, setErrorMessage] = useState(null);
   const clearErrorMessage = () => setErrorMessage(null);
-  const [bookmarks, setBookmarks] = useState(null);
-  const removeBookmark = bookmarkToRemove =>
-    setBookmarks(
-      bookmarks.filter(bookmark => bookmark.id !== bookmarkToRemove.id),
-    );
   const [isCreating, setIsCreating] = useState(false);
   const listRef = useRef(null);
+  const bookmarksResult = useQuery(queryKey, () =>
+    onLoad().then(result => result.data),
+  );
+  const queryClient = useQueryClient();
 
-  const loadFromServer = useCallback(async () => {
-    try {
-      const response = await onLoad();
-      const loadedBookmarks = response.data;
-      setBookmarks(loadedBookmarks);
-      return loadedBookmarks;
-    } catch (e) {
-      setErrorMessage('An error occurred while loading links.');
-    }
-  }, [onLoad]);
+  const loadingIndicatorToUse = isPerformingInitialLoad
+    ? LOADING_INDICATOR.STANDALONE
+    : loadingIndicator;
+  const errorMessageToUse =
+    errorMessage ||
+    (bookmarksResult.error && 'An error occurred while loading links.');
 
-  useFocusEffect(
-    useCallback(() => {
-      loadFromServer().finally(() => setIsPerformingInitialLoad(false));
-    }, [loadFromServer]),
+  const refresh = useCallback(
+    newLoadingIndicator => {
+      setLoadingIndicator(newLoadingIndicator || null);
+      queryClient.invalidateQueries(queryKey);
+    },
+    [queryClient, queryKey],
   );
 
-  async function refresh(newLoadingIndicator) {
-    setLoadingIndicator(newLoadingIndicator);
-    try {
-      const reloadedBookmarks = await loadFromServer();
-      if (reloadedBookmarks.length > 0) {
-        listRef.current.scrollToIndex({index: 0});
-      }
-    } finally {
+  useEffect(() => {
+    if (!bookmarksResult.isFetching) {
+      setIsPerformingInitialLoad(false);
       setLoadingIndicator(null);
     }
-  }
+  }, [bookmarksResult.isFetching]);
+
+  useFocusEffect(refresh);
 
   async function addBookmark(url) {
     try {
       clearErrorMessage();
       setIsCreating(true);
-      const response = await bookmarkClient.create({attributes: {url}});
-      const newBookmark = response.data;
-      setBookmarks(oldBookmarks => [newBookmark, ...oldBookmarks]);
+      await bookmarkClient.create({attributes: {url}});
+      refresh();
     } catch (e) {
       setErrorMessage('An error occurred while adding URL.');
       throw e;
@@ -103,7 +95,7 @@ export default function BookmarkList({
         id: bookmark.id,
         attributes: {read: true},
       });
-      removeBookmark(bookmark);
+      refresh();
     } catch {
       setErrorMessage('An error occurred while marking link read.');
     }
@@ -116,7 +108,7 @@ export default function BookmarkList({
         id: bookmark.id,
         attributes: {read: false},
       });
-      removeBookmark(bookmark);
+      refresh();
     } catch {
       setErrorMessage('An error occurred while marking link unread.');
     }
@@ -126,7 +118,7 @@ export default function BookmarkList({
     try {
       clearErrorMessage();
       await bookmarkClient.delete({id: bookmark.id});
-      removeBookmark(bookmark);
+      refresh();
     } catch (e) {
       setErrorMessage('An error occurred while deleting link.');
     }
@@ -149,9 +141,9 @@ export default function BookmarkList({
         )}
         <BookmarkFlatList
           listRef={listRef}
-          loadingIndicator={loadingIndicatorToShow}
-          bookmarks={bookmarks}
-          errorMessage={errorMessage}
+          loadingIndicator={loadingIndicatorToUse}
+          bookmarks={bookmarksResult.data}
+          errorMessage={errorMessageToUse}
           onEdit={goToBookmark}
           onPressTag={goToTag}
           onRefresh={refresh}
