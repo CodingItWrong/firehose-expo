@@ -51,10 +51,17 @@ export default function BookmarkList({
 
   const refresh = useCallback(
     newLoadingIndicator => {
-      setLoadingIndicator(newLoadingIndicator || null);
       queryClient.invalidateQueries(queryKey);
     },
     [queryClient, queryKey],
+  );
+
+  const refreshWithLoadingIndicator = useCallback(
+    newLoadingIndicator => {
+      setLoadingIndicator(newLoadingIndicator);
+      refresh();
+    },
+    [refresh],
   );
 
   useEffect(() => {
@@ -146,7 +153,7 @@ export default function BookmarkList({
           errorMessage={errorMessageToUse}
           onEdit={goToBookmark}
           onPressTag={goToTag}
-          onRefresh={refresh}
+          onRefresh={refreshWithLoadingIndicator}
           onMarkRead={markRead}
           onMarkUnread={markUnread}
           onDelete={deleteBookmark}
