@@ -1,12 +1,10 @@
 import {useNavigation} from '@react-navigation/native';
 import {fireEvent, render} from '@testing-library/react-native';
 import nock from 'nock';
-import {SafeAreaProvider} from 'react-native-safe-area-context';
-import {TokenProvider} from '../../data/token';
 import {
   jsonApiResponseBody,
   mockUseFocusEffect,
-  safeAreaMetrics,
+  providers,
 } from '../../testUtils';
 import TagListScreen from './TagListScreen';
 
@@ -17,12 +15,6 @@ jest.mock('@react-navigation/native', () => ({
 
 describe('TagListScreen', () => {
   const tag = {id: '1', attributes: {name: 'hypercard'}};
-
-  const providers = children => (
-    <SafeAreaProvider initialMetrics={safeAreaMetrics}>
-      <TokenProvider skipLoading>{children}</TokenProvider>
-    </SafeAreaProvider>
-  );
 
   beforeEach(() => {
     mockUseFocusEffect();

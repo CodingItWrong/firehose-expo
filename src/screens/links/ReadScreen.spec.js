@@ -4,13 +4,10 @@ import {
   waitForElementToBeRemoved,
 } from '@testing-library/react-native';
 import nock from 'nock';
-import {Provider as PaperProvider} from 'react-native-paper';
-import {SafeAreaProvider} from 'react-native-safe-area-context';
-import {TokenProvider} from '../../data/token';
 import {
   jsonApiResponseBody,
   mockUseFocusEffect,
-  safeAreaMetrics,
+  providers,
 } from '../../testUtils';
 import ReadScreen from './ReadScreen';
 
@@ -40,14 +37,6 @@ describe('ReadScreen', () => {
       title: 'Bookmark 2',
     },
   };
-
-  const providers = children => (
-    <SafeAreaProvider initialMetrics={safeAreaMetrics}>
-      <PaperProvider>
-        <TokenProvider skipLoading>{children}</TokenProvider>
-      </PaperProvider>
-    </SafeAreaProvider>
-  );
 
   beforeEach(() => {
     mockUseFocusEffect();
@@ -138,7 +127,9 @@ describe('ReadScreen', () => {
             attributes: {read: false},
           },
         })
-        .reply(200);
+        .reply(200)
+        .get('/api/bookmarks?filter[read]=true&page[number]=1')
+        .reply(200, jsonApiResponseBody([], meta));
 
       const {findByText, getByText} = render(providers(<ReadScreen />));
 
@@ -157,7 +148,9 @@ describe('ReadScreen', () => {
         .patch('/api/bookmarks/1?')
         .reply(500)
         .patch('/api/bookmarks/1?')
-        .reply(200);
+        .reply(200)
+        .get('/api/bookmarks?filter[read]=true&page[number]=1')
+        .reply(200, jsonApiResponseBody([], meta));
 
       const {findByText, getByText, queryByText} = render(
         providers(<ReadScreen />),

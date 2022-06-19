@@ -6,13 +6,10 @@ import {
 } from '@testing-library/react-native';
 import * as Linking from 'expo-linking';
 import nock from 'nock';
-import {Provider as PaperProvider} from 'react-native-paper';
-import {SafeAreaProvider} from 'react-native-safe-area-context';
-import {TokenProvider} from '../../data/token';
 import {
   jsonApiResponseBody,
   mockUseFocusEffect,
-  safeAreaMetrics,
+  providers,
 } from '../../testUtils';
 import UnreadScreen from './UnreadScreen';
 
@@ -36,14 +33,6 @@ describe('UnreadScreen', () => {
     },
   };
 
-  const providers = children => (
-    <SafeAreaProvider initialMetrics={safeAreaMetrics}>
-      <PaperProvider>
-        <TokenProvider skipLoading>{children}</TokenProvider>
-      </PaperProvider>
-    </SafeAreaProvider>
-  );
-
   beforeEach(() => {
     mockUseFocusEffect();
   });
@@ -54,13 +43,14 @@ describe('UnreadScreen', () => {
         .get('/api/bookmarks?filter[read]=false&')
         .reply(200, jsonApiResponseBody([bookmark]));
 
-      const {findByText, queryByLabelText, queryByText} = render(
+      const {getByLabelText, queryByLabelText, queryByText} = render(
         providers(<UnreadScreen />),
       );
 
       expect(queryByLabelText('Loading')).not.toBeNull();
-      // expect(http.get).toHaveBeenCalledWith('bookmarks?filter[read]=false&');
-      await findByText(bookmark.attributes.title);
+      await waitForElementToBeRemoved(() => getByLabelText('Loading'));
+
+      expect(queryByText(bookmark.attributes.title)).not.toBeNull();
       expect(queryByText(bookmark.attributes.comment)).not.toBeNull();
       expect(queryByText('codingitwrong.com')).not.toBeNull();
       expect(queryByText(`From ${bookmark.attributes.source}`)).not.toBeNull();
@@ -267,7 +257,9 @@ describe('UnreadScreen', () => {
             attributes: {url: newBookmark.attributes.url},
           },
         })
-        .reply(200, jsonApiResponseBody(newBookmark));
+        .reply(200, {})
+        .get('/api/bookmarks?filter[read]=false&')
+        .reply(200, jsonApiResponseBody([bookmark, newBookmark]));
 
       const {findByText, getByLabelText, queryByLabelText} = render(
         providers(<UnreadScreen />),
@@ -307,7 +299,9 @@ describe('UnreadScreen', () => {
         .post('/api/bookmarks?')
         .reply(500)
         .post('/api/bookmarks?')
-        .reply(200, jsonApiResponseBody(newBookmark));
+        .reply(200, {})
+        .get('/api/bookmarks?filter[read]=false&')
+        .reply(200, jsonApiResponseBody([bookmark, newBookmark]));
 
       const {findByText, getByLabelText, queryByLabelText, queryByText} =
         render(providers(<UnreadScreen />));
@@ -343,7 +337,9 @@ describe('UnreadScreen', () => {
             attributes: {read: true},
           },
         })
-        .reply(200);
+        .reply(200)
+        .get('/api/bookmarks?filter[read]=false&')
+        .reply(200, jsonApiResponseBody([]));
 
       const {findByText, getByText} = render(providers(<UnreadScreen />));
 
@@ -364,7 +360,9 @@ describe('UnreadScreen', () => {
         .patch('/api/bookmarks/1?')
         .reply(500)
         .patch('/api/bookmarks/1?')
-        .reply(200);
+        .reply(200)
+        .get('/api/bookmarks?filter[read]=false&')
+        .reply(200, jsonApiResponseBody([]));
 
       const {findByText, getByText, queryByText} = render(
         providers(<UnreadScreen />),
@@ -413,7 +411,9 @@ describe('UnreadScreen', () => {
         .get('/api/bookmarks?filter[read]=false&')
         .reply(200, jsonApiResponseBody([bookmark]))
         .delete('/api/bookmarks/1?')
-        .reply(200);
+        .reply(200)
+        .get('/api/bookmarks?filter[read]=false&')
+        .reply(200, jsonApiResponseBody([]));
 
       const {findByText, getByText} = render(providers(<UnreadScreen />));
 
@@ -434,7 +434,9 @@ describe('UnreadScreen', () => {
         .delete('/api/bookmarks/1?')
         .reply(500)
         .delete('/api/bookmarks/1?')
-        .reply(200);
+        .reply(200)
+        .get('/api/bookmarks?filter[read]=false&')
+        .reply(200, jsonApiResponseBody([]));
 
       const {findByText, getByText, queryByText} = render(
         providers(<UnreadScreen />),

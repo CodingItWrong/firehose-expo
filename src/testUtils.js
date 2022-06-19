@@ -1,4 +1,8 @@
 import {useFocusEffect} from '@react-navigation/native';
+import {Provider as PaperProvider} from 'react-native-paper';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
+import {QueryClient, QueryClientProvider} from 'react-query';
+import {TokenProvider} from './data/token';
 
 export function jsonApiResponseBody(records, meta = null) {
   return {data: records, meta};
@@ -35,4 +39,24 @@ export function mockUseFocusEffect() {
       callback();
     }
   });
+}
+
+export function providers(children) {
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
+        cacheTime: Infinity,
+      },
+    },
+  });
+  return (
+    <SafeAreaProvider initialMetrics={safeAreaMetrics}>
+      <QueryClientProvider client={queryClient}>
+        <PaperProvider>
+          <TokenProvider skipLoading>{children}</TokenProvider>
+        </PaperProvider>
+      </QueryClientProvider>
+    </SafeAreaProvider>
+  );
 }

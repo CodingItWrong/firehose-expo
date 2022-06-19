@@ -2,13 +2,13 @@ import {useCallback, useState} from 'react';
 import BookmarkList from '../../../components/BookmarkList';
 import {useBookmarks} from '../../../data/bookmarks';
 
-export default function UnreadScreen() {
+export default function ReadScreen() {
   const [page, setPage] = useState(1);
   const [maxPage, setMaxPage] = useState(null);
   const [searchText, setSearchText] = useState('');
   const bookmarkClient = useBookmarks();
 
-  const onLoad = useCallback(async () => {
+  const query = useCallback(async () => {
     const filter = {read: true};
     if (searchText !== '') {
       filter.title = searchText;
@@ -18,8 +18,9 @@ export default function UnreadScreen() {
       options: {'page[number]': page},
     });
     setMaxPage(response.meta['page-count']);
-    return response;
+    return response.data;
   }, [bookmarkClient, page, searchText]);
+  const queryKey = ['read-links', searchText, page];
 
   const increment = () => setPage(page + 1);
   const decrement = () => setPage(page - 1);
@@ -31,7 +32,8 @@ export default function UnreadScreen() {
 
   return (
     <BookmarkList
-      onLoad={onLoad}
+      query={query}
+      queryKey={queryKey}
       paginate
       pageNumber={page}
       maxPageNumber={maxPage}

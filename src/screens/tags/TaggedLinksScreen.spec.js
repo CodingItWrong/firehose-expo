@@ -1,9 +1,7 @@
 import {useNavigation} from '@react-navigation/native';
 import {render} from '@testing-library/react-native';
 import nock from 'nock';
-import {SafeAreaProvider} from 'react-native-safe-area-context';
-import {TokenProvider} from '../../data/token';
-import {mockUseFocusEffect, safeAreaMetrics} from '../../testUtils';
+import {mockUseFocusEffect, providers} from '../../testUtils';
 import TaggedLinksScreen from './TaggedLinksScreen';
 
 jest.mock('@react-navigation/native', () => ({
@@ -26,12 +24,6 @@ describe('TaggedLinksScreen', () => {
       read: true,
     },
   };
-
-  const providers = children => (
-    <SafeAreaProvider initialMetrics={safeAreaMetrics}>
-      <TokenProvider skipLoading>{children}</TokenProvider>
-    </SafeAreaProvider>
-  );
 
   let navigation;
 

@@ -14,16 +14,16 @@ export default function TaggedLinksScreen({route}) {
     navigation.setOptions({title: tagName});
   }, [navigation, tagName]);
 
-  const onLoad = useCallback(async () => {
+  const query = useCallback(async () => {
     const response = await tagClient.where({
       filter: {name: tagName},
       options: {include: 'bookmarks'},
     });
     const bookmarks = response.included;
     const sortedBookmarks = reverse(sortBy(bookmarks, 'moved-to-list-at'));
-    // TODO: this is kind of hacky
-    return {data: sortedBookmarks};
+    return sortedBookmarks;
   }, [tagClient, tagName]);
+  const queryKey = ['links-for-tag', tagName];
 
-  return <BookmarkList onLoad={onLoad} />;
+  return <BookmarkList query={query} queryKey={queryKey} />;
 }
