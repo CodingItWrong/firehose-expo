@@ -15,8 +15,8 @@ import NewBookmarkForm from './NewBookmarkForm';
 import SearchForm from './SearchForm';
 
 export default function BookmarkList({
+  query,
   queryKey,
-  onLoad,
   paginate,
   pageNumber,
   maxPageNumber,
@@ -37,9 +37,7 @@ export default function BookmarkList({
   const clearErrorMessage = () => setErrorMessage(null);
   const [isCreating, setIsCreating] = useState(false);
   const listRef = useRef(null);
-  const bookmarksResult = useQuery(queryKey, () =>
-    onLoad().then(result => result.data),
-  );
+  const bookmarksResult = useQuery(queryKey, query);
   const queryClient = useQueryClient();
 
   const loadingIndicatorToUse = isPerformingInitialLoad

@@ -8,7 +8,7 @@ export default function ReadScreen() {
   const [searchText, setSearchText] = useState('');
   const bookmarkClient = useBookmarks();
 
-  const onLoad = useCallback(async () => {
+  const query = useCallback(async () => {
     const filter = {read: true};
     if (searchText !== '') {
       filter.title = searchText;
@@ -18,8 +18,9 @@ export default function ReadScreen() {
       options: {'page[number]': page},
     });
     setMaxPage(response.meta['page-count']);
-    return response;
+    return response.data;
   }, [bookmarkClient, page, searchText]);
+  const queryKey = ['read-links', searchText, page];
 
   const increment = () => setPage(page + 1);
   const decrement = () => setPage(page - 1);
@@ -31,8 +32,8 @@ export default function ReadScreen() {
 
   return (
     <BookmarkList
-      queryKey={['read-links', searchText, page]}
-      onLoad={onLoad}
+      query={query}
+      queryKey={queryKey}
       paginate
       pageNumber={page}
       maxPageNumber={maxPage}
