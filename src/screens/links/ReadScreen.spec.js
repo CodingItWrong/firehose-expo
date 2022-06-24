@@ -1,6 +1,7 @@
 import {
   fireEvent,
   render,
+  screen,
   waitForElementToBeRemoved,
 } from '@testing-library/react-native';
 import nock from 'nock';
@@ -48,9 +49,9 @@ describe('ReadScreen', () => {
         .get('/api/bookmarks?filter[read]=true&page[number]=1')
         .reply(200, jsonApiResponseBody([bookmark], meta));
 
-      const {findByText} = render(providers(<ReadScreen />));
+      render(providers(<ReadScreen />));
 
-      await findByText(bookmark.attributes.title);
+      await screen.findByText(bookmark.attributes.title);
 
       mockedServer.done();
     });
@@ -62,15 +63,15 @@ describe('ReadScreen', () => {
         .get('/api/bookmarks?filter[read]=true&filter[title]=2&page[number]=1')
         .reply(200, jsonApiResponseBody([bookmark2], meta));
 
-      const {findByText, getByLabelText} = render(providers(<ReadScreen />));
+      render(providers(<ReadScreen />));
 
-      await findByText(bookmark.attributes.title);
+      await screen.findByText(bookmark.attributes.title);
 
-      const searchField = getByLabelText('Search');
+      const searchField = screen.getByLabelText('Search');
       fireEvent.changeText(searchField, '2');
       fireEvent(searchField, 'submitEditing');
 
-      await findByText(bookmark2.attributes.title);
+      await screen.findByText(bookmark2.attributes.title);
 
       mockedServer.done();
     });
@@ -84,18 +85,16 @@ describe('ReadScreen', () => {
         .get('/api/bookmarks?filter[read]=true&page[number]=1')
         .reply(200, jsonApiResponseBody([bookmark], meta));
 
-      const {findByText, getByLabelText, queryByText} = render(
-        providers(<ReadScreen />),
-      );
+      render(providers(<ReadScreen />));
 
-      await findByText(bookmark.attributes.title);
-      expect(queryByText('Page 1 of 7')).not.toBeNull();
+      await screen.findByText(bookmark.attributes.title);
+      expect(screen.queryByText('Page 1 of 7')).not.toBeNull();
 
-      fireEvent.press(getByLabelText('Go to next page'));
-      await findByText(bookmark2.attributes.title);
+      fireEvent.press(screen.getByLabelText('Go to next page'));
+      await screen.findByText(bookmark2.attributes.title);
 
-      fireEvent.press(getByLabelText('Go to previous page'));
-      await findByText(bookmark.attributes.title);
+      fireEvent.press(screen.getByLabelText('Go to previous page'));
+      await screen.findByText(bookmark.attributes.title);
 
       mockedServer.done();
     });
@@ -107,11 +106,11 @@ describe('ReadScreen', () => {
         .get('/api/bookmarks?filter[read]=true&page[number]=1')
         .reply(200, jsonApiResponseBody([bookmark], meta));
 
-      const {findByText, queryByLabelText} = render(providers(<ReadScreen />));
+      render(providers(<ReadScreen />));
 
-      await findByText(bookmark.attributes.title);
+      await screen.findByText(bookmark.attributes.title);
 
-      expect(queryByLabelText('URL to Add')).toBeNull();
+      expect(screen.queryByLabelText('URL to Add')).toBeNull();
     });
   });
 
@@ -131,13 +130,13 @@ describe('ReadScreen', () => {
         .get('/api/bookmarks?filter[read]=true&page[number]=1')
         .reply(200, jsonApiResponseBody([], meta));
 
-      const {findByText, getByText} = render(providers(<ReadScreen />));
+      render(providers(<ReadScreen />));
 
-      await findByText('Mark Unread');
-      fireEvent.press(getByText('Mark Unread'));
+      await screen.findByText('Mark Unread');
+      fireEvent.press(screen.getByText('Mark Unread'));
 
       await waitForElementToBeRemoved(() =>
-        getByText(bookmark.attributes.title),
+        screen.getByText(bookmark.attributes.title),
       );
     });
 
@@ -152,23 +151,21 @@ describe('ReadScreen', () => {
         .get('/api/bookmarks?filter[read]=true&page[number]=1')
         .reply(200, jsonApiResponseBody([], meta));
 
-      const {findByText, getByText, queryByText} = render(
-        providers(<ReadScreen />),
-      );
+      render(providers(<ReadScreen />));
 
-      await findByText('Mark Unread');
-      fireEvent.press(getByText('Mark Unread'));
+      await screen.findByText('Mark Unread');
+      fireEvent.press(screen.getByText('Mark Unread'));
 
-      await findByText('An error occurred while marking link unread.');
+      await screen.findByText('An error occurred while marking link unread.');
 
       // clear error
-      fireEvent.press(getByText('Mark Unread'));
+      fireEvent.press(screen.getByText('Mark Unread'));
 
       expect(
-        queryByText('An error occurred while marking link unread.'),
+        screen.queryByText('An error occurred while marking link unread.'),
       ).toBeNull();
       await waitForElementToBeRemoved(() =>
-        getByText(bookmark.attributes.title),
+        screen.getByText(bookmark.attributes.title),
       );
     });
   });
