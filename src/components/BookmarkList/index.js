@@ -17,6 +17,7 @@ import SearchForm from './SearchForm';
 export default function BookmarkList({
   query,
   queryKey,
+  extraDetailParams,
   paginate,
   pageNumber,
   maxPageNumber,
@@ -86,7 +87,10 @@ export default function BookmarkList({
   }
 
   function goToBookmark(bookmark) {
-    navigation.navigate('BookmarkDetailScreen', {id: bookmark.id});
+    navigation.navigate('BookmarkDetailScreen', {
+      id: bookmark.id,
+      ...extraDetailParams,
+    });
   }
 
   function goToTag(tagName) {
