@@ -40,6 +40,7 @@ const linking = {
         screens: {
           TagListScreen: '/tags',
           TaggedLinksScreen: '/tags/:tag',
+          BookmarkDetailScreen: '/tags/:tag/:id',
         },
       },
     },
@@ -91,6 +92,11 @@ const Tags = () => (
       options={{title: 'Tags'}}
     />
     <TagStack.Screen name="TaggedLinksScreen" component={TaggedLinksScreen} />
+    <ReadStack.Screen
+      name="BookmarkDetailScreen"
+      component={BookmarkDetailScreen}
+      options={{title: 'Edit Link'}}
+    />
   </TagStack.Navigator>
 );
 

@@ -1,5 +1,5 @@
 import {useNavigation} from '@react-navigation/native';
-import {render, screen} from '@testing-library/react-native';
+import {fireEvent, render, screen} from '@testing-library/react-native';
 import nock from 'nock';
 import {mockUseFocusEffect, providers} from '../../testUtils';
 import TaggedLinksScreen from './TaggedLinksScreen';
@@ -28,7 +28,10 @@ describe('TaggedLinksScreen', () => {
   let navigation;
 
   beforeEach(() => {
-    navigation = {setOptions: jest.fn()};
+    navigation = {
+      navigate: jest.fn(),
+      setOptions: jest.fn(),
+    };
     useNavigation.mockReturnValue(navigation);
     mockUseFocusEffect();
   });
@@ -50,6 +53,28 @@ describe('TaggedLinksScreen', () => {
       await screen.findByText(bookmark.attributes.title);
 
       mockedServer.done();
+    });
+  });
+
+  describe('edit', () => {
+    it('navigates to the bookmark detail screen with tag specified', async () => {
+      nock('http://localhost:3000')
+        .get(`/api/tags?filter[name]=${tagName}&include=bookmarks`)
+        .reply(200, {included: [bookmark]});
+
+      useNavigation.mockReturnValue(navigation);
+
+      render(
+        providers(<TaggedLinksScreen route={route} navigation={navigation} />),
+      );
+
+      await screen.findByText('Edit');
+      fireEvent.press(screen.getByText('Edit'));
+
+      expect(navigation.navigate).toHaveBeenCalledWith('BookmarkDetailScreen', {
+        tag: tagName,
+        id: bookmark.id,
+      });
     });
   });
 });
