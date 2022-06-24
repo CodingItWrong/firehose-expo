@@ -2,6 +2,7 @@ import {useLinkTo, useNavigation} from '@react-navigation/native';
 import {
   fireEvent,
   render,
+  screen,
   waitForElementToBeRemoved,
 } from '@testing-library/react-native';
 import * as Linking from 'expo-linking';
@@ -43,21 +44,21 @@ describe('UnreadScreen', () => {
         .get('/api/bookmarks?filter[read]=false&')
         .reply(200, jsonApiResponseBody([bookmark]));
 
-      const {getByLabelText, queryByLabelText, queryByText} = render(
-        providers(<UnreadScreen />),
-      );
+      render(providers(<UnreadScreen />));
 
-      expect(queryByLabelText('Loading')).not.toBeNull();
-      await waitForElementToBeRemoved(() => getByLabelText('Loading'));
+      expect(screen.queryByLabelText('Loading')).not.toBeNull();
+      await waitForElementToBeRemoved(() => screen.getByLabelText('Loading'));
 
-      expect(queryByText(bookmark.attributes.title)).not.toBeNull();
-      expect(queryByText(bookmark.attributes.comment)).not.toBeNull();
-      expect(queryByText('codingitwrong.com')).not.toBeNull();
-      expect(queryByText(`From ${bookmark.attributes.source}`)).not.toBeNull();
-      expect(queryByText('tag')).not.toBeNull();
-      expect(queryByText('another-tag')).not.toBeNull();
+      expect(screen.queryByText(bookmark.attributes.title)).not.toBeNull();
+      expect(screen.queryByText(bookmark.attributes.comment)).not.toBeNull();
+      expect(screen.queryByText('codingitwrong.com')).not.toBeNull();
+      expect(
+        screen.queryByText(`From ${bookmark.attributes.source}`),
+      ).not.toBeNull();
+      expect(screen.queryByText('tag')).not.toBeNull();
+      expect(screen.queryByText('another-tag')).not.toBeNull();
 
-      expect(queryByLabelText('Loading')).toBeNull();
+      expect(screen.queryByLabelText('Loading')).toBeNull();
 
       mockedServer.done();
     });
@@ -67,12 +68,10 @@ describe('UnreadScreen', () => {
         .get('/api/bookmarks?filter[read]=false&')
         .reply(500);
 
-      const {findByText, queryByLabelText} = render(
-        providers(<UnreadScreen />),
-      );
+      render(providers(<UnreadScreen />));
 
-      await findByText('An error occurred while loading links.');
-      expect(queryByLabelText('Loading')).toBeNull();
+      await screen.findByText('An error occurred while loading links.');
+      expect(screen.queryByLabelText('Loading')).toBeNull();
     });
 
     it('shows a message when there are no links to display', async () => {
@@ -80,9 +79,9 @@ describe('UnreadScreen', () => {
         .get('/api/bookmarks?filter[read]=false&')
         .reply(200, jsonApiResponseBody([]));
 
-      const {findByText} = render(providers(<UnreadScreen />));
+      render(providers(<UnreadScreen />));
 
-      await findByText('No unread links.');
+      await screen.findByText('No unread links.');
     });
   });
 
@@ -92,11 +91,11 @@ describe('UnreadScreen', () => {
         .get('/api/bookmarks?filter[read]=false&')
         .reply(200, jsonApiResponseBody([bookmark]));
 
-      const {findByText, getByText} = render(providers(<UnreadScreen />));
+      render(providers(<UnreadScreen />));
 
-      await findByText(bookmark.attributes.title);
+      await screen.findByText(bookmark.attributes.title);
 
-      fireEvent.press(getByText(bookmark.attributes.title));
+      fireEvent.press(screen.getByText(bookmark.attributes.title));
 
       expect(Linking.openURL).toHaveBeenCalledWith(bookmark.attributes.url);
     });
@@ -106,11 +105,11 @@ describe('UnreadScreen', () => {
         .get('/api/bookmarks?filter[read]=false&')
         .reply(200, jsonApiResponseBody([bookmark]));
 
-      const {findByText, getByText} = render(providers(<UnreadScreen />));
+      render(providers(<UnreadScreen />));
 
-      await findByText(bookmark.attributes.title);
+      await screen.findByText(bookmark.attributes.title);
 
-      fireEvent.press(getByText('codingitwrong.com'));
+      fireEvent.press(screen.getByText('codingitwrong.com'));
 
       expect(Linking.openURL).toHaveBeenCalledWith(bookmark.attributes.url);
     });
@@ -129,12 +128,12 @@ describe('UnreadScreen', () => {
         .get('/api/bookmarks?filter[read]=false&')
         .reply(200, jsonApiResponseBody([bookmarkWithUrlSource]));
 
-      const {findByText, getByText} = render(providers(<UnreadScreen />));
+      render(providers(<UnreadScreen />));
 
       const sourceText = 'From mastodon.technology';
-      await findByText(sourceText);
+      await screen.findByText(sourceText);
 
-      fireEvent.press(getByText(sourceText));
+      fireEvent.press(screen.getByText(sourceText));
 
       expect(Linking.openURL).toHaveBeenCalledWith(source);
     });
@@ -149,10 +148,10 @@ describe('UnreadScreen', () => {
       const linkTo = jest.fn();
       useLinkTo.mockReturnValue(linkTo);
 
-      const {findByText, getByText} = render(providers(<UnreadScreen />));
+      render(providers(<UnreadScreen />));
 
-      await findByText(tagName);
-      fireEvent.press(getByText(tagName));
+      await screen.findByText(tagName);
+      fireEvent.press(screen.getByText(tagName));
 
       expect(linkTo).toHaveBeenCalledWith(`/tags/${tagName}`);
     });
@@ -167,15 +166,21 @@ describe('UnreadScreen', () => {
           .get('/api/bookmarks?filter[read]=false&')
           .reply(200, jsonApiResponseBody([bookmark]));
 
-        const {findByText, getByTestId} = render(providers(<UnreadScreen />));
+        render(providers(<UnreadScreen />));
 
-        await findByText('No unread links.');
+        await screen.findByText('No unread links.');
 
-        fireEvent(getByTestId('bookmarks-list'), 'refresh');
-        expect(getByTestId('bookmarks-list')).toHaveProp('refreshing', true);
+        fireEvent(screen.getByTestId('bookmarks-list'), 'refresh');
+        expect(screen.getByTestId('bookmarks-list')).toHaveProp(
+          'refreshing',
+          true,
+        );
 
-        await findByText(bookmark.attributes.title);
-        expect(getByTestId('bookmarks-list')).toHaveProp('refreshing', false);
+        await screen.findByText(bookmark.attributes.title);
+        expect(screen.getByTestId('bookmarks-list')).toHaveProp(
+          'refreshing',
+          false,
+        );
       });
 
       it('shows an error upon reload failure', async () => {
@@ -185,14 +190,17 @@ describe('UnreadScreen', () => {
           .get('/api/bookmarks?filter[read]=false&')
           .reply(500);
 
-        const {findByText, getByTestId} = render(providers(<UnreadScreen />));
+        render(providers(<UnreadScreen />));
 
-        await findByText('No unread links.');
+        await screen.findByText('No unread links.');
 
-        fireEvent(getByTestId('bookmarks-list'), 'refresh');
+        fireEvent(screen.getByTestId('bookmarks-list'), 'refresh');
 
-        await findByText('An error occurred while loading links.');
-        expect(getByTestId('bookmarks-list')).toHaveProp('refreshing', false);
+        await screen.findByText('An error occurred while loading links.');
+        expect(screen.getByTestId('bookmarks-list')).toHaveProp(
+          'refreshing',
+          false,
+        );
       });
     });
 
@@ -204,17 +212,15 @@ describe('UnreadScreen', () => {
           .get('/api/bookmarks?filter[read]=false&')
           .reply(200, jsonApiResponseBody([bookmark]));
 
-        const {findByText, getByText, queryByLabelText} = render(
-          providers(<UnreadScreen />),
-        );
+        render(providers(<UnreadScreen />));
 
-        await findByText('No unread links.');
+        await screen.findByText('No unread links.');
 
-        fireEvent.press(getByText('Reload'));
-        expect(queryByLabelText('Loading')).not.toBeNull();
+        fireEvent.press(screen.getByText('Reload'));
+        expect(screen.queryByLabelText('Loading')).not.toBeNull();
 
-        await findByText(bookmark.attributes.title);
-        expect(queryByLabelText('Loading')).toBeNull();
+        await screen.findByText(bookmark.attributes.title);
+        expect(screen.queryByLabelText('Loading')).toBeNull();
       });
 
       it('shows an error upon reload failure', async () => {
@@ -224,16 +230,14 @@ describe('UnreadScreen', () => {
           .get('/api/bookmarks?filter[read]=false&')
           .reply(500);
 
-        const {findByText, getByText, queryByLabelText} = render(
-          providers(<UnreadScreen />),
-        );
+        render(providers(<UnreadScreen />));
 
-        await findByText('No unread links.');
+        await screen.findByText('No unread links.');
 
-        fireEvent.press(getByText('Reload'));
+        fireEvent.press(screen.getByText('Reload'));
 
-        await findByText('An error occurred while loading links.');
-        expect(queryByLabelText('Loading')).toBeNull();
+        await screen.findByText('An error occurred while loading links.');
+        expect(screen.queryByLabelText('Loading')).toBeNull();
       });
     });
   });
@@ -261,18 +265,16 @@ describe('UnreadScreen', () => {
         .get('/api/bookmarks?filter[read]=false&')
         .reply(200, jsonApiResponseBody([bookmark, newBookmark]));
 
-      const {findByText, getByLabelText, queryByLabelText} = render(
-        providers(<UnreadScreen />),
-      );
+      render(providers(<UnreadScreen />));
 
-      const newField = getByLabelText('URL to Add');
+      const newField = screen.getByLabelText('URL to Add');
       fireEvent.changeText(newField, newBookmark.attributes.url);
       fireEvent(newField, 'submitEditing');
-      expect(queryByLabelText('Adding URL')).not.toBeNull();
+      expect(screen.queryByLabelText('Adding URL')).not.toBeNull();
 
-      await findByText(newBookmark.attributes.title);
+      await screen.findByText(newBookmark.attributes.title);
       expect(newField).toHaveProp('value', '');
-      expect(queryByLabelText('Adding URL')).toBeNull();
+      expect(screen.queryByLabelText('Adding URL')).toBeNull();
 
       mockedServer.done();
     });
@@ -282,11 +284,11 @@ describe('UnreadScreen', () => {
         .get('/api/bookmarks?filter[read]=false&')
         .reply(200, jsonApiResponseBody([bookmark]));
 
-      const {getByLabelText, findByText} = render(providers(<UnreadScreen />));
+      render(providers(<UnreadScreen />));
 
-      await findByText(bookmark.attributes.title);
+      await screen.findByText(bookmark.attributes.title);
 
-      const newField = getByLabelText('URL to Add');
+      const newField = screen.getByLabelText('URL to Add');
       fireEvent(newField, 'submitEditing');
 
       mockedServer.done();
@@ -303,23 +305,24 @@ describe('UnreadScreen', () => {
         .get('/api/bookmarks?filter[read]=false&')
         .reply(200, jsonApiResponseBody([bookmark, newBookmark]));
 
-      const {findByText, getByLabelText, queryByLabelText, queryByText} =
-        render(providers(<UnreadScreen />));
+      render(providers(<UnreadScreen />));
 
-      const newField = getByLabelText('URL to Add');
+      const newField = screen.getByLabelText('URL to Add');
       fireEvent.changeText(newField, newBookmark.attributes.url);
       fireEvent(newField, 'submitEditing');
-      expect(queryByLabelText('Adding URL')).not.toBeNull();
+      expect(screen.queryByLabelText('Adding URL')).not.toBeNull();
 
-      await findByText('An error occurred while adding URL.');
+      await screen.findByText('An error occurred while adding URL.');
       expect(newField).toHaveProp('value', newBookmark.attributes.url);
-      expect(queryByLabelText('Adding URL')).toBeNull();
+      expect(screen.queryByLabelText('Adding URL')).toBeNull();
 
       fireEvent(newField, 'submitEditing');
 
-      expect(queryByText('An error occurred while adding URL.')).toBeNull();
+      expect(
+        screen.queryByText('An error occurred while adding URL.'),
+      ).toBeNull();
 
-      await findByText(newBookmark.attributes.title);
+      await screen.findByText(newBookmark.attributes.title);
 
       mockedServer.done();
     });
@@ -341,13 +344,13 @@ describe('UnreadScreen', () => {
         .get('/api/bookmarks?filter[read]=false&')
         .reply(200, jsonApiResponseBody([]));
 
-      const {findByText, getByText} = render(providers(<UnreadScreen />));
+      render(providers(<UnreadScreen />));
 
-      await findByText('Mark Read');
-      fireEvent.press(getByText('Mark Read'));
+      await screen.findByText('Mark Read');
+      fireEvent.press(screen.getByText('Mark Read'));
 
       await waitForElementToBeRemoved(() =>
-        getByText(bookmark.attributes.title),
+        screen.getByText(bookmark.attributes.title),
       );
 
       mockedServer.done();
@@ -364,23 +367,21 @@ describe('UnreadScreen', () => {
         .get('/api/bookmarks?filter[read]=false&')
         .reply(200, jsonApiResponseBody([]));
 
-      const {findByText, getByText, queryByText} = render(
-        providers(<UnreadScreen />),
-      );
+      render(providers(<UnreadScreen />));
 
-      await findByText('Mark Read');
-      fireEvent.press(getByText('Mark Read'));
+      await screen.findByText('Mark Read');
+      fireEvent.press(screen.getByText('Mark Read'));
 
-      await findByText('An error occurred while marking link read.');
+      await screen.findByText('An error occurred while marking link read.');
 
       // clear error
-      fireEvent.press(getByText('Mark Read'));
+      fireEvent.press(screen.getByText('Mark Read'));
 
       expect(
-        queryByText('An error occurred while marking link read.'),
+        screen.queryByText('An error occurred while marking link read.'),
       ).toBeNull();
       await waitForElementToBeRemoved(() =>
-        getByText(bookmark.attributes.title),
+        screen.getByText(bookmark.attributes.title),
       );
     });
   });
@@ -394,10 +395,10 @@ describe('UnreadScreen', () => {
       const navigation = {navigate: jest.fn()};
       useNavigation.mockReturnValue(navigation);
 
-      const {findByText, getByText} = render(providers(<UnreadScreen />));
+      render(providers(<UnreadScreen />));
 
-      await findByText('Edit');
-      fireEvent.press(getByText('Edit'));
+      await screen.findByText('Edit');
+      fireEvent.press(screen.getByText('Edit'));
 
       expect(navigation.navigate).toHaveBeenCalledWith('BookmarkDetailScreen', {
         id: bookmark.id,
@@ -415,13 +416,13 @@ describe('UnreadScreen', () => {
         .get('/api/bookmarks?filter[read]=false&')
         .reply(200, jsonApiResponseBody([]));
 
-      const {findByText, getByText} = render(providers(<UnreadScreen />));
+      render(providers(<UnreadScreen />));
 
-      await findByText('Delete');
-      fireEvent.press(getByText('Delete'));
+      await screen.findByText('Delete');
+      fireEvent.press(screen.getByText('Delete'));
 
       await waitForElementToBeRemoved(() =>
-        getByText(bookmark.attributes.title),
+        screen.getByText(bookmark.attributes.title),
       );
 
       mockedServer.done();
@@ -438,22 +439,22 @@ describe('UnreadScreen', () => {
         .get('/api/bookmarks?filter[read]=false&')
         .reply(200, jsonApiResponseBody([]));
 
-      const {findByText, getByText, queryByText} = render(
-        providers(<UnreadScreen />),
-      );
+      render(providers(<UnreadScreen />));
 
-      await findByText('Delete');
-      fireEvent.press(getByText('Delete'));
+      await screen.findByText('Delete');
+      fireEvent.press(screen.getByText('Delete'));
 
-      await findByText('An error occurred while deleting link.');
+      await screen.findByText('An error occurred while deleting link.');
 
       // clear error
-      await findByText('Delete');
-      fireEvent.press(getByText('Delete'));
+      await screen.findByText('Delete');
+      fireEvent.press(screen.getByText('Delete'));
 
-      expect(queryByText('An error occurred while deleting link.')).toBeNull();
+      expect(
+        screen.queryByText('An error occurred while deleting link.'),
+      ).toBeNull();
       await waitForElementToBeRemoved(() =>
-        getByText(bookmark.attributes.title),
+        screen.getByText(bookmark.attributes.title),
       );
     });
   });
