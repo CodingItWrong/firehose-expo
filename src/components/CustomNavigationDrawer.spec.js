@@ -1,4 +1,9 @@
-import {fireEvent, render, waitFor} from '@testing-library/react-native';
+import {
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from '@testing-library/react-native';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {useToken} from '../data/token';
 import CustomNavigationDrawer from './CustomNavigationDrawer';
@@ -30,16 +35,16 @@ describe('CustomNavigationDrawer', () => {
       routes: [route1, route2],
     };
     const navigation = {navigate: jest.fn()};
-    const {getByText, queryByText} = render(
+    render(
       <SafeAreaProvider initialMetrics={safeAreaMetrics}>
         <CustomNavigationDrawer state={state} navigation={navigation} />
       </SafeAreaProvider>,
     );
 
-    expect(queryByText(route1.name)).not.toBeNull();
-    expect(queryByText(route2.name)).not.toBeNull();
+    expect(screen.queryByText(route1.name)).not.toBeNull();
+    expect(screen.queryByText(route2.name)).not.toBeNull();
 
-    fireEvent.press(getByText(route1.name));
+    fireEvent.press(screen.getByText(route1.name));
     expect(navigation.navigate).toHaveBeenCalledWith(route1.name);
   });
 
@@ -48,13 +53,13 @@ describe('CustomNavigationDrawer', () => {
       useToken.mockReturnValue({isLoggedIn: false});
       const state = {routes: []};
 
-      const {queryByText} = render(
+      render(
         <SafeAreaProvider initialMetrics={safeAreaMetrics}>
           <CustomNavigationDrawer state={state} />
         </SafeAreaProvider>,
       );
 
-      expect(queryByText('Sign out')).toBeNull();
+      expect(screen.queryByText('Sign out')).toBeNull();
     });
 
     it('renders the sign out button when signed in', async () => {
@@ -63,13 +68,13 @@ describe('CustomNavigationDrawer', () => {
       const state = {routes: []};
       const navigation = {navigate: jest.fn()};
 
-      const {getByText} = render(
+      render(
         <SafeAreaProvider initialMetrics={safeAreaMetrics}>
           <CustomNavigationDrawer state={state} navigation={navigation} />
         </SafeAreaProvider>,
       );
 
-      fireEvent.press(getByText('Sign out'));
+      fireEvent.press(screen.getByText('Sign out'));
       expect(clearToken).toHaveBeenCalled();
       await waitFor(() =>
         expect(navigation.navigate).toHaveBeenCalledWith('Sign in'),
