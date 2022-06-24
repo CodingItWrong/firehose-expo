@@ -1,4 +1,4 @@
-import {fireEvent, render} from '@testing-library/react-native';
+import {fireEvent, render, screen} from '@testing-library/react-native';
 import {Button, Text} from 'react-native';
 import {deleteStringAsync, getStringAsync, setStringAsync} from '../storage';
 import {TokenProvider, useToken} from './token';
@@ -114,22 +114,21 @@ describe('token', () => {
     function setUp() {
       setStringAsync.mockResolvedValue();
 
-      const renderResult = render(
+      render(
         <TokenProvider skipLoading>
           <TestComponent />
         </TokenProvider>,
       );
-      fireEvent.press(renderResult.getByText('setToken'));
-      return renderResult;
+      fireEvent.press(screen.getByText('setToken'));
     }
 
     it('persists the token to state and storage', async () => {
-      const {findByText, getByText} = setUp();
+      setUp();
 
       expect(setStringAsync).toHaveBeenCalledWith(asyncStorageKey, fakeToken);
 
-      await findByText(`token: ${fakeToken}`);
-      getByText('isLoggedIn: true');
+      await screen.findByText(`token: ${fakeToken}`);
+      screen.getByText('isLoggedIn: true');
     });
   });
 
@@ -137,22 +136,21 @@ describe('token', () => {
     function setUp() {
       deleteStringAsync.mockResolvedValue();
 
-      const renderResult = render(
+      render(
         <TokenProvider skipLoading initialToken={fakeToken}>
           <TestComponent />
         </TokenProvider>,
       );
-      fireEvent.press(renderResult.getByText('clearToken'));
-      return renderResult;
+      fireEvent.press(screen.getByText('clearToken'));
     }
 
     it('clears the token from state and storage', async () => {
-      const {findByText, getByText} = setUp();
+      setUp();
 
       expect(deleteStringAsync).toHaveBeenCalledWith(asyncStorageKey);
 
-      await findByText('token: null');
-      getByText('isLoggedIn: false');
+      await screen.findByText('token: null');
+      screen.getByText('isLoggedIn: false');
     });
   });
 });
