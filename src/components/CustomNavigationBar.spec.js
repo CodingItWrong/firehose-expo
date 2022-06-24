@@ -1,4 +1,4 @@
-import {fireEvent, render} from '@testing-library/react-native';
+import {fireEvent, render, screen} from '@testing-library/react-native';
 import {large, medium, useBreakpoint} from '../breakpoints';
 import CustomNavigationBar from './CustomNavigationBar';
 
@@ -13,26 +13,24 @@ describe('CustomNavigationBar', () => {
   });
 
   it('renders the title', () => {
-    const {queryByText} = render(<CustomNavigationBar options={options} />);
-    expect(queryByText(title)).not.toBeNull();
+    render(<CustomNavigationBar options={options} />);
+    expect(screen.queryByText(title)).not.toBeNull();
   });
 
   describe('back button', () => {
     it('renders a working back button if there is a back prop', () => {
       const navigation = {goBack: jest.fn()};
-      const {getByLabelText} = render(
+      render(
         <CustomNavigationBar back options={options} navigation={navigation} />,
       );
 
-      fireEvent.press(getByLabelText('Back'));
+      fireEvent.press(screen.getByLabelText('Back'));
       expect(navigation.goBack).toHaveBeenCalledWith();
     });
 
     it('does not render the back button if there is no back prop', () => {
-      const {queryByLabelText} = render(
-        <CustomNavigationBar options={options} />,
-      );
-      expect(queryByLabelText('Back')).toBeNull();
+      render(<CustomNavigationBar options={options} />);
+      expect(screen.queryByLabelText('Back')).toBeNull();
     });
   });
 
@@ -41,22 +39,18 @@ describe('CustomNavigationBar', () => {
       useBreakpoint.mockReturnValue(large);
 
       const navigation = {toggleDrawer: jest.fn()};
-      const {queryByLabelText} = render(
-        <CustomNavigationBar options={options} navigation={navigation} />,
-      );
+      render(<CustomNavigationBar options={options} navigation={navigation} />);
 
-      expect(queryByLabelText('Menu')).toBeNull();
+      expect(screen.queryByLabelText('Menu')).toBeNull();
     });
 
     it('renders a working menu button on smaller screens', () => {
       useBreakpoint.mockReturnValue(medium);
 
       const navigation = {toggleDrawer: jest.fn()};
-      const {getByLabelText} = render(
-        <CustomNavigationBar options={options} navigation={navigation} />,
-      );
+      render(<CustomNavigationBar options={options} navigation={navigation} />);
 
-      fireEvent.press(getByLabelText('Menu'));
+      fireEvent.press(screen.getByLabelText('Menu'));
       expect(navigation.toggleDrawer).toHaveBeenCalledWith();
     });
   });
