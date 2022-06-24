@@ -1,5 +1,5 @@
 import {useNavigation} from '@react-navigation/native';
-import {render} from '@testing-library/react-native';
+import {render, screen} from '@testing-library/react-native';
 import nock from 'nock';
 import {mockUseFocusEffect, providers} from '../../testUtils';
 import TaggedLinksScreen from './TaggedLinksScreen';
@@ -45,11 +45,9 @@ describe('TaggedLinksScreen', () => {
         .get(`/api/tags?filter[name]=${tagName}&include=bookmarks`)
         .reply(200, {included: [bookmark]});
 
-      const {findByText} = render(
-        providers(<TaggedLinksScreen route={route} />),
-      );
+      render(providers(<TaggedLinksScreen route={route} />));
 
-      await findByText(bookmark.attributes.title);
+      await screen.findByText(bookmark.attributes.title);
 
       mockedServer.done();
     });

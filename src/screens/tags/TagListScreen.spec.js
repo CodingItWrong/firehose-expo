@@ -1,5 +1,5 @@
 import {useNavigation} from '@react-navigation/native';
-import {fireEvent, render} from '@testing-library/react-native';
+import {fireEvent, render, screen} from '@testing-library/react-native';
 import nock from 'nock';
 import {
   jsonApiResponseBody,
@@ -26,9 +26,9 @@ describe('TagListScreen', () => {
         .get('/api/tags?')
         .reply(200, jsonApiResponseBody([tag]));
 
-      const {findByText} = render(providers(<TagListScreen />));
+      render(providers(<TagListScreen />));
 
-      await findByText(tag.attributes.name);
+      await screen.findByText(tag.attributes.name);
 
       mockedServer.done();
     });
@@ -36,12 +36,10 @@ describe('TagListScreen', () => {
     it('shows an error message when loading tags fails', async () => {
       nock('http://localhost:3000').get('/api/tags?').reply(500);
 
-      const {findByText, queryByLabelText} = render(
-        providers(<TagListScreen />),
-      );
+      render(providers(<TagListScreen />));
 
-      await findByText('An error occurred while loading tags.');
-      expect(queryByLabelText('Loading')).toBeNull();
+      await screen.findByText('An error occurred while loading tags.');
+      expect(screen.queryByLabelText('Loading')).toBeNull();
     });
 
     it('shows a message when there are no tags to display', async () => {
@@ -49,9 +47,9 @@ describe('TagListScreen', () => {
         .get('/api/tags?')
         .reply(200, jsonApiResponseBody([]));
 
-      const {findByText} = render(providers(<TagListScreen />));
+      render(providers(<TagListScreen />));
 
-      await findByText('No tags.');
+      await screen.findByText('No tags.');
     });
   });
 
@@ -64,11 +62,10 @@ describe('TagListScreen', () => {
       const navigation = {navigate: jest.fn()};
       useNavigation.mockReturnValue(navigation);
 
-      const {findByText, getByText} = render(providers(<TagListScreen />));
+      render(providers(<TagListScreen />));
 
       const tagName = tag.attributes.name;
-      await findByText(tagName);
-      fireEvent.press(getByText(tagName));
+      fireEvent.press(await screen.findByText(tagName));
 
       expect(navigation.navigate).toHaveBeenCalledWith('TaggedLinksScreen', {
         tag: tagName,

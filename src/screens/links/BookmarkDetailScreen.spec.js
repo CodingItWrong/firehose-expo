@@ -1,5 +1,10 @@
 import {useNavigation} from '@react-navigation/native';
-import {fireEvent, render, waitFor} from '@testing-library/react-native';
+import {
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from '@testing-library/react-native';
 import nock from 'nock';
 import {Platform} from 'react-native';
 import {jsonApiResponseBody, providers} from '../../testUtils';
@@ -63,25 +68,23 @@ describe('BookmarkDetailScreen', () => {
 
     const route = {params: {id: bookmark.id}};
 
-    const {findByLabelText, getByLabelText, getByText} = render(
-      providers(<BookmarkDetailScreen route={route} />),
-    );
+    render(providers(<BookmarkDetailScreen route={route} />));
 
     // displays current values from server
-    await findByLabelText('URL');
-    expect(getByLabelText('URL')).toHaveProp('value', url);
-    expect(getByLabelText('Title')).toHaveProp('value', title);
-    expect(getByLabelText('Tags')).toHaveProp('value', tagList);
-    expect(getByLabelText('Source')).toHaveProp('value', source);
-    expect(getByLabelText('Comment')).toHaveProp('value', comment);
+    await screen.findByLabelText('URL');
+    expect(screen.getByLabelText('URL')).toHaveProp('value', url);
+    expect(screen.getByLabelText('Title')).toHaveProp('value', title);
+    expect(screen.getByLabelText('Tags')).toHaveProp('value', tagList);
+    expect(screen.getByLabelText('Source')).toHaveProp('value', source);
+    expect(screen.getByLabelText('Comment')).toHaveProp('value', comment);
 
     // update values
-    fireEvent.changeText(getByLabelText('URL'), newUrl);
-    fireEvent.changeText(getByLabelText('Title'), newTitle);
-    fireEvent.changeText(getByLabelText('Tags'), newTagList);
-    fireEvent.changeText(getByLabelText('Source'), newSource);
-    fireEvent.changeText(getByLabelText('Comment'), newComment);
-    fireEvent.press(getByText('Save'));
+    fireEvent.changeText(screen.getByLabelText('URL'), newUrl);
+    fireEvent.changeText(screen.getByLabelText('Title'), newTitle);
+    fireEvent.changeText(screen.getByLabelText('Tags'), newTagList);
+    fireEvent.changeText(screen.getByLabelText('Source'), newSource);
+    fireEvent.changeText(screen.getByLabelText('Comment'), newComment);
+    fireEvent.press(screen.getByText('Save'));
 
     // confirm navigate back to parent screen
     await waitFor(() => expect(navigation.goBack).toHaveBeenCalledWith());
@@ -100,18 +103,16 @@ describe('BookmarkDetailScreen', () => {
 
     const route = {params: {id: bookmark.id}};
 
-    const {findByLabelText, getByLabelText, getByText} = render(
-      providers(<BookmarkDetailScreen route={route} />),
-    );
+    render(providers(<BookmarkDetailScreen route={route} />));
 
-    await findByLabelText('URL');
-    fireEvent.changeText(getByLabelText('URL'), newUrl);
-    fireEvent.changeText(getByLabelText('Title'), newTitle);
-    fireEvent.changeText(getByLabelText('Tags'), newTagList);
-    fireEvent.changeText(getByLabelText('Source'), newSource);
-    fireEvent.changeText(getByLabelText('Comment'), newComment);
+    await screen.findByLabelText('URL');
+    fireEvent.changeText(screen.getByLabelText('URL'), newUrl);
+    fireEvent.changeText(screen.getByLabelText('Title'), newTitle);
+    fireEvent.changeText(screen.getByLabelText('Tags'), newTagList);
+    fireEvent.changeText(screen.getByLabelText('Source'), newSource);
+    fireEvent.changeText(screen.getByLabelText('Comment'), newComment);
 
-    fireEvent.press(getByText('Cancel'));
+    fireEvent.press(screen.getByText('Cancel'));
 
     // confirm navigate back to parent screen
     expect(navigation.goBack).toHaveBeenCalledWith();
