@@ -1,4 +1,9 @@
-import {fireEvent, render, waitFor} from '@testing-library/react-native';
+import {
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from '@testing-library/react-native';
 import nock from 'nock';
 import {useToken} from '../data/token';
 import SignInScreen from './SignInScreen';
@@ -22,11 +27,11 @@ describe('SignInScreen', () => {
     const setToken = jest.fn();
     useToken.mockReturnValue({setToken});
 
-    const {getByLabelText, getByText} = render(<SignInScreen />);
+    render(<SignInScreen />);
 
-    fireEvent.changeText(getByLabelText('Email'), email);
-    fireEvent.changeText(getByLabelText('Password'), password);
-    fireEvent.press(getByText('Sign in'));
+    fireEvent.changeText(screen.getByLabelText('Email'), email);
+    fireEvent.changeText(screen.getByLabelText('Password'), password);
+    fireEvent.press(screen.getByText('Sign in'));
 
     await waitFor(() => expect(setToken).toHaveBeenCalledWith(testToken));
   });
@@ -44,13 +49,13 @@ describe('SignInScreen', () => {
     const setToken = jest.fn();
     useToken.mockReturnValue({setToken});
 
-    const {findByText, getByLabelText, getByText} = render(<SignInScreen />);
+    render(<SignInScreen />);
 
-    fireEvent.changeText(getByLabelText('Email'), email);
-    fireEvent.changeText(getByLabelText('Password'), password);
-    fireEvent.press(getByText('Sign in'));
+    fireEvent.changeText(screen.getByLabelText('Email'), email);
+    fireEvent.changeText(screen.getByLabelText('Password'), password);
+    fireEvent.press(screen.getByText('Sign in'));
 
-    await findByText(errorMessage);
+    await screen.findByText(errorMessage);
     expect(setToken).not.toHaveBeenCalled();
   });
 
@@ -66,13 +71,15 @@ describe('SignInScreen', () => {
     const setToken = jest.fn();
     useToken.mockReturnValue({setToken});
 
-    const {findByText, getByLabelText, getByText} = render(<SignInScreen />);
+    render(<SignInScreen />);
 
-    fireEvent.changeText(getByLabelText('Email'), email);
-    fireEvent.changeText(getByLabelText('Password'), password);
-    fireEvent.press(getByText('Sign in'));
+    fireEvent.changeText(screen.getByLabelText('Email'), email);
+    fireEvent.changeText(screen.getByLabelText('Password'), password);
+    fireEvent.press(screen.getByText('Sign in'));
 
-    await findByText('An error occurred while logging in. Please try again.');
+    await screen.findByText(
+      'An error occurred while logging in. Please try again.',
+    );
     expect(setToken).not.toHaveBeenCalled();
   });
 });
