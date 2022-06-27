@@ -2163,10 +2163,10 @@
     ramda "^0.26.1"
     redent "^2.0.0"
 
-"@testing-library/react-native@^10.1.0":
-  version "10.1.0"
-  resolved "https://registry.yarnpkg.com/@testing-library/react-native/-/react-native-10.1.0.tgz#dfe8f03c1a100590521c357a9a360fd59061c89c"
-  integrity sha512-gsZONBTD7m4224HXZdmsZlN9Hike/BLxTUds5SX8UNpmbG/Ly+XPmds5buaqglitY4pT2/yBwLSLTa5+czcpTg==
+"@testing-library/react-native@^10.1.1":
+  version "10.1.1"
+  resolved "https://registry.yarnpkg.com/@testing-library/react-native/-/react-native-10.1.1.tgz#f5d1c634af797c890023713e69374fda010ca540"
+  integrity sha512-tflpI2MTOEe0Gmj0FCTYOQD8OwBYq/YpAre0QFe2IMCcMFr55h/5zvCdwB3+uUsr6Nqve+hs6poVrD3t2wwoLQ==
   dependencies:
     pretty-format "^27.0.0"
 
