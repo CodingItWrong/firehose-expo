@@ -19,17 +19,17 @@ export default function App() {
   const theme = useTheme();
   // Token components must be outermost to prevent flash of white screen
   return (
-    <QueryClientProvider client={queryClient}>
-      <TokenProvider>
-        <TokenLoadBuffer>
+    <TokenProvider>
+      <TokenLoadBuffer>
+        <QueryClientProvider client={queryClient}>
           <PaperProvider theme={theme}>
             <SafeAreaProvider>
               <StatusBar style="light" />
               <Navigation />
             </SafeAreaProvider>
           </PaperProvider>
-        </TokenLoadBuffer>
-      </TokenProvider>
-    </QueryClientProvider>
+        </QueryClientProvider>
+      </TokenLoadBuffer>
+    </TokenProvider>
   );
 }
