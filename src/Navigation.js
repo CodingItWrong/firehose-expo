@@ -22,25 +22,28 @@ const linking = {
         },
       },
       Unread: {
+        path: '/links/unread',
         initialRouteName: 'UnreadScreen',
         screens: {
-          UnreadScreen: '/links/unread',
-          BookmarkDetailScreen: '/links/unread/:id',
+          UnreadScreen: '',
+          BookmarkDetailScreen: ':id',
         },
       },
       Read: {
+        path: '/links/read',
         initialRouteName: 'ReadScreen',
         screens: {
-          ReadScreen: '/links/read',
-          BookmarkDetailScreen: '/links/read/:id',
+          ReadScreen: '',
+          BookmarkDetailScreen: ':id',
         },
       },
       Tags: {
+        path: '/tags',
         initialRouteName: 'TagListScreen',
         screens: {
-          TagListScreen: '/tags',
-          TaggedLinksScreen: '/tags/:tag',
-          BookmarkDetailScreen: '/tags/:tag/:id',
+          TagListScreen: '',
+          TaggedLinksScreen: ':tag',
+          BookmarkDetailScreen: ':tag/:id',
         },
       },
     },
