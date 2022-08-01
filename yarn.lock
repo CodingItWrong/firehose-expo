@@ -2091,6 +2091,13 @@
   optionalDependencies:
     node-notifier "^8.0.0"
 
+"@jest/schemas@^28.1.3":
+  version "28.1.3"
+  resolved "https://registry.yarnpkg.com/@jest/schemas/-/schemas-28.1.3.tgz#ad8b86a66f11f33619e3d7e1dcddd7f2d40ff905"
+  integrity sha512-/l/VWsdt/aBXgjshLWOFyFt3IVdYypu5y2Wn2rOO1un6nkqIn8SLXzgIMYXFyYsRWDyF5EthmKJMIdJvk08grg==
+  dependencies:
+    "@sinclair/typebox" "^0.24.1"
+
 "@jest/source-map@^26.6.2":
   version "26.6.2"
   resolved "https://registry.yarnpkg.com/@jest/source-map/-/source-map-26.6.2.tgz#29af5e1e2e324cafccc936f218309f54ab69d535"
@@ -2548,6 +2555,11 @@
   resolved "https://registry.yarnpkg.com/@sideway/pinpoint/-/pinpoint-2.0.0.tgz#cff8ffadc372ad29fd3f78277aeb29e632cc70df"
   integrity sha512-RNiOoTPkptFtSVzQevY/yWtZwf/RxyVnPy/OcA9HBM3MlGDnBEYL5B41H0MTn0Uec8Hi+2qUtTfG2WWZBmMejQ==
 
+"@sinclair/typebox@^0.24.1":
+  version "0.24.22"
+  resolved "https://registry.yarnpkg.com/@sinclair/typebox/-/typebox-0.24.22.tgz#0da18e6e75701d6609c7c68fe18002bb1f47345f"
+  integrity sha512-JsBe3cOFpNZ6yjBYnXKhcENWy5qZE3PQZwExQ5ksA/h8qp4bwwxFmy07A6bC2R6qv6+RF3SfrbQTskTwYNTXUQ==
+
 "@sinonjs/commons@^1.7.0":
   version "1.8.3"
   resolved "https://registry.yarnpkg.com/@sinonjs/commons/-/commons-1.8.3.tgz#3802ddd21a50a949b6721ddd72da36e67e7f1b2d"
@@ -2574,12 +2586,12 @@
     ramda "^0.26.1"
     redent "^2.0.0"
 
-"@testing-library/react-native@^10.1.1":
-  version "10.1.1"
-  resolved "https://registry.yarnpkg.com/@testing-library/react-native/-/react-native-10.1.1.tgz#f5d1c634af797c890023713e69374fda010ca540"
-  integrity sha512-tflpI2MTOEe0Gmj0FCTYOQD8OwBYq/YpAre0QFe2IMCcMFr55h/5zvCdwB3+uUsr6Nqve+hs6poVrD3t2wwoLQ==
+"@testing-library/react-native@^11.0.0":
+  version "11.0.0"
+  resolved "https://registry.yarnpkg.com/@testing-library/react-native/-/react-native-11.0.0.tgz#604cd14a42331ce01f2b3695aeb9abf73940183b"
+  integrity sha512-2WZF8P8YYXO5Ka1yzj3TZUg4x6noKU5RuCpx4oAhKBkxkVbrRl1pMCvRIozdTPSiru4rNBmAi074ZJjm2OED5g==
   dependencies:
-    pretty-format "^27.0.0"
+    pretty-format "^28.1.3"
 
 "@tootallnate/once@1":
   version "1.1.2"
@@ -11115,7 +11127,7 @@ pretty-format@^26.5.2, pretty-format@^26.6.2:
     ansi-styles "^4.0.0"
     react-is "^17.0.1"
 
-pretty-format@^27.0.0, pretty-format@^27.3.1, pretty-format@^27.5.1:
+pretty-format@^27.3.1, pretty-format@^27.5.1:
   version "27.5.1"
   resolved "https://registry.yarnpkg.com/pretty-format/-/pretty-format-27.5.1.tgz#2181879fdea51a7a5851fb39d920faa63f01d88e"
   integrity sha512-Qb1gy5OrP5+zDf2Bvnzdl3jsTf1qXVMazbvCoKhtKqVs4/YK4ozX4gKQJJVyNe+cajNPn0KoC0MC3FUmaHWEmQ==
@@ -11123,6 +11135,16 @@ pretty-format@^27.0.0, pretty-format@^27.3.1, pretty-format@^27.5.1:
     ansi-regex "^5.0.1"
     ansi-styles "^5.0.0"
     react-is "^17.0.1"
+
+pretty-format@^28.1.3:
+  version "28.1.3"
+  resolved "https://registry.yarnpkg.com/pretty-format/-/pretty-format-28.1.3.tgz#c9fba8cedf99ce50963a11b27d982a9ae90970d5"
+  integrity sha512-8gFb/To0OmxHR9+ZTb14Df2vNxdGCX8g1xWGUTqUw5TiZvcQf5sHKObd5UcPyLLyowNwDAMTF3XWOG1B6mxl1Q==
+  dependencies:
+    "@jest/schemas" "^28.1.3"
+    ansi-regex "^5.0.1"
+    ansi-styles "^5.0.0"
+    react-is "^18.0.0"
 
 process-nextick-args@~2.0.0:
   version "2.0.1"
@@ -11492,10 +11514,10 @@ react-native-keyboard-aware-scroll-view@^0.9.5:
     prop-types "^15.6.2"
     react-native-iphone-x-helper "^1.0.3"
 
-react-native-paper@^4.12.3:
-  version "4.12.3"
-  resolved "https://registry.yarnpkg.com/react-native-paper/-/react-native-paper-4.12.3.tgz#018df2718bb33ed3dd153fdfaaccf726cbb43383"
-  integrity sha512-Rdkm9ulvAo3vGb4sQo4lrASgdYuOGZh2CbcZc5Lp9KwmGf0yHewesUqvIPWYiA1JvzEzimdtVf9w8cpa7TaIZQ==
+react-native-paper@^4.12.4:
+  version "4.12.4"
+  resolved "https://registry.yarnpkg.com/react-native-paper/-/react-native-paper-4.12.4.tgz#c04ce40d225dc267b7ee32be705dd553f44e0c0c"
+  integrity sha512-NMfLSIN0Ql/KCTSimhgzbEOgz371dqDAgChnp2VE4H7n1B0Pwy0bzPKmY/T8trVvEdmJRXrbXAusaFq8elDXNg==
   dependencies:
     "@callstack/react-theme-provider" "^3.0.7"
     color "^3.1.2"
