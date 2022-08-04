@@ -1,7 +1,7 @@
 import {useFocusEffect} from '@react-navigation/native';
+import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
 import {Provider as PaperProvider} from 'react-native-paper';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
-import {QueryClient, QueryClientProvider} from 'react-query';
 import {TokenProvider} from './data/token';
 
 export function jsonApiResponseBody(records, meta = null) {
@@ -48,6 +48,11 @@ export function providers(children) {
         retry: false,
         cacheTime: Infinity,
       },
+    },
+    logger: {
+      log: () => {},
+      warn: () => {},
+      error: () => {},
     },
   });
   return (

@@ -3,8 +3,8 @@ import {
   useLinkTo,
   useNavigation,
 } from '@react-navigation/native';
+import {useQuery, useQueryClient} from '@tanstack/react-query';
 import {useCallback, useEffect, useRef, useState} from 'react';
-import {useQuery, useQueryClient} from 'react-query';
 import {useBookmarks} from '../../data/bookmarks';
 import CenterColumn from '../CenterColumn';
 import PaginationControls from '../PaginationControls';
