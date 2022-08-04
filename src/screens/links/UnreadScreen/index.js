@@ -12,7 +12,7 @@ export default function UnreadScreen() {
         .then(response => response.data),
     [bookmarkClient],
   );
-  const queryKey = 'unread-links';
+  const queryKey = ['unread-links'];
 
   return <BookmarkList query={query} queryKey={queryKey} showAddForm />;
 }

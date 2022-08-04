@@ -1,9 +1,9 @@
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
+import {useQuery, useQueryClient} from '@tanstack/react-query';
 import sortBy from 'lodash/sortBy';
 import {useCallback} from 'react';
 import {ScrollView, StyleSheet, View} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {useQuery, useQueryClient} from 'react-query';
 import CenterColumn from '../../../components/CenterColumn';
 import ErrorMessage from '../../../components/ErrorMessage';
 import NoRecordsMessage from '../../../components/NoRecordsMessage';
@@ -18,7 +18,7 @@ export default function TagListScreen() {
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
   const tagClient = useTags();
-  const tagResult = useQuery(TAGS_QUERY, () => tagClient.all());
+  const tagResult = useQuery([TAGS_QUERY], () => tagClient.all());
   const queryClient = useQueryClient();
 
   const sortedTags = sortBy(tagResult?.data?.data, 'attributes.name');
