@@ -140,7 +140,7 @@ export default function BookmarkList({
           <NewBookmarkForm isCreating={isCreating} onCreate={addBookmark} />
         )}
         {showSearchForm && <SearchForm onSubmit={onSearch} />}
-        {paginate && (
+        {paginate && bookmarksResult.data && (
           <PaginationControls
             pageNumber={pageNumber}
             maxPageNumber={maxPageNumber}
