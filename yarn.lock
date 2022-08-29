@@ -2571,17 +2571,17 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
-"@tanstack/query-core@^4.0.0-beta.1":
-  version "4.0.10"
-  resolved "https://registry.yarnpkg.com/@tanstack/query-core/-/query-core-4.0.10.tgz#cae6f818006616dc72c95c863592f5f68b47548a"
-  integrity sha512-9LsABpZXkWZHi4P1ozRETEDXQocLAxVzQaIhganxbNuz/uA3PsCAJxJTiQrknG5htLMzOF5MqM9G10e6DCxV1A==
+"@tanstack/query-core@4.2.3":
+  version "4.2.3"
+  resolved "https://registry.yarnpkg.com/@tanstack/query-core/-/query-core-4.2.3.tgz#52d75430c9662cc85c160761c1421de483c7791f"
+  integrity sha512-zdt5lYWs1dZaA3IxJbCgtAfHZJScRZONpiLL7YkeOkrme5MfjQqTpjq7LYbzpyuwPOh2Jx68le0PLl57JFv5hQ==
 
-"@tanstack/react-query@^4.2.1":
-  version "4.2.1"
-  resolved "https://registry.yarnpkg.com/@tanstack/react-query/-/react-query-4.2.1.tgz#1f00f03573b35a353e62fa64f904bbb0286a1808"
-  integrity sha512-w02oTOYpoxoBzD/onAGRQNeLAvggLn7WZjS811cT05WAE/4Q3br0PTp388M7tnmyYGbgOOhFq0MkhH0wIfAKqA==
+"@tanstack/react-query@^4.2.3":
+  version "4.2.3"
+  resolved "https://registry.yarnpkg.com/@tanstack/react-query/-/react-query-4.2.3.tgz#782fd0f84553ba6219f1137a12ea28ab8cd3a3f3"
+  integrity sha512-JLaMOxoJTkiAu7QpevRCt2uI/0vd3E8K/rSlCuRgWlcW5DeJDFpDS5kfzmLO5MOcD97fgsJRrDbxDORxR1FdJA==
   dependencies:
-    "@tanstack/query-core" "^4.0.0-beta.1"
+    "@tanstack/query-core" "4.2.3"
     "@types/use-sync-external-store" "^0.0.3"
     use-sync-external-store "^1.2.0"
 
@@ -11521,10 +11521,10 @@ react-native-screens@~3.15.0:
     react-freeze "^1.0.0"
     warn-once "^0.1.0"
 
-react-native-style-queries@^0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/react-native-style-queries/-/react-native-style-queries-0.1.0.tgz#76298272e08e40eb908c7b1f1270ac698859996e"
-  integrity sha512-uRfckLAQoYs+lde7moVzUmULyzMKFfAY+Njul5qd+aTt15LbwxHpwj/8QeBUCRSqIXTelnO/RYnKYisY+lyFzQ==
+react-native-style-queries@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/react-native-style-queries/-/react-native-style-queries-0.1.1.tgz#16f89ef0738192a805814a93e56dcda007f925bc"
+  integrity sha512-DMFLs9NGSrE4JkBG0glRNsybeQJWrkk3T9gSOZBJROwHrKCb0WxBXjdgIf8jEyWzCLJkrDWtuzw9Q4EKBjTX3Q==
 
 react-native-web@~0.18.7:
   version "0.18.7"
