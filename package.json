@@ -26,7 +26,7 @@
     "expo": "^46.0.9",
     "expo-linking": "~3.2.2",
     "expo-secure-store": "~11.3.0",
-    "expo-splash-screen": "~0.16.1",
+    "expo-splash-screen": "~0.16.2",
     "expo-status-bar": "~1.4.0",
     "lodash": "^4.17.21",
     "react": "18.0.0",
