@@ -86,27 +86,33 @@ export default function BookmarkRow({
       </Card.Content>
       <Card.Actions>
         {bookmark.attributes.read ? (
-          <Button style={styles.button} mode="outlined" onPress={onMarkUnread}>
+          <ButtonWithSpacing onPress={onMarkUnread}>
             Mark Unread
-          </Button>
+          </ButtonWithSpacing>
         ) : (
-          <Button
-            style={styles.button}
-            mode="outlined"
-            onPress={onMarkRead}
-            testID="mark-read-button"
-          >
+          <ButtonWithSpacing onPress={onMarkRead} testID="mark-read-button">
             Mark Read
-          </Button>
+          </ButtonWithSpacing>
         )}
-        <Button style={styles.button} mode="outlined" onPress={onEdit}>
-          Edit
-        </Button>
-        <Button style={styles.button} mode="contained" onPress={onDelete}>
+        <ButtonWithSpacing onPress={onEdit}>Edit</ButtonWithSpacing>
+        <ButtonWithSpacing mode="contained" onPress={onDelete}>
           Delete
-        </Button>
+        </ButtonWithSpacing>
       </Card.Actions>
     </Card>
+  );
+}
+
+function ButtonWithSpacing({children, ...props}) {
+  const propsWithDefaults = {
+    ...props,
+    mode: props.mode || 'outlined', // dunno why it defaults to false
+  };
+
+  return (
+    <View style={styles.button}>
+      <Button {...propsWithDefaults}>{children}</Button>
+    </View>
   );
 }
 
