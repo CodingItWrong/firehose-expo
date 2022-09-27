@@ -418,8 +418,7 @@ describe('UnreadScreen', () => {
 
       render(providers(<UnreadScreen />));
 
-      await screen.findByText('Delete');
-      fireEvent.press(screen.getByText('Delete'));
+      fireEvent.press(await screen.findByText('Delete'));
 
       await waitForElementToBeRemoved(() =>
         screen.getByText(bookmark.attributes.title),
