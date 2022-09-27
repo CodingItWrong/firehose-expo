@@ -84,10 +84,12 @@ export default function BookmarkRow({
             </Paragraph>
           </Dialog.Content>
           <Dialog.Actions>
-            <Button onPress={() => setIsDeleteDialogVisible(false)}>
+            <ButtonWithSpacing onPress={() => setIsDeleteDialogVisible(false)}>
               Cancel
-            </Button>
-            <Button onPress={onDelete}>Yes, Delete</Button>
+            </ButtonWithSpacing>
+            <ButtonWithSpacing mode="contained" onPress={onDelete}>
+              Yes, Delete
+            </ButtonWithSpacing>
           </Dialog.Actions>
         </Dialog>
       </Portal>
