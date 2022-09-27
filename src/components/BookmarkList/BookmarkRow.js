@@ -1,6 +1,15 @@
 import * as Linking from 'expo-linking';
+import {useState} from 'react';
 import {Platform, Pressable, Share, StyleSheet, View} from 'react-native';
-import {Button, Card, Text, Title} from 'react-native-paper';
+import {
+  Button,
+  Card,
+  Dialog,
+  Paragraph,
+  Portal,
+  Text,
+  Title,
+} from 'react-native-paper';
 import domainForUrl from '../../utils/domainForUrl';
 import Tag from '../Tag';
 
@@ -15,6 +24,8 @@ export default function BookmarkRow({
   onMarkUnread,
   onDelete,
 }) {
+  const [isDeleteDialogVisible, setIsDeleteDialogVisible] = useState(false);
+
   const {title, url, source, comment} = bookmark.attributes;
 
   const tagList = bookmark.attributes['tag-list'];
@@ -64,6 +75,22 @@ export default function BookmarkRow({
 
   return (
     <Card style={style}>
+      <Portal>
+        <Dialog visible={isDeleteDialogVisible}>
+          <Dialog.Title>Are you sure?</Dialog.Title>
+          <Dialog.Content>
+            <Paragraph>
+              Are you sure you want to delete the bookmark "{title}"?
+            </Paragraph>
+          </Dialog.Content>
+          <Dialog.Actions>
+            <Button onPress={() => setIsDeleteDialogVisible(false)}>
+              Cancel
+            </Button>
+            <Button onPress={onDelete}>Yes, Delete</Button>
+          </Dialog.Actions>
+        </Dialog>
+      </Portal>
       <Card.Content>
         {renderTitle()}
         {comment ? <Text style={styles.comment}>{comment}</Text> : null}
@@ -95,7 +122,10 @@ export default function BookmarkRow({
           </ButtonWithSpacing>
         )}
         <ButtonWithSpacing onPress={onEdit}>Edit</ButtonWithSpacing>
-        <ButtonWithSpacing mode="contained" onPress={onDelete}>
+        <ButtonWithSpacing
+          mode="contained"
+          onPress={() => setIsDeleteDialogVisible(true)}
+        >
           Delete
         </ButtonWithSpacing>
       </Card.Actions>
