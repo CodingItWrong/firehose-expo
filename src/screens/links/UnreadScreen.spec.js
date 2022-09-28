@@ -418,8 +418,8 @@ describe('UnreadScreen', () => {
 
       render(providers(<UnreadScreen />));
 
-      await screen.findByText('Delete');
-      fireEvent.press(screen.getByText('Delete'));
+      fireEvent.press(await screen.findByText('Delete'));
+      fireEvent.press(screen.getByText('Yes, Delete'));
 
       await waitForElementToBeRemoved(() =>
         screen.getByText(bookmark.attributes.title),
@@ -441,14 +441,14 @@ describe('UnreadScreen', () => {
 
       render(providers(<UnreadScreen />));
 
-      await screen.findByText('Delete');
-      fireEvent.press(screen.getByText('Delete'));
+      fireEvent.press(await screen.findByText('Delete'));
+      fireEvent.press(screen.getByText('Yes, Delete'));
 
       await screen.findByText('An error occurred while deleting link.');
 
       // clear error
-      await screen.findByText('Delete');
-      fireEvent.press(screen.getByText('Delete'));
+      fireEvent.press(await screen.findByText('Delete'));
+      fireEvent.press(screen.getByText('Yes, Delete'));
 
       expect(
         screen.queryByText('An error occurred while deleting link.'),
