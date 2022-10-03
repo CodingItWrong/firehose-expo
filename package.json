@@ -21,7 +21,7 @@
     "@react-navigation/drawer": "^6.5.0",
     "@react-navigation/native": "^6.0.13",
     "@react-navigation/native-stack": "^6.9.0",
-    "@tanstack/react-query": "^4.6.0",
+    "@tanstack/react-query": "^4.9.0",
     "axios": "^0.27.2",
     "expo": "^46.0.10",
     "expo-linking": "~3.2.2",
