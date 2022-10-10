@@ -22,7 +22,7 @@
     "@react-navigation/native": "^6.0.13",
     "@react-navigation/native-stack": "^6.9.0",
     "@tanstack/react-query": "^4.10.3",
-    "axios": "^0.27.2",
+    "axios": "^1.1.2",
     "expo": "^46.0.15",
     "expo-linking": "~3.2.2",
     "expo-secure-store": "~11.3.0",
