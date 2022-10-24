@@ -20,14 +20,12 @@ describe('smoke test', () => {
     cy.visit('/');
 
     // sign in
-    cy.getTestId('email-field-flat').type('example@example.com');
-    cy.getTestId('password-field-flat').type('password');
+    cy.getTestId('email-field').type('example@example.com');
+    cy.getTestId('password-field').type('password');
     cy.getTestId('sign-in-button').click();
 
     // add bookmark
-    cy.getTestId('url-to-add-field-flat').type(
-      'https://codingitwrong.com{enter}',
-    );
+    cy.getTestId('url-to-add-field').type('https://codingitwrong.com{enter}');
     cy.wait('@addBookmark');
 
     // mark bookmark read
