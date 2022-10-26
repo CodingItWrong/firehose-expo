@@ -37,6 +37,11 @@
       "name": "Firehose",
       "themeColor": "#B71C1C",
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "03aa08ee-689a-4c54-a1a8-b4853098345e"
+      }
     }
   }
 }
