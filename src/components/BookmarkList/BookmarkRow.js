@@ -25,11 +25,22 @@ export default function BookmarkRow({
   onDelete,
 }) {
   const [isDeleteDialogVisible, setIsDeleteDialogVisible] = useState(false);
+  const [isUpdateInProgress, setIsUpdateInProgress] = useState(false);
 
   const {title, url, source, comment} = bookmark.attributes;
 
   const tagList = bookmark.attributes['tag-list'];
   const tags = tagList ? tagList.split(' ') : [];
+
+  async function handleMarkRead() {
+    setIsUpdateInProgress(true);
+    try {
+      await onMarkRead();
+      // need to not setUpdateInProgress(false) upon success because row will be removed
+    } catch {
+      setIsUpdateInProgress(false);
+    }
+  }
 
   function share() {
     Share.share({url: bookmark.attributes.url});
@@ -119,14 +130,24 @@ export default function BookmarkRow({
             Mark Unread
           </ButtonWithSpacing>
         ) : (
-          <ButtonWithSpacing onPress={onMarkRead} testID="mark-read-button">
+          <ButtonWithSpacing
+            onPress={handleMarkRead}
+            testID="mark-read-button"
+            disabled={isUpdateInProgress}
+          >
             Mark Read
           </ButtonWithSpacing>
         )}
-        <ButtonWithSpacing onPress={onEdit}>Edit</ButtonWithSpacing>
+        <ButtonWithSpacing
+          onPress={() => onEdit()}
+          disabled={isUpdateInProgress}
+        >
+          Edit
+        </ButtonWithSpacing>
         <ButtonWithSpacing
           mode="contained"
           onPress={() => setIsDeleteDialogVisible(true)}
+          disabled={isUpdateInProgress}
         >
           Delete
         </ButtonWithSpacing>
