@@ -105,8 +105,9 @@ export default function BookmarkList({
         attributes: {read: true},
       });
       refresh();
-    } catch {
+    } catch (e) {
       setErrorMessage('An error occurred while marking link read.');
+      throw e;
     }
   }
 
