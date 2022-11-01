@@ -20,7 +20,23 @@ jest.mock('react-native-paper', () => {
 describe('BookmarkRow', () => {
   const bookmark = {attributes: {url: 'https://codingitwrong.com'}};
 
-  // TODO: cover other behavior besides delete
+  // TODO: cover other behavior besides mark read and delete
+
+  describe('marking read', () => {
+    it('calls the onMarkRead prop', () => {
+      const onMarkRead = jest.fn().mockName('onMarkRead');
+
+      render(
+        <Provider>
+          <BookmarkRow bookmark={bookmark} onMarkRead={onMarkRead} />
+        </Provider>,
+      );
+
+      fireEvent.press(screen.getByRole('button', {name: 'Mark Read'}));
+
+      expect(onMarkRead).toHaveBeenCalledWith();
+    });
+  });
 
   describe('deleting', () => {
     it('calls the onDelete prop', () => {
