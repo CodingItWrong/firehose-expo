@@ -2,6 +2,7 @@ import {
   fireEvent,
   render,
   screen,
+  waitFor,
   waitForElementToBeRemoved,
 } from '@testing-library/react-native';
 import {Provider} from 'react-native-paper';
@@ -35,6 +36,63 @@ describe('BookmarkRow', () => {
       fireEvent.press(screen.getByRole('button', {name: 'Mark Read'}));
 
       expect(onMarkRead).toHaveBeenCalledWith();
+    });
+
+    describe('while loading', () => {
+      it('deactivates all buttons', () => {
+        const doesNotSettle = new Promise(() => {});
+        const onMarkRead = () => doesNotSettle;
+
+        render(
+          <Provider>
+            <BookmarkRow bookmark={bookmark} onMarkRead={onMarkRead} />
+          </Provider>,
+        );
+
+        fireEvent.press(screen.getByRole('button', {name: 'Mark Read'}));
+
+        expect(
+          isDeactivated(screen.getByRole('button', {name: 'Mark Read'})),
+        ).toEqual(true);
+
+        expect(
+          isDeactivated(screen.getByRole('button', {name: 'Edit'})),
+        ).toEqual(true);
+
+        expect(
+          isDeactivated(screen.getByRole('button', {name: 'Delete'})),
+        ).toEqual(true);
+      });
+    });
+
+    describe('upon failure', () => {
+      // error message displayed by parent component
+
+      it('reactivates all buttons', async () => {
+        const onMarkRead = () => Promise.reject();
+
+        render(
+          <Provider>
+            <BookmarkRow bookmark={bookmark} onMarkRead={onMarkRead} />
+          </Provider>,
+        );
+
+        fireEvent.press(screen.getByRole('button', {name: 'Mark Read'}));
+
+        await waitFor(() =>
+          expect(
+            isDeactivated(screen.getByRole('button', {name: 'Mark Read'})),
+          ).toEqual(false),
+        );
+
+        expect(
+          isDeactivated(screen.getByRole('button', {name: 'Edit'})),
+        ).toEqual(false);
+
+        expect(
+          isDeactivated(screen.getByRole('button', {name: 'Delete'})),
+        ).toEqual(false);
+      });
     });
   });
 
@@ -70,3 +128,8 @@ describe('BookmarkRow', () => {
     });
   });
 });
+
+// TODO: find out why .isDisabled() was not working for me
+function isDeactivated(element) {
+  return element.props.accessibilityState.disabled;
+}
