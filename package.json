@@ -16,6 +16,7 @@
     "deploy:web": "expo export:web && cp _redirects web-build && netlify deploy --prod"
   },
   "dependencies": {
+    "@babel/plugin-proposal-export-namespace-from": "^7.18.9",
     "@codingitwrong/jsonapi-client": "^0.0.11",
     "@expo/webpack-config": "^0.17.2",
     "@react-navigation/drawer": "^6.5.0",
