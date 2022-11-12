@@ -13,6 +13,7 @@
     "cypress": "cypress open",
     "lint": "eslint cypress src \"*.js\"",
     "build:ios": "eas build --platform ios --local",
+    "build:ios:remote": "eas build --platform ios",
     "deploy:web": "expo export:web && cp _redirects web-build && netlify deploy --prod"
   },
   "dependencies": {
