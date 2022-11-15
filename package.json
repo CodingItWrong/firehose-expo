@@ -46,7 +46,7 @@
   "devDependencies": {
     "@babel/core": "^7.19.3",
     "@react-native-community/eslint-config": "^3.0.3",
-    "@testing-library/jest-native": "^5.1.2",
+    "@testing-library/jest-native": "^5.2.0",
     "@testing-library/react-native": "^11.4.0",
     "babel-jest": "^29.2.2",
     "cypress": "^10.11.0",
