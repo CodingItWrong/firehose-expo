@@ -22,7 +22,7 @@
     "@expo/webpack-config": "^0.17.2",
     "@react-navigation/drawer": "^6.5.3",
     "@react-navigation/native": "^6.0.16",
-    "@react-navigation/native-stack": "^6.9.4",
+    "@react-navigation/native-stack": "^6.9.5",
     "@tanstack/react-query": "^4.19.1",
     "axios": "^1.2.0",
     "expo": "^47.0.8",
